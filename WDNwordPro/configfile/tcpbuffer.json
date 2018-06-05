@@ -1,0 +1,5 @@
+{
+    "MSS":"TCP-MSS 1024",
+    "Send" : "TCP-SEND-BUFFER 65535",
+    "Recv" : "TCP-RECEIVE-BUFFER 65535"
+}

@@ -1,0 +1,63 @@
+{
+    "name" : "net Config para",
+    "links":[
+        {
+            "type" :"1",//Sat-Sat,
+            "bandwidth" :{
+                "rank1":"1G",
+                "rank2":"2G",
+                "rank3":"5G"            
+            }
+        },
+        {
+            "type" :"2",//Sat-Ground,
+            "bandwidth" : {
+                "rank1":"10M",
+                "rank2":"50M",
+                "rank3":"100M",
+                "rank4":"200M"            
+            },
+            "drop": {
+                "rank1":"0.0",
+                "rank2":"0.0001",
+                "rank3":"0.00001",
+                "rank4":"0.000001" 
+            }
+        },
+        {
+            "type" :"1",//Sat-RS,
+            "bandwidth" :{
+                "rank1":"100M",
+                "rank2":"500M",
+                "rank3":"1G"
+            },
+            "drop": {
+                "rank1":"0.0",
+                "rank2":"0.0001",
+                "rank3":"0.000001",
+                "rank4":"0.00000001"
+            }
+        }
+    ],
+    "route":{
+        "type1":"OSPFv2",
+        "type2":"AODV"
+    },
+    "TCPwindow":
+    {
+        "send":
+        {
+            "rank1":"16K",
+            "rank1":"32K",
+            "rank1":"64K"            
+        },
+        "receieve":
+        {
+            "rank1":"32K",
+            "rank1":"64K",
+            "rank1":"128K",
+            "rank1":"512K" 
+        }
+    }
+
+}

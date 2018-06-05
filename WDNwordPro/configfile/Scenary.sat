@@ -1,0 +1,22 @@
+#ScenName
+ScenName:WDNscenario
+#rootname
+rootname:Sat
+#helight(km)
+helight: 1039.5
+#RAAN
+RAAN: 0
+#numPlans
+numPlans: 13
+#numSatOfPlans
+numSatOfPlans: 12
+#incline
+incline: 80.0
+#prasePara
+prasePara: 6
+#starttime
+starttime|2 Nov 2013 04:00:00.00
+#endtime
+endtime|3 Nov 2013 04:00:00.00
+#RAAN range
+RAANrange: 200 

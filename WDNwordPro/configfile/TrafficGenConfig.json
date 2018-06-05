@@ -1,0 +1,8 @@
+{
+  "DURATION": " DET 500S ",
+  "LEAKY-BUCKET": " NOLB ",
+  "PACKET-INTERVAL": " DET 30MS ",
+  "PACKET-SIZE": " RND DET 36000 ",
+  "PROBABILITY": " 0.9 ",
+  "START-TIME": " DET 0S "
+}
