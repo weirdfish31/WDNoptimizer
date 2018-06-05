@@ -13,6 +13,6 @@ firstdemo.py：循环配置参数EXATA启动仿真输出数据的程序
 数据处理部分程序：
 =======================================
 radiohead.py：EXATAReader类，读取数据专用类
-weirdfishes.py：高斯混合模型类、贝叶斯优化类、网络评估类、强化学习类
+weirdfishes.py：高斯混合模型类、贝叶斯优化类、网络评估类、强化学习类（未完成，定义state）
 truelovewaits.py:数据处理程序
 reckoner.py：高斯混合模型处理程序
