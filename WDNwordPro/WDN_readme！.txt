@@ -1,7 +1,8 @@
-2018/5/26
-在weirdfishes.py中的高斯混合模型类中加入了聚类和nan数据处理函数
+tips：
+1）outaccess文件夹和nodetxt文件夹里面的report不全，github一次只能上传100个文件，后续的WDNwordPro程序可以生成补全所有的report
 
-2018/5/24
+
+
 生成数据部分程序：
 =======================================
 WDNwordPro.sln：新建STK场景，生成可见性报表的c++程序
