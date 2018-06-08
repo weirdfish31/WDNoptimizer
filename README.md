@@ -8,13 +8,17 @@ TIPS：
 
 
 组成说明：
+
 GrangerTest文件夹：
 主要存放仿真的输出数据之间的格兰杰因果矩阵和格兰杰监测的python程序
+
+
 Style文件夹：
 主要存储STK中生成报表做自定义的报表的格式文件
+
+
 WDNwordPro文件夹：
-主程序文件夹
-包括生成EXATA所需的连通性表表、各种config文件，仿真数据处理python程序等
+主程序文件夹，包括生成EXATA所需的连通性表表、各种config文件，仿真数据处理python程序等
 
 
 未补完
