@@ -1,0 +1,19 @@
+                                                                            24 May 2018 18:54:36
+Aircraft-Aircraft1-To-Satellite-Sat0304:  Access Summary Report
+
+
+Aircraft1-To-Sat0304
+--------------------
+                  Access       Start Time (UTCG)           Stop Time (UTCG)       Duration (sec)
+                  ------    -----------------------    -----------------------    --------------
+                       1    2 Nov 2013 10:13:57.560    2 Nov 2013 10:29:22.701           925.142
+                       2    2 Nov 2013 12:00:20.791    2 Nov 2013 12:19:19.238          1138.447
+                       3    2 Nov 2013 21:48:21.213    2 Nov 2013 22:06:45.125          1103.911
+                       4    2 Nov 2013 23:35:59.499    2 Nov 2013 23:50:55.642           896.143
+
+Global Statistics
+-----------------
+Min Duration           4    2 Nov 2013 23:35:59.499    2 Nov 2013 23:50:55.642           896.143
+Max Duration           2    2 Nov 2013 12:00:20.791    2 Nov 2013 12:19:19.238          1138.447
+Mean Duration                                                                           1015.911
+Total Duration                                                                          4063.643
