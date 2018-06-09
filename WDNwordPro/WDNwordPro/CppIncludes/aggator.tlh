@@ -1,0 +1,1175 @@
+﻿// Created by Microsoft (R) C/C++ Compiler Version 15.00.30729.01 (bf637bbd).
+//
+// c:\r_stk_v9.2.x\source\lib\release.net\tlhbuilder\aggator.tlh
+//
+// C++ source equivalent of Win32 type library AgGator.tlb
+// compiler-generated file created 11/23/11 at 05:29:06 - DO NOT EDIT!
+
+//
+// Cross-referenced type libraries:
+//
+//
+
+#pragma once
+#pragma pack(push, 8)
+
+#include <comdef.h>
+
+namespace AgGator {
+
+//
+// Forward references and typedefs
+//
+
+struct __declspec(uuid("5ab8b4bf-58f3-4d7d-8fc5-1a8abc97cfff"))
+/* LIBID */ __AgGator;
+enum AgEEulerSequence;
+struct __declspec(uuid("51d649bb-9eee-42b0-b5c6-253b745b1366"))
+/* interface */ IAgGatorPluginEngineModel;
+struct __declspec(uuid("1fe7d2cb-dc59-4e05-a3c2-cbab2c00ec45"))
+/* dual interface */ IAgGatorPluginResultState;
+enum AgEAsHpopPluginEventIndicators;
+struct __declspec(uuid("d120da1e-b666-4a30-8d32-e59133c72b87"))
+/* dual interface */ IAgGatorPluginResultEvalEngineModel;
+struct __declspec(uuid("58b50a4b-f518-41f5-a545-d1f5529883ba"))
+/* interface */ IAgGatorPluginAttCtrl;
+struct __declspec(uuid("96e6bdf6-c1c6-4a50-9a93-6782bff9fe5f"))
+/* dual interface */ IAgGatorPluginResultAttCtrl;
+struct /* coclass */ AgGatorPluginResultState;
+struct /* coclass */ AgGatorPluginResultEvalEngineModel;
+struct /* coclass */ AgGatorPluginResultAttCtrl;
+struct /* coclass */ AgGatorPropagatorScriptDriver;
+struct __declspec(uuid("62574eae-d805-48f1-9579-a3885b05a5f6"))
+/* interface */ IAgGatorPropagatorScriptDriver;
+struct __declspec(uuid("efca652b-b5e5-4e7d-bc93-4b81a1bd8aa5"))
+/* interface */ IAgAsHpopPlugin;
+struct __declspec(uuid("33922bcb-fa7a-40b6-b94f-ae9c18a928fa"))
+/* dual interface */ IAgAsHpopPluginResult;
+enum AgEForceModelType;
+struct __declspec(uuid("4518fc76-4b7d-4926-9cb5-e36af7d94733"))
+/* dual interface */ IAgAsHpopPluginResultEval;
+struct __declspec(uuid("11317870-1ae0-416a-9e15-e00b71dfd5d9"))
+/* dual interface */ IAgAsHpopPluginResultPostEval;
+enum AgEAccelType;
+
+//
+// Smart pointer typedef declarations
+//
+
+_COM_SMARTPTR_TYPEDEF(IAgGatorPluginResultState, __uuidof(IAgGatorPluginResultState));
+_COM_SMARTPTR_TYPEDEF(IAgGatorPluginResultEvalEngineModel, __uuidof(IAgGatorPluginResultEvalEngineModel));
+_COM_SMARTPTR_TYPEDEF(IAgGatorPluginEngineModel, __uuidof(IAgGatorPluginEngineModel));
+_COM_SMARTPTR_TYPEDEF(IAgGatorPluginResultAttCtrl, __uuidof(IAgGatorPluginResultAttCtrl));
+_COM_SMARTPTR_TYPEDEF(IAgGatorPluginAttCtrl, __uuidof(IAgGatorPluginAttCtrl));
+_COM_SMARTPTR_TYPEDEF(IAgGatorPropagatorScriptDriver, __uuidof(IAgGatorPropagatorScriptDriver));
+_COM_SMARTPTR_TYPEDEF(IAgAsHpopPluginResult, __uuidof(IAgAsHpopPluginResult));
+_COM_SMARTPTR_TYPEDEF(IAgAsHpopPluginResultEval, __uuidof(IAgAsHpopPluginResultEval));
+_COM_SMARTPTR_TYPEDEF(IAgAsHpopPluginResultPostEval, __uuidof(IAgAsHpopPluginResultPostEval));
+_COM_SMARTPTR_TYPEDEF(IAgAsHpopPlugin, __uuidof(IAgAsHpopPlugin));
+
+//
+// Type library items
+//
+
+enum AgEEulerSequence
+{
+    e121 = 121,
+    e123 = 123,
+    e131 = 131,
+    e132 = 132,
+    e212 = 212,
+    e213 = 213,
+    e231 = 231,
+    e232 = 232,
+    e312 = 312,
+    e313 = 313,
+    e321 = 321,
+    e323 = 323
+};
+
+enum AgEAsHpopPluginEventIndicators
+{
+    AgEAsHpopPluginEventIndicatorsStopPropagation = 0,
+    AgEAsHpopPluginEventIndicatorsStopSegment = 1,
+    AgEAsHpopPluginEventIndicatorsMarkDiscontinuity = 2
+};
+
+struct __declspec(uuid("1fe7d2cb-dc59-4e05-a3c2-cbab2c00ec45"))
+IAgGatorPluginResultState : IDispatch
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall Trace (
+        /*[in]*/ long NumCalls ) = 0;
+      virtual HRESULT __stdcall get_CbName (
+        /*[out,retval]*/ BSTR * pCbName ) = 0;
+      virtual HRESULT __stdcall get_Mu (
+        /*[out,retval]*/ double * pMu ) = 0;
+      virtual HRESULT __stdcall get_Cd (
+        /*[out,retval]*/ double * pCd ) = 0;
+      virtual HRESULT __stdcall get_Cr (
+        /*[out,retval]*/ double * pCr ) = 0;
+      virtual HRESULT __stdcall get_DragArea (
+        /*[out,retval]*/ double * pDragArea ) = 0;
+      virtual HRESULT __stdcall get_SRPArea (
+        /*[out,retval]*/ double * pSRPArea ) = 0;
+      virtual HRESULT __stdcall get_Mass (
+        /*[out,retval]*/ double * pMass ) = 0;
+      virtual HRESULT __stdcall get_DryMass (
+        /*[out,retval]*/ double * pDryMass ) = 0;
+      virtual HRESULT __stdcall get_FuelMass (
+        /*[out,retval]*/ double * pFuelMass ) = 0;
+      virtual HRESULT __stdcall get_Altitude (
+        /*[out,retval]*/ double * pAltitude ) = 0;
+      virtual HRESULT __stdcall DayCount (
+        /*[in]*/ enum AgEUtTimeScale Scale,
+        /*[in,out]*/ long * WholeDays,
+        /*[in,out]*/ double * SecsIntoDay ) = 0;
+      virtual HRESULT __stdcall DayCount_Array (
+        /*[in]*/ enum AgEUtTimeScale Scale,
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall Date (
+        /*[in]*/ enum AgEUtTimeScale Scale,
+        /*[in,out]*/ long * Year,
+        /*[in,out]*/ long * DayOfYear,
+        /*[in,out]*/ long * Month,
+        /*[in,out]*/ long * Hour,
+        /*[in,out]*/ long * Minute,
+        /*[in,out]*/ double * Seconds ) = 0;
+      virtual HRESULT __stdcall Date_Array (
+        /*[in]*/ enum AgEUtTimeScale Scale,
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall PosVel (
+        /*[in]*/ enum AgEUtFrame Frame,
+        /*[in,out]*/ double * X,
+        /*[in,out]*/ double * Y,
+        /*[in,out]*/ double * Z,
+        /*[in,out]*/ double * Vx,
+        /*[in,out]*/ double * Vy,
+        /*[in,out]*/ double * Vz ) = 0;
+      virtual HRESULT __stdcall PosVel_Array (
+        /*[in]*/ enum AgEUtFrame Frame,
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall LatLonAlt (
+        /*[in,out]*/ double * Latitude,
+        /*[in,out]*/ double * Longitude,
+        /*[in,out]*/ double * Altitude ) = 0;
+      virtual HRESULT __stdcall LatLonAlt_Array (
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall SunPosition (
+        /*[in]*/ enum AgEUtSunPosType SunPosType,
+        /*[in]*/ enum AgEUtFrame Frame,
+        /*[in,out]*/ double * X,
+        /*[in,out]*/ double * Y,
+        /*[in,out]*/ double * Z ) = 0;
+      virtual HRESULT __stdcall SunPosition_Array (
+        /*[in]*/ enum AgEUtSunPosType SunPosType,
+        /*[in]*/ enum AgEUtFrame Frame,
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall TransformVector (
+        /*[in]*/ enum AgEUtFrame FrameFrom,
+        /*[in]*/ double XFrom,
+        /*[in]*/ double YFrom,
+        /*[in]*/ double ZFrom,
+        /*[in]*/ enum AgEUtFrame FrameTo,
+        /*[in,out]*/ double * XTo,
+        /*[in,out]*/ double * YTo,
+        /*[in,out]*/ double * ZTo ) = 0;
+      virtual HRESULT __stdcall TransformVector_Array (
+        /*[in]*/ enum AgEUtFrame FrameFrom,
+        /*[in]*/ double XFrom,
+        /*[in]*/ double YFrom,
+        /*[in]*/ double ZFrom,
+        /*[in]*/ enum AgEUtFrame FrameTo,
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall StopPropagation ( ) = 0;
+      virtual HRESULT __stdcall IndicateEvent (
+        /*[in]*/ enum AgEAsHpopPluginEventIndicators eEventIndicator ) = 0;
+      virtual HRESULT __stdcall SetMaxStep (
+        /*[in]*/ double MaxStep ) = 0;
+      virtual HRESULT __stdcall SetColor (
+        /*[in]*/ BSTR Color ) = 0;
+};
+
+struct __declspec(uuid("d120da1e-b666-4a30-8d32-e59133c72b87"))
+IAgGatorPluginResultEvalEngineModel : IDispatch
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall Trace (
+        /*[in]*/ long NumCalls ) = 0;
+      virtual HRESULT __stdcall get_CbName (
+        /*[out,retval]*/ BSTR * pCbName ) = 0;
+      virtual HRESULT __stdcall get_Mu (
+        /*[out,retval]*/ double * pMu ) = 0;
+      virtual HRESULT __stdcall get_Cd (
+        /*[out,retval]*/ double * pCd ) = 0;
+      virtual HRESULT __stdcall get_Cr (
+        /*[out,retval]*/ double * pCr ) = 0;
+      virtual HRESULT __stdcall get_DragArea (
+        /*[out,retval]*/ double * pDragArea ) = 0;
+      virtual HRESULT __stdcall get_SRPArea (
+        /*[out,retval]*/ double * pSRPArea ) = 0;
+      virtual HRESULT __stdcall get_Mass (
+        /*[out,retval]*/ double * pMass ) = 0;
+      virtual HRESULT __stdcall get_DryMass (
+        /*[out,retval]*/ double * pDryMass ) = 0;
+      virtual HRESULT __stdcall get_FuelMass (
+        /*[out,retval]*/ double * pFuelMass ) = 0;
+      virtual HRESULT __stdcall get_Altitude (
+        /*[out,retval]*/ double * pAltitude ) = 0;
+      virtual HRESULT __stdcall DayCount (
+        /*[in]*/ enum AgEUtTimeScale Scale,
+        /*[in,out]*/ long * WholeDays,
+        /*[in,out]*/ double * SecsIntoDay ) = 0;
+      virtual HRESULT __stdcall DayCount_Array (
+        /*[in]*/ enum AgEUtTimeScale Scale,
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall Date (
+        /*[in]*/ enum AgEUtTimeScale Scale,
+        /*[in,out]*/ long * Year,
+        /*[in,out]*/ long * DayOfYear,
+        /*[in,out]*/ long * Month,
+        /*[in,out]*/ long * Hour,
+        /*[in,out]*/ long * Minute,
+        /*[in,out]*/ double * Seconds ) = 0;
+      virtual HRESULT __stdcall Date_Array (
+        /*[in]*/ enum AgEUtTimeScale Scale,
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall PosVel (
+        /*[in]*/ enum AgEUtFrame Frame,
+        /*[in,out]*/ double * X,
+        /*[in,out]*/ double * Y,
+        /*[in,out]*/ double * Z,
+        /*[in,out]*/ double * Vx,
+        /*[in,out]*/ double * Vy,
+        /*[in,out]*/ double * Vz ) = 0;
+      virtual HRESULT __stdcall PosVel_Array (
+        /*[in]*/ enum AgEUtFrame Frame,
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall LatLonAlt (
+        /*[in,out]*/ double * Latitude,
+        /*[in,out]*/ double * Longitude,
+        /*[in,out]*/ double * Altitude ) = 0;
+      virtual HRESULT __stdcall LatLonAlt_Array (
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall SunPosition (
+        /*[in]*/ enum AgEUtSunPosType SunPosType,
+        /*[in]*/ enum AgEUtFrame Frame,
+        /*[in,out]*/ double * X,
+        /*[in,out]*/ double * Y,
+        /*[in,out]*/ double * Z ) = 0;
+      virtual HRESULT __stdcall SunPosition_Array (
+        /*[in]*/ enum AgEUtSunPosType SunPosType,
+        /*[in]*/ enum AgEUtFrame Frame,
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall TransformVector (
+        /*[in]*/ enum AgEUtFrame FrameFrom,
+        /*[in]*/ double XFrom,
+        /*[in]*/ double YFrom,
+        /*[in]*/ double ZFrom,
+        /*[in]*/ enum AgEUtFrame FrameTo,
+        /*[in,out]*/ double * XTo,
+        /*[in,out]*/ double * YTo,
+        /*[in,out]*/ double * ZTo ) = 0;
+      virtual HRESULT __stdcall TransformVector_Array (
+        /*[in]*/ enum AgEUtFrame FrameFrom,
+        /*[in]*/ double XFrom,
+        /*[in]*/ double YFrom,
+        /*[in]*/ double ZFrom,
+        /*[in]*/ enum AgEUtFrame FrameTo,
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall get_Thrust (
+        /*[out,retval]*/ double * pThrust ) = 0;
+      virtual HRESULT __stdcall get_Isp (
+        /*[out,retval]*/ double * pIsp ) = 0;
+      virtual HRESULT __stdcall get_MassFlowRate (
+        /*[out,retval]*/ double * pMassFlowRate ) = 0;
+      virtual HRESULT __stdcall get_TimeSinceIgnition (
+        /*[out,retval]*/ double * pTimeSinceIgnition ) = 0;
+      virtual HRESULT __stdcall SetThrustAndIsp (
+        /*[in]*/ double Thrust,
+        /*[in]*/ double Isp,
+        /*[out,retval]*/ VARIANT_BOOL * pReturn ) = 0;
+      virtual HRESULT __stdcall SetThrustAndMassFlowRate (
+        /*[in]*/ double Thrust,
+        /*[in]*/ double MassFlowRate,
+        /*[out,retval]*/ VARIANT_BOOL * pReturn ) = 0;
+      virtual HRESULT __stdcall SetIspAndMassFlowRate (
+        /*[in]*/ double Isp,
+        /*[in]*/ double MassFlowRate,
+        /*[out,retval]*/ VARIANT_BOOL * pReturn ) = 0;
+      virtual HRESULT __stdcall StopPropagation ( ) = 0;
+};
+
+struct __declspec(uuid("51d649bb-9eee-42b0-b5c6-253b745b1366"))
+IAgGatorPluginEngineModel : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall get_Name (
+        /*[out,retval]*/ BSTR * pName ) = 0;
+      virtual HRESULT __stdcall Init (
+        /*[in]*/ struct IAgUtPluginSite * Site,
+        /*[out,retval]*/ VARIANT_BOOL * pResult ) = 0;
+      virtual HRESULT __stdcall PrePropagate (
+        /*[in]*/ struct IAgGatorPluginResultState * ResultState,
+        /*[out,retval]*/ VARIANT_BOOL * pResult ) = 0;
+      virtual HRESULT __stdcall PreNextStep (
+        /*[in]*/ struct IAgGatorPluginResultState * ResultState,
+        /*[out,retval]*/ VARIANT_BOOL * pResult ) = 0;
+      virtual HRESULT __stdcall Evaluate (
+        /*[in]*/ struct IAgGatorPluginResultEvalEngineModel * ResultEvalEngineModel,
+        /*[out,retval]*/ VARIANT_BOOL * pResult ) = 0;
+      virtual HRESULT __stdcall Free ( ) = 0;
+};
+
+struct __declspec(uuid("96e6bdf6-c1c6-4a50-9a93-6782bff9fe5f"))
+IAgGatorPluginResultAttCtrl : IDispatch
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall Trace (
+        /*[in]*/ long NumCalls ) = 0;
+      virtual HRESULT __stdcall get_CbName (
+        /*[out,retval]*/ BSTR * pCbName ) = 0;
+      virtual HRESULT __stdcall get_Mu (
+        /*[out,retval]*/ double * pMu ) = 0;
+      virtual HRESULT __stdcall get_Cd (
+        /*[out,retval]*/ double * pCd ) = 0;
+      virtual HRESULT __stdcall get_Cr (
+        /*[out,retval]*/ double * pCr ) = 0;
+      virtual HRESULT __stdcall get_DragArea (
+        /*[out,retval]*/ double * pDragArea ) = 0;
+      virtual HRESULT __stdcall get_SRPArea (
+        /*[out,retval]*/ double * pSRPArea ) = 0;
+      virtual HRESULT __stdcall get_Mass (
+        /*[out,retval]*/ double * pMass ) = 0;
+      virtual HRESULT __stdcall get_DryMass (
+        /*[out,retval]*/ double * pDryMass ) = 0;
+      virtual HRESULT __stdcall get_FuelMass (
+        /*[out,retval]*/ double * pFuelMass ) = 0;
+      virtual HRESULT __stdcall get_Altitude (
+        /*[out,retval]*/ double * pAltitude ) = 0;
+      virtual HRESULT __stdcall DayCount (
+        /*[in]*/ enum AgEUtTimeScale Scale,
+        /*[in,out]*/ long * WholeDays,
+        /*[in,out]*/ double * SecsIntoDay ) = 0;
+      virtual HRESULT __stdcall DayCount_Array (
+        /*[in]*/ enum AgEUtTimeScale Scale,
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall Date (
+        /*[in]*/ enum AgEUtTimeScale Scale,
+        /*[in,out]*/ long * Year,
+        /*[in,out]*/ long * DayOfYear,
+        /*[in,out]*/ long * Month,
+        /*[in,out]*/ long * Hour,
+        /*[in,out]*/ long * Minute,
+        /*[in,out]*/ double * Seconds ) = 0;
+      virtual HRESULT __stdcall Date_Array (
+        /*[in]*/ enum AgEUtTimeScale Scale,
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall PosVel (
+        /*[in]*/ enum AgEUtFrame Frame,
+        /*[in,out]*/ double * X,
+        /*[in,out]*/ double * Y,
+        /*[in,out]*/ double * Z,
+        /*[in,out]*/ double * Vx,
+        /*[in,out]*/ double * Vy,
+        /*[in,out]*/ double * Vz ) = 0;
+      virtual HRESULT __stdcall PosVel_Array (
+        /*[in]*/ enum AgEUtFrame Frame,
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall LatLonAlt (
+        /*[in,out]*/ double * Latitude,
+        /*[in,out]*/ double * Longitude,
+        /*[in,out]*/ double * Altitude ) = 0;
+      virtual HRESULT __stdcall LatLonAlt_Array (
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall SunPosition (
+        /*[in]*/ enum AgEUtSunPosType SunPosType,
+        /*[in]*/ enum AgEUtFrame Frame,
+        /*[in,out]*/ double * X,
+        /*[in,out]*/ double * Y,
+        /*[in,out]*/ double * Z ) = 0;
+      virtual HRESULT __stdcall SunPosition_Array (
+        /*[in]*/ enum AgEUtSunPosType SunPosType,
+        /*[in]*/ enum AgEUtFrame Frame,
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall TransformVector (
+        /*[in]*/ enum AgEUtFrame FrameFrom,
+        /*[in]*/ double XFrom,
+        /*[in]*/ double YFrom,
+        /*[in]*/ double ZFrom,
+        /*[in]*/ enum AgEUtFrame FrameTo,
+        /*[in,out]*/ double * XTo,
+        /*[in,out]*/ double * YTo,
+        /*[in,out]*/ double * ZTo ) = 0;
+      virtual HRESULT __stdcall TransformVector_Array (
+        /*[in]*/ enum AgEUtFrame FrameFrom,
+        /*[in]*/ double XFrom,
+        /*[in]*/ double YFrom,
+        /*[in]*/ double ZFrom,
+        /*[in]*/ enum AgEUtFrame FrameTo,
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall get_RefAxes (
+        /*[out,retval]*/ BSTR * pRefAxesName ) = 0;
+      virtual HRESULT __stdcall SetRefAxes (
+        /*[in]*/ BSTR Name,
+        /*[out,retval]*/ VARIANT_BOOL * pResult ) = 0;
+      virtual HRESULT __stdcall SetQuaternion (
+        /*[in]*/ double Q1,
+        /*[in]*/ double Q2,
+        /*[in]*/ double Q3,
+        /*[in]*/ double Q4 ) = 0;
+      virtual HRESULT __stdcall EulerRotate (
+        /*[in]*/ enum AgEEulerSequence Sequence,
+        /*[in]*/ double First,
+        /*[in]*/ double Second,
+        /*[in]*/ double Third ) = 0;
+      virtual HRESULT __stdcall GetQuaternion (
+        /*[out]*/ double * Q1,
+        /*[out]*/ double * Q2,
+        /*[out]*/ double * Q3,
+        /*[out]*/ double * Q4 ) = 0;
+      virtual HRESULT __stdcall GetQuaternion_Array (
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall GetEulerRotation (
+        /*[in]*/ enum AgEEulerSequence Sequence,
+        /*[out]*/ double * First,
+        /*[out]*/ double * Second,
+        /*[out]*/ double * Third ) = 0;
+      virtual HRESULT __stdcall GetEulerRotation_Array (
+        /*[in]*/ enum AgEEulerSequence Sequence,
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall StopPropagation ( ) = 0;
+};
+
+struct __declspec(uuid("58b50a4b-f518-41f5-a545-d1f5529883ba"))
+IAgGatorPluginAttCtrl : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall get_Name (
+        /*[out,retval]*/ BSTR * pName ) = 0;
+      virtual HRESULT __stdcall Init (
+        /*[in]*/ struct IAgUtPluginSite * Site,
+        /*[out,retval]*/ VARIANT_BOOL * pResult ) = 0;
+      virtual HRESULT __stdcall PrePropagate (
+        /*[in]*/ struct IAgGatorPluginResultAttCtrl * ResultAttCtrl,
+        /*[out,retval]*/ VARIANT_BOOL * pResult ) = 0;
+      virtual HRESULT __stdcall PreNextStep (
+        /*[in]*/ struct IAgGatorPluginResultAttCtrl * ResultAttCtrl,
+        /*[out,retval]*/ VARIANT_BOOL * pResult ) = 0;
+      virtual HRESULT __stdcall Evaluate (
+        /*[in]*/ struct IAgGatorPluginResultAttCtrl * ResultAttCtrl,
+        /*[out,retval]*/ VARIANT_BOOL * pResult ) = 0;
+      virtual HRESULT __stdcall Free ( ) = 0;
+};
+
+struct __declspec(uuid("23bd1e60-3e10-4367-8bae-72ff8f07edc6"))
+AgGatorPluginResultState;
+    // [ default ] interface IAgGatorPluginResultState
+
+struct __declspec(uuid("491ddab9-44bb-4bc9-b90b-7fc52a7b68a0"))
+AgGatorPluginResultEvalEngineModel;
+    // [ default ] interface IAgGatorPluginResultEvalEngineModel
+
+struct __declspec(uuid("ada7ae2e-d203-4c16-b863-628a683f16cf"))
+AgGatorPluginResultAttCtrl;
+    // [ default ] interface IAgGatorPluginResultAttCtrl
+
+struct __declspec(uuid("536d1c94-5b84-47b2-8465-c3cd03696b92"))
+AgGatorPropagatorScriptDriver;
+    // [ default ] interface IAgGatorPropagatorScriptDriver
+    // interface IAgAsHpopPlugin
+    // interface IAgUtPluginConfig
+
+struct __declspec(uuid("62574eae-d805-48f1-9579-a3885b05a5f6"))
+IAgGatorPropagatorScriptDriver : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall get_UseInitFile (
+        /*[out,retval]*/ VARIANT_BOOL * pVal ) = 0;
+      virtual HRESULT __stdcall put_UseInitFile (
+        /*[in]*/ VARIANT_BOOL pVal ) = 0;
+      virtual HRESULT __stdcall get_InitFile (
+        /*[out,retval]*/ BSTR * pVal ) = 0;
+      virtual HRESULT __stdcall put_InitFile (
+        /*[in]*/ BSTR pVal ) = 0;
+      virtual HRESULT __stdcall get_InitFileRWFlag (
+        /*[out,retval]*/ long * pVal ) = 0;
+      virtual HRESULT __stdcall get_UsePrePropagateFile (
+        /*[out,retval]*/ VARIANT_BOOL * pVal ) = 0;
+      virtual HRESULT __stdcall put_UsePrePropagateFile (
+        /*[in]*/ VARIANT_BOOL pVal ) = 0;
+      virtual HRESULT __stdcall get_PrePropagateFile (
+        /*[out,retval]*/ BSTR * pVal ) = 0;
+      virtual HRESULT __stdcall put_PrePropagateFile (
+        /*[in]*/ BSTR pVal ) = 0;
+      virtual HRESULT __stdcall get_PrePropagateFileRWFlag (
+        /*[out,retval]*/ long * pVal ) = 0;
+      virtual HRESULT __stdcall get_UsePreNextStepFile (
+        /*[out,retval]*/ VARIANT_BOOL * pVal ) = 0;
+      virtual HRESULT __stdcall put_UsePreNextStepFile (
+        /*[in]*/ VARIANT_BOOL pVal ) = 0;
+      virtual HRESULT __stdcall get_PreNextStepFile (
+        /*[out,retval]*/ BSTR * pVal ) = 0;
+      virtual HRESULT __stdcall put_PreNextStepFile (
+        /*[in]*/ BSTR pVal ) = 0;
+      virtual HRESULT __stdcall get_PreNextStepFileRWFlag (
+        /*[out,retval]*/ long * pVal ) = 0;
+      virtual HRESULT __stdcall get_UseEvaluateFile (
+        /*[out,retval]*/ VARIANT_BOOL * pVal ) = 0;
+      virtual HRESULT __stdcall put_UseEvaluateFile (
+        /*[in]*/ VARIANT_BOOL pVal ) = 0;
+      virtual HRESULT __stdcall get_EvaluateFile (
+        /*[out,retval]*/ BSTR * pVal ) = 0;
+      virtual HRESULT __stdcall put_EvaluateFile (
+        /*[in]*/ BSTR pVal ) = 0;
+      virtual HRESULT __stdcall get_EvaluateFileRWFlag (
+        /*[out,retval]*/ long * pVal ) = 0;
+      virtual HRESULT __stdcall get_UsePostPropagateFile (
+        /*[out,retval]*/ VARIANT_BOOL * pVal ) = 0;
+      virtual HRESULT __stdcall put_UsePostPropagateFile (
+        /*[in]*/ VARIANT_BOOL pVal ) = 0;
+      virtual HRESULT __stdcall get_PostPropagateFile (
+        /*[out,retval]*/ BSTR * pVal ) = 0;
+      virtual HRESULT __stdcall put_PostPropagateFile (
+        /*[in]*/ BSTR pVal ) = 0;
+      virtual HRESULT __stdcall get_PostPropagateFileRWFlag (
+        /*[out,retval]*/ long * pVal ) = 0;
+      virtual HRESULT __stdcall get_UseFreeFile (
+        /*[out,retval]*/ VARIANT_BOOL * pVal ) = 0;
+      virtual HRESULT __stdcall put_UseFreeFile (
+        /*[in]*/ VARIANT_BOOL pVal ) = 0;
+      virtual HRESULT __stdcall get_FreeFile (
+        /*[out,retval]*/ BSTR * pVal ) = 0;
+      virtual HRESULT __stdcall put_FreeFile (
+        /*[in]*/ BSTR pVal ) = 0;
+      virtual HRESULT __stdcall get_FreeFileRWFlag (
+        /*[out,retval]*/ long * pVal ) = 0;
+};
+
+enum AgEForceModelType
+{
+    eGravityModel = 0,
+    eSolidTidesModel = 1,
+    eOceanTidesModel = 2,
+    eDragModel = 3,
+    eSRPModel = 4,
+    eThirdBodyModel = 5,
+    eGenRelativityModel = 6,
+    eAlbedoModel = 7,
+    eThermalRadiationPressureModel = 8
+};
+
+struct __declspec(uuid("33922bcb-fa7a-40b6-b94f-ae9c18a928fa"))
+IAgAsHpopPluginResult : IDispatch
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall get_Mu (
+        /*[out,retval]*/ double * pMu ) = 0;
+      virtual HRESULT __stdcall PosVel (
+        /*[in]*/ enum AgEUtFrame Frame,
+        /*[in,out]*/ double * X,
+        /*[in,out]*/ double * Y,
+        /*[in,out]*/ double * Z,
+        /*[in,out]*/ double * Vx,
+        /*[in,out]*/ double * Vy,
+        /*[in,out]*/ double * Vz ) = 0;
+      virtual HRESULT __stdcall get_Cd (
+        /*[out,retval]*/ double * pCd ) = 0;
+      virtual HRESULT __stdcall put_Cd (
+        /*[in]*/ double pCd ) = 0;
+      virtual HRESULT __stdcall get_Cr (
+        /*[out,retval]*/ double * pCr ) = 0;
+      virtual HRESULT __stdcall put_Cr (
+        /*[in]*/ double pCr ) = 0;
+      virtual HRESULT __stdcall get_DragArea (
+        /*[out,retval]*/ double * pDragArea ) = 0;
+      virtual HRESULT __stdcall put_DragArea (
+        /*[in]*/ double pDragArea ) = 0;
+      virtual HRESULT __stdcall get_SRPArea (
+        /*[out,retval]*/ double * pSRPArea ) = 0;
+      virtual HRESULT __stdcall put_SRPArea (
+        /*[in]*/ double pSRPArea ) = 0;
+      virtual HRESULT __stdcall get_Mass (
+        /*[out,retval]*/ double * pMass ) = 0;
+      virtual HRESULT __stdcall put_Mass (
+        /*[in]*/ double pMass ) = 0;
+      virtual HRESULT __stdcall get_TimeSinceRefEpoch (
+        /*[out,retval]*/ double * pTimeSinceRefEpoch ) = 0;
+      virtual HRESULT __stdcall SetAtmFluxLags (
+        /*[in]*/ double F10p7Lag,
+        /*[in]*/ double GeoFluxLag ) = 0;
+      virtual HRESULT __stdcall DayCount (
+        /*[in]*/ enum AgEUtTimeScale Scale,
+        /*[in,out]*/ long * WholeDays,
+        /*[in,out]*/ double * SecsIntoDay ) = 0;
+      virtual HRESULT __stdcall Date (
+        /*[in]*/ enum AgEUtTimeScale Scale,
+        /*[in,out]*/ long * Year,
+        /*[in,out]*/ long * DayOfYear,
+        /*[in,out]*/ long * Month,
+        /*[in,out]*/ long * Hour,
+        /*[in,out]*/ long * Minute,
+        /*[in,out]*/ double * Seconds ) = 0;
+      virtual HRESULT __stdcall SunPosition (
+        /*[in]*/ enum AgEUtSunPosType SunPosType,
+        /*[in]*/ enum AgEUtFrame Frame,
+        /*[in,out]*/ double * X,
+        /*[in,out]*/ double * Y,
+        /*[in,out]*/ double * Z ) = 0;
+      virtual HRESULT __stdcall TransformVector (
+        /*[in]*/ enum AgEUtFrame FrameFrom,
+        /*[in]*/ double XFrom,
+        /*[in]*/ double YFrom,
+        /*[in]*/ double ZFrom,
+        /*[in]*/ enum AgEUtFrame FrameTo,
+        /*[in,out]*/ double * XTo,
+        /*[in,out]*/ double * YTo,
+        /*[in,out]*/ double * ZTo ) = 0;
+      virtual HRESULT __stdcall get_Altitude (
+        /*[out,retval]*/ double * pAltitude ) = 0;
+      virtual HRESULT __stdcall LatLonAlt (
+        /*[in,out]*/ double * Latitude,
+        /*[in,out]*/ double * Longitude,
+        /*[in,out]*/ double * Altitude ) = 0;
+      virtual HRESULT __stdcall Trace (
+        /*[in]*/ long NumCalls ) = 0;
+      virtual HRESULT __stdcall RefEpoch (
+        /*[in]*/ enum AgEUtTimeScale Scale,
+        /*[in,out]*/ long * WholeDays,
+        /*[in,out]*/ double * SecsIntoDay,
+        /*[in,out]*/ long * Year,
+        /*[in,out]*/ long * DayOfYear,
+        /*[in,out]*/ long * Month,
+        /*[in,out]*/ long * Hour,
+        /*[in,out]*/ long * Minute,
+        /*[in,out]*/ double * Seconds ) = 0;
+      virtual HRESULT __stdcall get_LightSpeed (
+        /*[out,retval]*/ double * pLightSpeed ) = 0;
+      virtual HRESULT __stdcall get_SolarFlux (
+        /*[out,retval]*/ double * pSolarFlux ) = 0;
+      virtual HRESULT __stdcall get_CbName (
+        /*[out,retval]*/ BSTR * pCbName ) = 0;
+      virtual HRESULT __stdcall PosVel_Array (
+        /*[in]*/ enum AgEUtFrame Frame,
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall DayCount_Array (
+        /*[in]*/ enum AgEUtTimeScale Scale,
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall Date_Array (
+        /*[in]*/ enum AgEUtTimeScale Scale,
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall SunPosition_Array (
+        /*[in]*/ enum AgEUtSunPosType SunPosType,
+        /*[in]*/ enum AgEUtFrame Frame,
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall TransformVector_Array (
+        /*[in]*/ enum AgEUtFrame FrameFrom,
+        /*[in]*/ double XFrom,
+        /*[in]*/ double YFrom,
+        /*[in]*/ double ZFrom,
+        /*[in]*/ enum AgEUtFrame FrameTo,
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall LatLonAlt_Array (
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall RefEpoch_Array (
+        /*[in]*/ enum AgEUtTimeScale Scale,
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall CurrentAtmFlux (
+        /*[in,out]*/ double * F10p7,
+        /*[in,out]*/ double * AvgF10p7,
+        /*[in,out]*/ double * Ap,
+        /*[in,out]*/ double * ApDaily,
+        /*[in,out]*/ double * Kp,
+        /*[in,out]*/ double * KpDaily ) = 0;
+      virtual HRESULT __stdcall CurrentAtmFlux_Array (
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall AtmFlux (
+        /*[in]*/ enum AgEUtTimeScale Scale,
+        /*[in]*/ long WholeDays,
+        /*[in]*/ double SecsIntoDay,
+        /*[in,out]*/ double * F10p7,
+        /*[in,out]*/ double * AvgF10p7,
+        /*[in,out]*/ double * Ap,
+        /*[in,out]*/ double * ApDaily,
+        /*[in,out]*/ double * Kp,
+        /*[in,out]*/ double * KpDaily ) = 0;
+      virtual HRESULT __stdcall AtmFlux_Array (
+        /*[in]*/ enum AgEUtTimeScale Scale,
+        /*[in]*/ long WholeDays,
+        /*[in]*/ double SecsIntoDay,
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall AtmFluxLags (
+        /*[in,out]*/ double * F10p7Lag,
+        double * GeoFluxLag ) = 0;
+      virtual HRESULT __stdcall AtmFluxLags_Array (
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall IsForceModelOn (
+        /*[in]*/ enum AgEForceModelType Type,
+        /*[out,retval]*/ VARIANT_BOOL * pResult ) = 0;
+      virtual HRESULT __stdcall ForceModelName (
+        /*[in]*/ enum AgEForceModelType Type,
+        /*[out,retval]*/ BSTR * pName ) = 0;
+      virtual HRESULT __stdcall get_RadPressureCoefficient (
+        /*[out,retval]*/ double * pCoef ) = 0;
+      virtual HRESULT __stdcall put_RadPressureCoefficient (
+        /*[in]*/ double pCoef ) = 0;
+      virtual HRESULT __stdcall get_RadPressureArea (
+        /*[out,retval]*/ double * pArea ) = 0;
+      virtual HRESULT __stdcall put_RadPressureArea (
+        /*[in]*/ double pArea ) = 0;
+      virtual HRESULT __stdcall get_DryMass (
+        /*[out,retval]*/ double * pDryMass ) = 0;
+      virtual HRESULT __stdcall put_DryMass (
+        /*[in]*/ double pDryMass ) = 0;
+      virtual HRESULT __stdcall get_FuelMass (
+        /*[out,retval]*/ double * pFuelMass ) = 0;
+      virtual HRESULT __stdcall put_FuelMass (
+        /*[in]*/ double pFuelMass ) = 0;
+      virtual HRESULT __stdcall get_TotalMass (
+        /*[out,retval]*/ double * pTotalMass ) = 0;
+      virtual HRESULT __stdcall StopPropagation ( ) = 0;
+      virtual HRESULT __stdcall IndicateEvent (
+        /*[in]*/ enum AgEAsHpopPluginEventIndicators eEventIndicator ) = 0;
+      virtual HRESULT __stdcall SetMaxStep (
+        /*[in]*/ double MaxStep ) = 0;
+};
+
+struct __declspec(uuid("4518fc76-4b7d-4926-9cb5-e36af7d94733"))
+IAgAsHpopPluginResultEval : IDispatch
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall get_Mu (
+        /*[out,retval]*/ double * pMu ) = 0;
+      virtual HRESULT __stdcall PosVel (
+        /*[in]*/ enum AgEUtFrame Frame,
+        /*[in,out]*/ double * X,
+        /*[in,out]*/ double * Y,
+        /*[in,out]*/ double * Z,
+        /*[in,out]*/ double * Vx,
+        /*[in,out]*/ double * Vy,
+        /*[in,out]*/ double * Vz ) = 0;
+      virtual HRESULT __stdcall get_Cd (
+        /*[out,retval]*/ double * pCd ) = 0;
+      virtual HRESULT __stdcall put_Cd (
+        /*[in]*/ double pCd ) = 0;
+      virtual HRESULT __stdcall get_Cr (
+        /*[out,retval]*/ double * pCr ) = 0;
+      virtual HRESULT __stdcall put_Cr (
+        /*[in]*/ double pCr ) = 0;
+      virtual HRESULT __stdcall get_DragArea (
+        /*[out,retval]*/ double * pDragArea ) = 0;
+      virtual HRESULT __stdcall put_DragArea (
+        /*[in]*/ double pDragArea ) = 0;
+      virtual HRESULT __stdcall get_SRPArea (
+        /*[out,retval]*/ double * pSRPArea ) = 0;
+      virtual HRESULT __stdcall put_SRPArea (
+        /*[in]*/ double pSRPArea ) = 0;
+      virtual HRESULT __stdcall get_Mass (
+        /*[out,retval]*/ double * pMass ) = 0;
+      virtual HRESULT __stdcall get_TimeSinceRefEpoch (
+        /*[out,retval]*/ double * pTimeSinceRefEpoch ) = 0;
+      virtual HRESULT __stdcall SetAtmFluxLags (
+        /*[in]*/ double F10p7Lag,
+        /*[in]*/ double GeoFluxLag ) = 0;
+      virtual HRESULT __stdcall DayCount (
+        /*[in]*/ enum AgEUtTimeScale Scale,
+        /*[in,out]*/ long * WholeDays,
+        /*[in,out]*/ double * SecsIntoDay ) = 0;
+      virtual HRESULT __stdcall Date (
+        /*[in]*/ enum AgEUtTimeScale Scale,
+        /*[in,out]*/ long * Year,
+        /*[in,out]*/ long * DayOfYear,
+        /*[in,out]*/ long * Month,
+        /*[in,out]*/ long * Hour,
+        /*[in,out]*/ long * Minute,
+        /*[in,out]*/ double * Seconds ) = 0;
+      virtual HRESULT __stdcall SunPosition (
+        /*[in]*/ enum AgEUtSunPosType SunPosType,
+        /*[in]*/ enum AgEUtFrame Frame,
+        /*[in,out]*/ double * X,
+        /*[in,out]*/ double * Y,
+        /*[in,out]*/ double * Z ) = 0;
+      virtual HRESULT __stdcall TransformVector (
+        /*[in]*/ enum AgEUtFrame FrameFrom,
+        /*[in]*/ double XFrom,
+        /*[in]*/ double YFrom,
+        /*[in]*/ double ZFrom,
+        /*[in]*/ enum AgEUtFrame FrameTo,
+        /*[in,out]*/ double * XTo,
+        /*[in,out]*/ double * YTo,
+        /*[in,out]*/ double * ZTo ) = 0;
+      virtual HRESULT __stdcall get_Altitude (
+        /*[out,retval]*/ double * pAltitude ) = 0;
+      virtual HRESULT __stdcall LatLonAlt (
+        /*[in,out]*/ double * Latitude,
+        /*[in,out]*/ double * Longitude,
+        /*[in,out]*/ double * Altitude ) = 0;
+      virtual HRESULT __stdcall get_DragAltitude (
+        /*[out,retval]*/ double * pDragAltitude ) = 0;
+      virtual HRESULT __stdcall get_AtmTemperature (
+        /*[out,retval]*/ double * pAtmTemperature ) = 0;
+      virtual HRESULT __stdcall get_AtmPressure (
+        /*[out,retval]*/ double * pAtmPressure ) = 0;
+      virtual HRESULT __stdcall get_Density (
+        /*[out,retval]*/ double * pDensity ) = 0;
+      virtual HRESULT __stdcall put_Density (
+        /*[in]*/ double pDensity ) = 0;
+      virtual HRESULT __stdcall get_SolarIntensity (
+        /*[out,retval]*/ double * pSolarIntensity ) = 0;
+      virtual HRESULT __stdcall put_SolarIntensity (
+        /*[in]*/ double pSolarIntensity ) = 0;
+      virtual HRESULT __stdcall AddAcceleration (
+        /*[in]*/ enum AgEUtFrame Frame,
+        /*[in]*/ double X,
+        /*[in]*/ double Y,
+        /*[in]*/ double Z ) = 0;
+      virtual HRESULT __stdcall Trace (
+        /*[in]*/ long NumCalls ) = 0;
+      virtual HRESULT __stdcall RefEpoch (
+        /*[in]*/ enum AgEUtTimeScale Scale,
+        /*[in,out]*/ long * WholeDays,
+        /*[in,out]*/ double * SecsIntoDay,
+        /*[in,out]*/ long * Year,
+        /*[in,out]*/ long * DayOfYear,
+        /*[in,out]*/ long * Month,
+        /*[in,out]*/ long * Hour,
+        /*[in,out]*/ long * Minute,
+        /*[in,out]*/ double * Seconds ) = 0;
+      virtual HRESULT __stdcall get_LightSpeed (
+        /*[out,retval]*/ double * pLightSpeed ) = 0;
+      virtual HRESULT __stdcall get_SolarFlux (
+        /*[out,retval]*/ double * pSolarFlux ) = 0;
+      virtual HRESULT __stdcall get_CbName (
+        /*[out,retval]*/ BSTR * pCbName ) = 0;
+      virtual HRESULT __stdcall PosVel_Array (
+        /*[in]*/ enum AgEUtFrame Frame,
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall DayCount_Array (
+        /*[in]*/ enum AgEUtTimeScale Scale,
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall Date_Array (
+        /*[in]*/ enum AgEUtTimeScale Scale,
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall SunPosition_Array (
+        /*[in]*/ enum AgEUtSunPosType SunPosType,
+        /*[in]*/ enum AgEUtFrame Frame,
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall TransformVector_Array (
+        /*[in]*/ enum AgEUtFrame FrameFrom,
+        /*[in]*/ double XFrom,
+        /*[in]*/ double YFrom,
+        /*[in]*/ double ZFrom,
+        /*[in]*/ enum AgEUtFrame FrameTo,
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall LatLonAlt_Array (
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall RefEpoch_Array (
+        /*[in]*/ enum AgEUtTimeScale Scale,
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall CurrentAtmFlux (
+        /*[in,out]*/ double * F10p7,
+        /*[in,out]*/ double * AvgF10p7,
+        /*[in,out]*/ double * Ap,
+        /*[in,out]*/ double * ApDaily,
+        /*[in,out]*/ double * Kp,
+        /*[in,out]*/ double * KpDaily ) = 0;
+      virtual HRESULT __stdcall CurrentAtmFlux_Array (
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall AtmFlux (
+        /*[in]*/ enum AgEUtTimeScale Scale,
+        /*[in]*/ long WholeDays,
+        /*[in]*/ double SecsIntoDay,
+        /*[in,out]*/ double * F10p7,
+        /*[in,out]*/ double * AvgF10p7,
+        /*[in,out]*/ double * Ap,
+        /*[in,out]*/ double * ApDaily,
+        /*[in,out]*/ double * Kp,
+        /*[in,out]*/ double * KpDaily ) = 0;
+      virtual HRESULT __stdcall AtmFlux_Array (
+        /*[in]*/ enum AgEUtTimeScale Scale,
+        /*[in]*/ long WholeDays,
+        /*[in]*/ double SecsIntoDay,
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall AtmFluxLags (
+        /*[in,out]*/ double * F10p7Lag,
+        double * GeoFluxLag ) = 0;
+      virtual HRESULT __stdcall AtmFluxLags_Array (
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall IsForceModelOn (
+        /*[in]*/ enum AgEForceModelType Type,
+        /*[out,retval]*/ VARIANT_BOOL * pResult ) = 0;
+      virtual HRESULT __stdcall ForceModelName (
+        /*[in]*/ enum AgEForceModelType Type,
+        /*[out,retval]*/ BSTR * pName ) = 0;
+      virtual HRESULT __stdcall get_RadPressureCoefficient (
+        /*[out,retval]*/ double * pCoef ) = 0;
+      virtual HRESULT __stdcall put_RadPressureCoefficient (
+        /*[in]*/ double pCoef ) = 0;
+      virtual HRESULT __stdcall get_RadPressureArea (
+        /*[out,retval]*/ double * pArea ) = 0;
+      virtual HRESULT __stdcall put_RadPressureArea (
+        /*[in]*/ double pArea ) = 0;
+      virtual HRESULT __stdcall get_DryMass (
+        /*[out,retval]*/ double * pDryMass ) = 0;
+      virtual HRESULT __stdcall get_FuelMass (
+        /*[out,retval]*/ double * pFuelMass ) = 0;
+      virtual HRESULT __stdcall get_TotalMass (
+        /*[out,retval]*/ double * pTotalMass ) = 0;
+      virtual HRESULT __stdcall StopPropagation ( ) = 0;
+};
+
+enum AgEAccelType
+{
+    eTotalAccel = 0,
+    eTwoBodyAccel = 1,
+    eGravityAccel = 2,
+    ePerturbedGravityAccel = 3,
+    eSolidTidesAccel = 4,
+    eOceanTidesAccel = 5,
+    eDragAccel = 6,
+    eSRPAccel = 7,
+    eThirdBodyAccel = 8,
+    eGenRelativityAccel = 9,
+    eAddedAccel = 10,
+    eAlbedoAccel = 11,
+    eThermalRadiationPressureAccel = 12
+};
+
+struct __declspec(uuid("11317870-1ae0-416a-9e15-e00b71dfd5d9"))
+IAgAsHpopPluginResultPostEval : IDispatch
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall get_Mu (
+        /*[out,retval]*/ double * pMu ) = 0;
+      virtual HRESULT __stdcall PosVel (
+        /*[in]*/ enum AgEUtFrame Frame,
+        /*[in,out]*/ double * X,
+        /*[in,out]*/ double * Y,
+        /*[in,out]*/ double * Z,
+        /*[in,out]*/ double * Vx,
+        /*[in,out]*/ double * Vy,
+        /*[in,out]*/ double * Vz ) = 0;
+      virtual HRESULT __stdcall get_Cd (
+        /*[out,retval]*/ double * pCd ) = 0;
+      virtual HRESULT __stdcall get_Cr (
+        /*[out,retval]*/ double * pCr ) = 0;
+      virtual HRESULT __stdcall get_DragArea (
+        /*[out,retval]*/ double * pDragArea ) = 0;
+      virtual HRESULT __stdcall get_SRPArea (
+        /*[out,retval]*/ double * pSRPArea ) = 0;
+      virtual HRESULT __stdcall get_Mass (
+        /*[out,retval]*/ double * pMass ) = 0;
+      virtual HRESULT __stdcall get_TimeSinceRefEpoch (
+        /*[out,retval]*/ double * pTimeSinceRefEpoch ) = 0;
+      virtual HRESULT __stdcall AccelName (
+        /*[in]*/ enum AgEAccelType Type,
+        /*[out,retval]*/ BSTR * pName ) = 0;
+      virtual HRESULT __stdcall DayCount (
+        /*[in]*/ enum AgEUtTimeScale Scale,
+        /*[in,out]*/ long * WholeDays,
+        /*[in,out]*/ double * SecsIntoDay ) = 0;
+      virtual HRESULT __stdcall Date (
+        /*[in]*/ enum AgEUtTimeScale Scale,
+        /*[in,out]*/ long * Year,
+        /*[in,out]*/ long * DayOfYear,
+        /*[in,out]*/ long * Month,
+        /*[in,out]*/ long * Hour,
+        /*[in,out]*/ long * Minute,
+        /*[in,out]*/ double * Seconds ) = 0;
+      virtual HRESULT __stdcall SunPosition (
+        /*[in]*/ enum AgEUtSunPosType SunPosType,
+        /*[in]*/ enum AgEUtFrame Frame,
+        /*[in,out]*/ double * X,
+        /*[in,out]*/ double * Y,
+        /*[in,out]*/ double * Z ) = 0;
+      virtual HRESULT __stdcall TransformVector (
+        /*[in]*/ enum AgEUtFrame FrameFrom,
+        /*[in]*/ double XFrom,
+        /*[in]*/ double YFrom,
+        /*[in]*/ double ZFrom,
+        /*[in]*/ enum AgEUtFrame FrameTo,
+        /*[in,out]*/ double * XTo,
+        /*[in,out]*/ double * YTo,
+        /*[in,out]*/ double * ZTo ) = 0;
+      virtual HRESULT __stdcall get_Altitude (
+        /*[out,retval]*/ double * pAltitude ) = 0;
+      virtual HRESULT __stdcall LatLonAlt (
+        /*[in,out]*/ double * Latitude,
+        /*[in,out]*/ double * Longitude,
+        /*[in,out]*/ double * Altitude ) = 0;
+      virtual HRESULT __stdcall Trace (
+        /*[in]*/ long NumCalls ) = 0;
+      virtual HRESULT __stdcall RefEpoch (
+        /*[in]*/ enum AgEUtTimeScale Scale,
+        /*[in,out]*/ long * WholeDays,
+        /*[in,out]*/ double * SecsIntoDay,
+        /*[in,out]*/ long * Year,
+        /*[in,out]*/ long * DayOfYear,
+        /*[in,out]*/ long * Month,
+        /*[in,out]*/ long * Hour,
+        /*[in,out]*/ long * Minute,
+        /*[in,out]*/ double * Seconds ) = 0;
+      virtual HRESULT __stdcall get_LightSpeed (
+        /*[out,retval]*/ double * pLightSpeed ) = 0;
+      virtual HRESULT __stdcall get_SolarFlux (
+        /*[out,retval]*/ double * pSolarFlux ) = 0;
+      virtual HRESULT __stdcall get_CbName (
+        /*[out,retval]*/ BSTR * pCbName ) = 0;
+      virtual HRESULT __stdcall PosVel_Array (
+        /*[in]*/ enum AgEUtFrame Frame,
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall DayCount_Array (
+        /*[in]*/ enum AgEUtTimeScale Scale,
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall Date_Array (
+        /*[in]*/ enum AgEUtTimeScale Scale,
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall SunPosition_Array (
+        /*[in]*/ enum AgEUtSunPosType SunPosType,
+        /*[in]*/ enum AgEUtFrame Frame,
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall TransformVector_Array (
+        /*[in]*/ enum AgEUtFrame FrameFrom,
+        /*[in]*/ double XFrom,
+        /*[in]*/ double YFrom,
+        /*[in]*/ double ZFrom,
+        /*[in]*/ enum AgEUtFrame FrameTo,
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall LatLonAlt_Array (
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall RefEpoch_Array (
+        /*[in]*/ enum AgEUtTimeScale Scale,
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall CurrentAtmFlux (
+        /*[in,out]*/ double * F10p7,
+        /*[in,out]*/ double * AvgF10p7,
+        /*[in,out]*/ double * Ap,
+        /*[in,out]*/ double * ApDaily,
+        /*[in,out]*/ double * Kp,
+        /*[in,out]*/ double * KpDaily ) = 0;
+      virtual HRESULT __stdcall CurrentAtmFlux_Array (
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall AtmFlux (
+        /*[in]*/ enum AgEUtTimeScale Scale,
+        /*[in]*/ long WholeDays,
+        /*[in]*/ double SecsIntoDay,
+        /*[in,out]*/ double * F10p7,
+        /*[in,out]*/ double * AvgF10p7,
+        /*[in,out]*/ double * Ap,
+        /*[in,out]*/ double * ApDaily,
+        /*[in,out]*/ double * Kp,
+        /*[in,out]*/ double * KpDaily ) = 0;
+      virtual HRESULT __stdcall AtmFlux_Array (
+        /*[in]*/ enum AgEUtTimeScale Scale,
+        /*[in]*/ long WholeDays,
+        /*[in]*/ double SecsIntoDay,
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall AtmFluxLags (
+        /*[in,out]*/ double * F10p7Lag,
+        double * GeoFluxLag ) = 0;
+      virtual HRESULT __stdcall AtmFluxLags_Array (
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall get_DragAltitude (
+        /*[out,retval]*/ double * pDragAltitude ) = 0;
+      virtual HRESULT __stdcall get_AtmTemperature (
+        /*[out,retval]*/ double * pAtmTemperature ) = 0;
+      virtual HRESULT __stdcall get_AtmPressure (
+        /*[out,retval]*/ double * pAtmPressure ) = 0;
+      virtual HRESULT __stdcall get_Density (
+        /*[out,retval]*/ double * pDensity ) = 0;
+      virtual HRESULT __stdcall get_SolarIntensity (
+        /*[out,retval]*/ double * pSolarIntensity ) = 0;
+      virtual HRESULT __stdcall AddAcceleration (
+        /*[in]*/ enum AgEUtFrame Frame,
+        /*[in]*/ double X,
+        /*[in]*/ double Y,
+        /*[in]*/ double Z ) = 0;
+      virtual HRESULT __stdcall GetAcceleration (
+        /*[in]*/ enum AgEAccelType Type,
+        /*[in]*/ enum AgEUtFrame Frame,
+        /*[in,out]*/ double * X,
+        /*[in,out]*/ double * Y,
+        /*[in,out]*/ double * Z ) = 0;
+      virtual HRESULT __stdcall GetAcceleration_Array (
+        /*[in]*/ enum AgEAccelType Type,
+        /*[in]*/ enum AgEUtFrame Frame,
+        /*[out,retval]*/ SAFEARRAY * * pArray ) = 0;
+      virtual HRESULT __stdcall IsForceModelOn (
+        /*[in]*/ enum AgEForceModelType Type,
+        /*[out,retval]*/ VARIANT_BOOL * pResult ) = 0;
+      virtual HRESULT __stdcall ForceModelName (
+        /*[in]*/ enum AgEForceModelType Type,
+        /*[out,retval]*/ BSTR * pName ) = 0;
+      virtual HRESULT __stdcall get_RadPressureCoefficient (
+        /*[out,retval]*/ double * pCoef ) = 0;
+      virtual HRESULT __stdcall get_RadPressureArea (
+        /*[out,retval]*/ double * pArea ) = 0;
+      virtual HRESULT __stdcall get_DryMass (
+        /*[out,retval]*/ double * pDryMass ) = 0;
+      virtual HRESULT __stdcall get_FuelMass (
+        /*[out,retval]*/ double * pFuelMass ) = 0;
+      virtual HRESULT __stdcall get_TotalMass (
+        /*[out,retval]*/ double * pTotalMass ) = 0;
+      virtual HRESULT __stdcall StopPropagation ( ) = 0;
+};
+
+struct __declspec(uuid("efca652b-b5e5-4e7d-bc93-4b81a1bd8aa5"))
+IAgAsHpopPlugin : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall Init (
+        /*[in]*/ struct IAgUtPluginSite * Site,
+        /*[out,retval]*/ VARIANT_BOOL * pResult ) = 0;
+      virtual HRESULT __stdcall Free ( ) = 0;
+      virtual HRESULT __stdcall PrePropagate (
+        /*[in]*/ struct IAgAsHpopPluginResult * Result,
+        /*[out,retval]*/ VARIANT_BOOL * pResult ) = 0;
+      virtual HRESULT __stdcall PostPropagate (
+        /*[in]*/ struct IAgAsHpopPluginResult * Result,
+        /*[out,retval]*/ VARIANT_BOOL * pResult ) = 0;
+      virtual HRESULT __stdcall PreNextStep (
+        /*[in]*/ struct IAgAsHpopPluginResult * Result,
+        /*[out,retval]*/ VARIANT_BOOL * pResult ) = 0;
+      virtual HRESULT __stdcall Evaluate (
+        /*[in]*/ struct IAgAsHpopPluginResultEval * ResultEval,
+        /*[out,retval]*/ VARIANT_BOOL * pResult ) = 0;
+      virtual HRESULT __stdcall PostEvaluate (
+        /*[in]*/ struct IAgAsHpopPluginResultPostEval * ResultPostEval,
+        /*[out,retval]*/ VARIANT_BOOL * pResult ) = 0;
+      virtual HRESULT __stdcall get_Name (
+        /*[out,retval]*/ BSTR * pName ) = 0;
+};
+
+} // namespace AgGator
+
+#pragma pack(pop)

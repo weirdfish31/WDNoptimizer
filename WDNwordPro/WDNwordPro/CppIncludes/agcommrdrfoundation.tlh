@@ -1,0 +1,148 @@
+﻿// Created by Microsoft (R) C/C++ Compiler Version 15.00.30729.01 (83c4785a).
+//
+// c:\dev\r_stk_v10.1.x\source\lib\release.net\tlhbuilder\agcommrdrfoundation.tlh
+//
+// C++ source equivalent of Win32 type library AgCommRdrFoundation.tlb
+// compiler-generated file created 02/15/14 at 04:45:27 - DO NOT EDIT!
+
+//
+// Cross-referenced type libraries:
+//
+//  #import "C:\Dev\R_STK_v10.1.x\Source\bin\Release.NET\AgAsHpopPlugin.DLL"
+//  #import "C:\Dev\R_STK_v10.1.x\Source\bin\Release.NET\AgUiApplication.tlb"
+//  #import "C:\Dev\R_STK_v10.1.x\Source\bin\Release.NET\AgUiCore.dll"
+//
+
+#pragma once
+#pragma pack(push, 8)
+
+#include <comdef.h>
+
+//
+// Forward references and typedefs
+//
+
+struct __declspec(uuid("1e4d40b6-0033-4ea7-b4ad-f27ba41af18a"))
+/* LIBID */ __AgCommRdrFoundation;
+struct __declspec(uuid("008bf978-cfda-4e0d-a0af-301407becb43"))
+/* interface */ IAgCRSignal;
+struct __declspec(uuid("3f7808a1-0444-4e26-9e36-2dc32e0b62f9"))
+/* interface */ IAgCRPolarization;
+enum AgECRPolarizationType;
+enum AgECRPolarizationRefAxis;
+struct __declspec(uuid("ee7cb71b-2424-4b57-bf56-9026bb41dd6f"))
+/* interface */ IAgCRPolarizationElliptical;
+struct __declspec(uuid("cc5abf49-0527-4cda-940b-fb8c0982ab2e"))
+/* interface */ IAgCRPolarizationLinear;
+
+//
+// Smart pointer typedef declarations
+//
+
+_COM_SMARTPTR_TYPEDEF(IAgCRPolarization, __uuidof(IAgCRPolarization));
+_COM_SMARTPTR_TYPEDEF(IAgCRSignal, __uuidof(IAgCRSignal));
+_COM_SMARTPTR_TYPEDEF(IAgCRPolarizationElliptical, __uuidof(IAgCRPolarizationElliptical));
+_COM_SMARTPTR_TYPEDEF(IAgCRPolarizationLinear, __uuidof(IAgCRPolarizationLinear));
+
+//
+// Type library items
+//
+
+enum AgECRPolarizationType
+{
+    eCRLinearPol = 1,
+    eCRLHCPol = 2,
+    eCRRHCPol = 3,
+    eCREllipticalPol = 4
+};
+
+enum AgECRPolarizationRefAxis
+{
+    eCRPolRefXAxis = 1,
+    eCRPolRefYAxis = 2,
+    eCRPolRefZAxis = 3
+};
+
+struct __declspec(uuid("3f7808a1-0444-4e26-9e36-2dc32e0b62f9"))
+IAgCRPolarization : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall get_Type (
+        /*[out,retval]*/ enum AgECRPolarizationType * pType ) = 0;
+      virtual HRESULT __stdcall get_TiltAngle (
+        /*[out,retval]*/ double * pTiltAngle ) = 0;
+      virtual HRESULT __stdcall get_AxialRatio (
+        /*[out,retval]*/ double * pAxialRatio ) = 0;
+      virtual HRESULT __stdcall get_ReferenceAxis (
+        /*[out,retval]*/ enum AgECRPolarizationRefAxis * pReferenceAxis ) = 0;
+};
+
+struct __declspec(uuid("008bf978-cfda-4e0d-a0af-301407becb43"))
+IAgCRSignal : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall get_Time (
+        /*[out,retval]*/ double * pTime ) = 0;
+      virtual HRESULT __stdcall get_Frequency (
+        /*[out,retval]*/ double * pFrequency ) = 0;
+      virtual HRESULT __stdcall put_Frequency (
+        /*[in]*/ double pFrequency ) = 0;
+      virtual HRESULT __stdcall get_UpperBandLimit (
+        /*[out,retval]*/ double * pUpperLimit ) = 0;
+      virtual HRESULT __stdcall put_UpperBandLimit (
+        /*[in]*/ double pUpperLimit ) = 0;
+      virtual HRESULT __stdcall get_LowerBandLimit (
+        /*[out,retval]*/ double * pLowerLimit ) = 0;
+      virtual HRESULT __stdcall put_LowerBandLimit (
+        /*[in]*/ double pLowerLimit ) = 0;
+      virtual HRESULT __stdcall get_Power (
+        /*[out,retval]*/ double * pPower ) = 0;
+      virtual HRESULT __stdcall put_Power (
+        /*[in]*/ double pPower ) = 0;
+      virtual HRESULT __stdcall get_Polarization (
+        /*[out,retval]*/ struct IAgCRPolarization * * ppPolarization ) = 0;
+      virtual HRESULT __stdcall put_Polarization (
+        /*[in]*/ struct IAgCRPolarization * ppPolarization ) = 0;
+      virtual HRESULT __stdcall ComputePolLoss (
+        /*[in]*/ struct IAgCRPolarization * rcvSidePolarization,
+        /*[out,retval]*/ double * pPolLoss ) = 0;
+      virtual HRESULT __stdcall ComputePolRotationAngle (
+        /*[in]*/ struct IAgCRPolarization * rcvSidePolarization,
+        /*[out,retval]*/ double * pRotationAngle ) = 0;
+};
+
+struct __declspec(uuid("ee7cb71b-2424-4b57-bf56-9026bb41dd6f"))
+IAgCRPolarizationElliptical : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall put_TiltAngle (
+        /*[in]*/ double _arg1 ) = 0;
+      virtual HRESULT __stdcall put_AxialRatio (
+        /*[in]*/ double _arg1 ) = 0;
+      virtual HRESULT __stdcall put_ReferenceAxis (
+        /*[in]*/ enum AgECRPolarizationRefAxis _arg1 ) = 0;
+};
+
+struct __declspec(uuid("cc5abf49-0527-4cda-940b-fb8c0982ab2e"))
+IAgCRPolarizationLinear : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall put_TiltAngle (
+        /*[in]*/ double _arg1 ) = 0;
+      virtual HRESULT __stdcall put_ReferenceAxis (
+        /*[in]*/ enum AgECRPolarizationRefAxis _arg1 ) = 0;
+};
+
+#pragma pack(pop)

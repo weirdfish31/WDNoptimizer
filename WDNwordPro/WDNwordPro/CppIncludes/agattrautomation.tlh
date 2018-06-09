@@ -1,0 +1,283 @@
+﻿// Created by Microsoft (R) C/C++ Compiler Version 15.00.30729.01 (215bc2aa).
+//
+// c:\r_stk_v9.2.x\source\lib\release.net\tlhbuilder\agattrautomation.tlh
+//
+// C++ source equivalent of Win32 type library AgAttrAutomation.tlb
+// compiler-generated file created 11/23/11 at 05:29:06 - DO NOT EDIT!
+
+//
+// Cross-referenced type libraries:
+//
+//
+
+#pragma once
+#pragma pack(push, 8)
+
+#include <comdef.h>
+
+//
+// Forward references and typedefs
+//
+
+struct __declspec(uuid("f6a14215-0663-455a-b0a1-3d14c46ca797"))
+/* LIBID */ __AgAttrAutomation;
+enum AgEAttrAddFlags;
+struct __declspec(uuid("eb74434b-4493-413b-a098-db610508745d"))
+/* interface */ IAgAttrConfig;
+struct __declspec(uuid("bd47ded6-51b4-425f-ad80-6bb07c7e8b41"))
+/* dual interface */ IAgAttrBuilder;
+struct /* coclass */ AgAttrBuilder;
+struct /* coclass */ AgAttrHolder;
+
+//
+// Smart pointer typedef declarations
+//
+
+_COM_SMARTPTR_TYPEDEF(IAgAttrBuilder, __uuidof(IAgAttrBuilder));
+_COM_SMARTPTR_TYPEDEF(IAgAttrConfig, __uuidof(IAgAttrConfig));
+
+//
+// Type library items
+//
+
+enum __declspec(uuid("1f69d4ca-cd63-402f-bf44-d399ffd97455"))
+AgEAttrAddFlags
+{
+    eAddFlagNone = 0,
+    eAddFlagTransparent = 2,
+    eAddFlagHidden = 4,
+    eAddFlagTransient = 8,
+    eAddFlagReadOnly = 16,
+    eAddFlagFixed = 32
+};
+
+struct __declspec(uuid("bd47ded6-51b4-425f-ad80-6bb07c7e8b41"))
+IAgAttrBuilder : IDispatch
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall NewScope (
+        /*[out,retval]*/ IDispatch * * DispScope ) = 0;
+      virtual HRESULT __stdcall AddIntDispatchProperty (
+        /*[in]*/ IDispatch * DispScope,
+        /*[in]*/ BSTR Name,
+        /*[in]*/ BSTR Description,
+        /*[in]*/ BSTR PropName,
+        /*[in]*/ long Flags ) = 0;
+      virtual HRESULT __stdcall AddLongDispatchProperty (
+        /*[in]*/ IDispatch * DispScope,
+        /*[in]*/ BSTR Name,
+        /*[in]*/ BSTR Description,
+        /*[in]*/ BSTR PropName,
+        /*[in]*/ long Flags ) = 0;
+      virtual HRESULT __stdcall AddStringDispatchProperty (
+        /*[in]*/ IDispatch * DispScope,
+        /*[in]*/ BSTR Name,
+        /*[in]*/ BSTR Description,
+        /*[in]*/ BSTR PropName,
+        /*[in]*/ long Flags ) = 0;
+      virtual HRESULT __stdcall AddBoolDispatchProperty (
+        /*[in]*/ IDispatch * DispScope,
+        /*[in]*/ BSTR Name,
+        /*[in]*/ BSTR Description,
+        /*[in]*/ BSTR PropName,
+        /*[in]*/ long Flags ) = 0;
+      virtual HRESULT __stdcall AddFileDispatchProperty (
+        /*[in]*/ IDispatch * DispScope,
+        /*[in]*/ BSTR Name,
+        /*[in]*/ BSTR Description,
+        /*[in]*/ BSTR PropName,
+        /*[in]*/ BSTR FileType,
+        /*[in]*/ BSTR FileFilter,
+        /*[in]*/ long Flags ) = 0;
+      virtual HRESULT __stdcall AddDirectoryDispatchProperty (
+        /*[in]*/ IDispatch * DispScope,
+        /*[in]*/ BSTR Name,
+        /*[in]*/ BSTR Description,
+        /*[in]*/ BSTR PropName,
+        /*[in]*/ long Flags ) = 0;
+      virtual HRESULT __stdcall AddRelFileDispatchProperty (
+        /*[in]*/ IDispatch * DispScope,
+        /*[in]*/ BSTR Name,
+        /*[in]*/ BSTR Description,
+        /*[in]*/ BSTR PropName,
+        /*[in]*/ BSTR FileType,
+        /*[in]*/ BSTR FileFilter,
+        /*[in]*/ long Flags ) = 0;
+      virtual HRESULT __stdcall AddDoubleDispatchProperty (
+        /*[in]*/ IDispatch * DispScope,
+        /*[in]*/ BSTR Name,
+        /*[in]*/ BSTR Description,
+        /*[in]*/ BSTR PropName,
+        /*[in]*/ long Flags ) = 0;
+      virtual HRESULT __stdcall AddQuantityDispatchProperty (
+        /*[in]*/ IDispatch * DispScope,
+        /*[in]*/ BSTR Name,
+        /*[in]*/ BSTR Description,
+        /*[in]*/ BSTR PropName,
+        /*[in]*/ BSTR DisplayUnit,
+        /*[in]*/ BSTR InternalUnit,
+        /*[in]*/ long Flags ) = 0;
+      virtual HRESULT __stdcall AddDateDispatchProperty (
+        /*[in]*/ IDispatch * DispScope,
+        /*[in]*/ BSTR Name,
+        /*[in]*/ BSTR Description,
+        /*[in]*/ BSTR PropName,
+        /*[in]*/ long Flags ) = 0;
+      virtual HRESULT __stdcall ToString (
+        /*[in]*/ IDispatch * DispPlugin,
+        /*[in]*/ IDispatch * DispScope,
+        /*[out,retval]*/ BSTR * XmlString ) = 0;
+      virtual HRESULT __stdcall MergeFromString (
+        /*[in]*/ IDispatch * DispPlugin,
+        /*[in]*/ IDispatch * DispScope,
+        /*[in]*/ BSTR XmlString ) = 0;
+      virtual HRESULT __stdcall AddDependencyDispatchProperty (
+        /*[in]*/ IDispatch * DispScope,
+        /*[in]*/ BSTR ParentAttributeName,
+        /*[in]*/ BSTR ChildAttributeName ) = 0;
+      virtual HRESULT __stdcall AddFlagsDispatchProperty (
+        /*[in]*/ IDispatch * DispScope,
+        /*[in]*/ BSTR Name,
+        /*[in]*/ BSTR FlagPropName ) = 0;
+      virtual HRESULT __stdcall AddChoicesDispatchProperty (
+        /*[in]*/ IDispatch * DispScope,
+        /*[in]*/ BSTR Name,
+        /*[in]*/ BSTR Description,
+        /*[in]*/ BSTR PropName,
+        /*[in]*/ SAFEARRAY * Choices ) = 0;
+      virtual HRESULT __stdcall AddListDispatchProperty (
+        /*[in]*/ IDispatch * DispScope,
+        /*[in]*/ BSTR Name,
+        /*[in]*/ BSTR Description,
+        /*[in]*/ BSTR PropName,
+        /*[in]*/ BSTR NewElemMethodName,
+        /*[in]*/ long Flags ) = 0;
+      virtual HRESULT __stdcall AddVARIANTDispatchProperty (
+        /*[in]*/ IDispatch * DispScope,
+        /*[in]*/ BSTR Name,
+        /*[in]*/ BSTR Description,
+        /*[in]*/ BSTR PropName,
+        /*[in]*/ long Flags ) = 0;
+      virtual HRESULT __stdcall AddMultiLineStringDispatchProperty (
+        /*[in]*/ IDispatch * DispScope,
+        /*[in]*/ BSTR Name,
+        /*[in]*/ BSTR Description,
+        /*[in]*/ BSTR PropName,
+        /*[in]*/ long Flags ) = 0;
+      virtual HRESULT __stdcall ToFormattedString (
+        /*[in]*/ IDispatch * DispPlugin,
+        /*[in]*/ IDispatch * DispScope,
+        /*[in]*/ BSTR FormatId,
+        /*[out,retval]*/ BSTR * XmlString ) = 0;
+      virtual HRESULT __stdcall AddQuantityDispatchProperty2 (
+        /*[in]*/ IDispatch * DispScope,
+        /*[in]*/ BSTR Name,
+        /*[in]*/ BSTR Description,
+        /*[in]*/ BSTR PropName,
+        /*[in]*/ BSTR Dimension,
+        /*[in]*/ BSTR DisplayUnit,
+        /*[in]*/ BSTR InternalUnit,
+        /*[in]*/ long Flags ) = 0;
+      virtual HRESULT __stdcall AddQuantityMinMaxDispatchProperty2 (
+        /*[in]*/ IDispatch * DispScope,
+        /*[in]*/ BSTR Name,
+        /*[in]*/ BSTR Description,
+        /*[in]*/ BSTR PropName,
+        /*[in]*/ BSTR Dimension,
+        /*[in]*/ BSTR DisplayUnit,
+        /*[in]*/ BSTR InternalUnit,
+        /*[in]*/ double MinVal,
+        /*[in]*/ double MaxVal,
+        /*[in]*/ long Flags ) = 0;
+      virtual HRESULT __stdcall AddScopeDispatchProperty (
+        /*[in]*/ IDispatch * DispScope,
+        /*[in]*/ BSTR Name,
+        /*[in]*/ BSTR Description,
+        /*[in]*/ IDispatch * NewDispScope ) = 0;
+      virtual HRESULT __stdcall AddQuantityMinMaxDispatchProperty (
+        /*[in]*/ IDispatch * DispScope,
+        /*[in]*/ BSTR Name,
+        /*[in]*/ BSTR Description,
+        /*[in]*/ BSTR PropName,
+        /*[in]*/ BSTR DisplayUnit,
+        /*[in]*/ BSTR InternalUnit,
+        /*[in]*/ double MinVal,
+        /*[in]*/ double MaxVal,
+        /*[in]*/ long Flags ) = 0;
+      virtual HRESULT __stdcall AddChoicesFuncDispatchProperty (
+        /*[in]*/ IDispatch * DispScope,
+        /*[in]*/ BSTR Name,
+        /*[in]*/ BSTR Description,
+        /*[in]*/ BSTR PropName,
+        /*[in]*/ BSTR FuncPropName ) = 0;
+      virtual HRESULT __stdcall AddDoubleMinDispatchProperty (
+        /*[in]*/ IDispatch * DispScope,
+        /*[in]*/ BSTR Name,
+        /*[in]*/ BSTR Description,
+        /*[in]*/ BSTR PropName,
+        /*[in]*/ double MinVal,
+        /*[in]*/ long Flags ) = 0;
+      virtual HRESULT __stdcall AddDoubleMinMaxDispatchProperty (
+        /*[in]*/ IDispatch * DispScope,
+        /*[in]*/ BSTR Name,
+        /*[in]*/ BSTR Description,
+        /*[in]*/ BSTR PropName,
+        /*[in]*/ double MinVal,
+        /*[in]*/ double MaxVal,
+        /*[in]*/ long Flags ) = 0;
+      virtual HRESULT __stdcall AddQuantityMinDispatchProperty2 (
+        /*[in]*/ IDispatch * DispScope,
+        /*[in]*/ BSTR Name,
+        /*[in]*/ BSTR Description,
+        /*[in]*/ BSTR PropName,
+        /*[in]*/ BSTR Dimension,
+        /*[in]*/ BSTR DisplayUnit,
+        /*[in]*/ BSTR InternalUnit,
+        /*[in]*/ double MinVal,
+        /*[in]*/ long Flags ) = 0;
+      virtual HRESULT __stdcall AddIntMinDispatchProperty (
+        /*[in]*/ IDispatch * DispScope,
+        /*[in]*/ BSTR Name,
+        /*[in]*/ BSTR Description,
+        /*[in]*/ BSTR PropName,
+        /*[in]*/ int MinVal,
+        /*[in]*/ long Flags ) = 0;
+      virtual HRESULT __stdcall AddIntMinMaxDispatchProperty (
+        /*[in]*/ IDispatch * DispScope,
+        /*[in]*/ BSTR Name,
+        /*[in]*/ BSTR Description,
+        /*[in]*/ BSTR PropName,
+        /*[in]*/ int MinVal,
+        /*[in]*/ int MaxVal,
+        /*[in]*/ long Flags ) = 0;
+      virtual HRESULT __stdcall AddScopeDispatchProperty2 (
+        /*[in]*/ IDispatch * DispScope,
+        /*[in]*/ BSTR Name,
+        /*[in]*/ BSTR Description ) = 0;
+};
+
+struct __declspec(uuid("eb74434b-4493-413b-a098-db610508745d"))
+IAgAttrConfig : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall GetConfig (
+        /*[in]*/ struct IAgAttrBuilder * pAttrBuilder,
+        /*[out,retval]*/ IDispatch * * ppDispScope ) = 0;
+};
+
+struct __declspec(uuid("3aad43a0-0cdd-47fb-a8c3-df13f8d2fa62"))
+AgAttrBuilder;
+    // [ default ] interface IAgAttrBuilder
+
+struct __declspec(uuid("2b7f9759-37ea-4703-9753-2dd33b502569"))
+AgAttrHolder;
+    // [ default ] interface IDispatch
+    // interface IUnknown
+
+#pragma pack(pop)

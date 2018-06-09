@@ -1,0 +1,155 @@
+﻿// Created by Microsoft (R) C/C++ Compiler Version 15.00.30729.01 (2c82607c).
+//
+// c:\r_stk_v9.2.x\source\lib\release.net\tlhbuilder\agstkplugin.tlh
+//
+// C++ source equivalent of Win32 type library AgStkPlugin.tlb
+// compiler-generated file created 11/23/11 at 05:29:07 - DO NOT EDIT!
+
+//
+// Cross-referenced type libraries:
+//
+//
+
+#pragma once
+#pragma pack(push, 8)
+
+#include <comdef.h>
+
+//
+// Forward references and typedefs
+//
+
+struct __declspec(uuid("b8b6ee83-9b3d-49cc-900f-b0460d6ba652"))
+/* LIBID */ __AgStkPlugin;
+struct __declspec(uuid("94ef7479-d3c0-4f27-8cad-302433ec1cae"))
+/* dual interface */ _IAgGatorPluginSite;
+struct __declspec(uuid("f4bfe979-97a9-4762-800c-ee1f0acb6f19"))
+/* dual interface */ _IAgStkPluginSite;
+struct __declspec(uuid("62bd3410-1f8f-4d19-ae3b-fd3aa8669fbd"))
+/* interface */ IAgGatorPluginSite;
+struct __declspec(uuid("f1d25e90-2512-4f8f-8b4e-1fede57606bd"))
+/* interface */ IAgStkPluginSite;
+struct /* coclass */ AgStkPluginSite;
+struct /* coclass */ AgGatorPluginSite;
+
+//
+// Smart pointer typedef declarations
+//
+
+_COM_SMARTPTR_TYPEDEF(_IAgGatorPluginSite, __uuidof(_IAgGatorPluginSite));
+_COM_SMARTPTR_TYPEDEF(_IAgStkPluginSite, __uuidof(_IAgStkPluginSite));
+_COM_SMARTPTR_TYPEDEF(IAgGatorPluginSite, __uuidof(IAgGatorPluginSite));
+_COM_SMARTPTR_TYPEDEF(IAgStkPluginSite, __uuidof(IAgStkPluginSite));
+
+//
+// Type library items
+//
+
+struct __declspec(uuid("94ef7479-d3c0-4f27-8cad-302433ec1cae"))
+_IAgGatorPluginSite : IDispatch
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall get_SiteName (
+        /*[out,retval]*/ BSTR * pName ) = 0;
+      virtual HRESULT __stdcall Message (
+        /*[in]*/ enum AgEUtLogMsgType MsgType,
+        /*[in]*/ BSTR Message ) = 0;
+      virtual HRESULT __stdcall get_VectorToolProvider (
+        /*[out,retval]*/ struct IAgCrdnPluginProvider * * ppCrdnPrv ) = 0;
+      virtual HRESULT __stdcall get_GatorProvider (
+        /*[out,retval]*/ struct IAgGatorPluginProvider * * ppGatorPrv ) = 0;
+      virtual HRESULT __stdcall get_ScenarioDirectory (
+        /*[out,retval]*/ BSTR * pDirPath ) = 0;
+      virtual HRESULT __stdcall get_InstallDirectory (
+        /*[out,retval]*/ BSTR * pDirPath ) = 0;
+      virtual HRESULT __stdcall get_ConfigDirectory (
+        /*[out,retval]*/ BSTR * pDirPath ) = 0;
+      virtual HRESULT __stdcall get_StkRootObject (
+        /*[out,retval]*/ IDispatch * * ppRetVal ) = 0;
+      virtual HRESULT __stdcall GetDisplayUnit (
+        /*[in]*/ BSTR Dimension,
+        /*[out,retval]*/ BSTR * pDisplayUnit ) = 0;
+};
+
+struct __declspec(uuid("f4bfe979-97a9-4762-800c-ee1f0acb6f19"))
+_IAgStkPluginSite : IDispatch
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall get_SiteName (
+        /*[out,retval]*/ BSTR * pName ) = 0;
+      virtual HRESULT __stdcall Message (
+        /*[in]*/ enum AgEUtLogMsgType MsgType,
+        /*[in]*/ BSTR Message ) = 0;
+      virtual HRESULT __stdcall get_VectorToolProvider (
+        /*[out,retval]*/ struct IAgCrdnPluginProvider * * ppCrdnPrv ) = 0;
+      virtual HRESULT __stdcall get_ScenarioDirectory (
+        /*[out,retval]*/ BSTR * pDirPath ) = 0;
+      virtual HRESULT __stdcall get_InstallDirectory (
+        /*[out,retval]*/ BSTR * pDirPath ) = 0;
+      virtual HRESULT __stdcall get_ConfigDirectory (
+        /*[out,retval]*/ BSTR * pDirPath ) = 0;
+      virtual HRESULT __stdcall get_StkRootObject (
+        /*[out,retval]*/ IDispatch * * ppRetVal ) = 0;
+};
+
+struct __declspec(uuid("62bd3410-1f8f-4d19-ae3b-fd3aa8669fbd"))
+IAgGatorPluginSite : IAgUtPluginSite
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall get_VectorToolProvider (
+        /*[out,retval]*/ struct IAgCrdnPluginProvider * * ppCrdnPrv ) = 0;
+      virtual HRESULT __stdcall get_GatorProvider (
+        /*[out,retval]*/ struct IAgGatorPluginProvider * * ppGatorPrv ) = 0;
+      virtual HRESULT __stdcall get_ScenarioDirectory (
+        /*[out,retval]*/ BSTR * pDirPath ) = 0;
+      virtual HRESULT __stdcall get_InstallDirectory (
+        /*[out,retval]*/ BSTR * pDirPath ) = 0;
+      virtual HRESULT __stdcall get_ConfigDirectory (
+        /*[out,retval]*/ BSTR * pDirPath ) = 0;
+      virtual HRESULT __stdcall get_StkRootObject (
+        /*[out,retval]*/ IDispatch * * ppRetVal ) = 0;
+      virtual HRESULT __stdcall GetDisplayUnit (
+        /*[in]*/ BSTR Dimension,
+        /*[out,retval]*/ BSTR * pDisplayUnit ) = 0;
+};
+
+struct __declspec(uuid("f1d25e90-2512-4f8f-8b4e-1fede57606bd"))
+IAgStkPluginSite : IAgUtPluginSite
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall get_VectorToolProvider (
+        /*[out,retval]*/ struct IAgCrdnPluginProvider * * ppCrdnPrv ) = 0;
+      virtual HRESULT __stdcall get_ScenarioDirectory (
+        /*[out,retval]*/ BSTR * pDirPath ) = 0;
+      virtual HRESULT __stdcall get_InstallDirectory (
+        /*[out,retval]*/ BSTR * pDirPath ) = 0;
+      virtual HRESULT __stdcall get_ConfigDirectory (
+        /*[out,retval]*/ BSTR * pDirPath ) = 0;
+      virtual HRESULT __stdcall get_StkRootObject (
+        /*[out,retval]*/ IDispatch * * ppRetVal ) = 0;
+};
+
+struct __declspec(uuid("4ab7c02a-310a-428b-b3cd-7c0d1409871b"))
+AgStkPluginSite;
+    // [ default ] interface _IAgStkPluginSite
+    // interface IAgStkPluginSite
+
+struct __declspec(uuid("9e66be69-a74c-41be-9ab7-061f9106fd54"))
+AgGatorPluginSite;
+    // [ default ] interface _IAgGatorPluginSite
+    // interface IAgStkPluginSite
+    // interface IAgGatorPluginSite
+
+#pragma pack(pop)

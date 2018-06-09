@@ -1,0 +1,1567 @@
+﻿// Created by Microsoft (R) C/C++ Compiler Version 15.00.30729.01 (51c1541b).
+//
+// c:\r_stk_v9.2.x\source\lib\release.net\tlhbuilder\stkx.tlh
+//
+// C++ source equivalent of Win32 type library STKX.tlb
+// compiler-generated file created 11/23/11 at 05:29:06 - DO NOT EDIT!
+
+//
+// Cross-referenced type libraries:
+//
+//
+
+#pragma once
+#pragma pack(push, 8)
+
+#include <comdef.h>
+
+namespace STKXLib {
+
+//
+// Forward references and typedefs
+//
+
+struct __declspec(uuid("138abb54-1413-4e7c-bbc5-ed59403def47"))
+/* LIBID */ __STKXLib;
+struct __declspec(uuid("6d726798-e69c-4719-ac1a-c5151359cf18"))
+/* dual interface */ IAgPickInfoData;
+struct __declspec(uuid("43e394ed-01ae-46cb-a4f7-670f6c6d9fdd"))
+/* dual interface */ IAgRubberBandPickInfoData;
+struct __declspec(uuid("51e54fb3-79dd-4621-90e1-793d5c70f233"))
+/* dual interface */ IAgObjPathCollection;
+struct __declspec(uuid("98ac4db1-6e59-4fad-b03d-54a67f1cf350"))
+/* dual interface */ IAgSTKXApplication;
+enum AgELoggingMode;
+enum AgEFeatureCodes;
+struct __declspec(uuid("761405fb-d38f-471d-92ad-dc7ddb4ada0c"))
+/* dual interface */ IAgDataObject;
+struct __declspec(uuid("b7a94c44-0e21-4df6-8570-a278041b9d11"))
+/* dual interface */ IAgDataObjectFiles;
+struct __declspec(uuid("e3a3e71a-fda8-4397-b960-7efcd86f1bd4"))
+/* dual interface */ IAgDrawElem;
+struct __declspec(uuid("e5e668e8-71bc-4c6e-b62c-491761433a89"))
+/* dual interface */ IAgDrawElemRect;
+struct __declspec(uuid("f59ae8be-6856-4b6e-a898-3afb980ee1c7"))
+/* dual interface */ IAgDrawElemCollection;
+struct __declspec(uuid("ac389fe1-3150-4ef6-a6a6-6e907d86c620"))
+/* dual interface */ IAgWinProjPos;
+struct __declspec(uuid("0d920698-4342-4ea9-bfb0-6185c01d82a2"))
+/* dual interface */ IAgDrawElemLine;
+enum AgEMouseMode;
+enum AgEOLEDropMode;
+enum AgEButtonValues;
+enum AgEShiftValues;
+struct __declspec(uuid("bdd84096-d67d-45b2-aca4-e2d5cd21389c"))
+/* dispinterface */ IAgUiAxVOCntrlEvents;
+struct __declspec(uuid("11a577e4-fb9d-4283-96ba-f1a737206671"))
+/* dual interface */ IAgUiAxVOCntrl;
+enum AgEShowProgressImage;
+enum AgEProgressImageXOrigin;
+enum AgEProgressImageYOrigin;
+struct __declspec(uuid("d9baadb0-eae1-4dee-a07d-2b9b96a693f7"))
+/* dispinterface */ IAgUiAx2DCntrlEvents;
+struct __declspec(uuid("7e2066f5-8614-4068-8117-bac32c1f2edc"))
+/* dual interface */ IAgUiAx2DCntrl;
+enum AgEGfxDrawCoords;
+struct __declspec(uuid("4d39e7bb-8991-483c-81ae-0450bf6273b1"))
+/* dispinterface */ IAgSTKXApplicationEvents;
+enum AgEGfxAnalysisMode;
+struct __declspec(uuid("88610772-fbb2-413f-aec7-cb70e00e6395"))
+/* dispinterface */ IAgUiAxGfxAnalysisCntrlEvents;
+struct __declspec(uuid("60563f7f-1899-4bf6-81e1-d51f412c420c"))
+/* dual interface */ IAgUiAxGfxAnalysisCntrl;
+struct /* coclass */ AgUiAxVOCntrl;
+struct /* coclass */ AgUiAx2DCntrl;
+struct /* coclass */ AgPickInfoData;
+struct /* coclass */ AgSTKXApplication;
+struct /* coclass */ AgDataObject;
+struct /* coclass */ AgDataObjectFiles;
+struct /* coclass */ AgRubberBandPickInfoData;
+struct /* coclass */ AgObjPathCollection;
+struct /* coclass */ AgDrawElemRect;
+struct /* coclass */ AgDrawElemCollection;
+struct /* coclass */ AgDraw2DElemRect;
+struct /* coclass */ AgDraw2DElemCollection;
+struct /* coclass */ AgUiAxGfxAnalysisCntrl;
+struct /* coclass */ AgWinProjPos;
+struct /* coclass */ AgDrawElemLine;
+
+//
+// Smart pointer typedef declarations
+//
+
+_COM_SMARTPTR_TYPEDEF(IAgPickInfoData, __uuidof(IAgPickInfoData));
+_COM_SMARTPTR_TYPEDEF(IAgObjPathCollection, __uuidof(IAgObjPathCollection));
+_COM_SMARTPTR_TYPEDEF(IAgRubberBandPickInfoData, __uuidof(IAgRubberBandPickInfoData));
+_COM_SMARTPTR_TYPEDEF(IAgSTKXApplication, __uuidof(IAgSTKXApplication));
+_COM_SMARTPTR_TYPEDEF(IAgDataObjectFiles, __uuidof(IAgDataObjectFiles));
+_COM_SMARTPTR_TYPEDEF(IAgDataObject, __uuidof(IAgDataObject));
+_COM_SMARTPTR_TYPEDEF(IAgDrawElem, __uuidof(IAgDrawElem));
+_COM_SMARTPTR_TYPEDEF(IAgDrawElemRect, __uuidof(IAgDrawElemRect));
+_COM_SMARTPTR_TYPEDEF(IAgDrawElemCollection, __uuidof(IAgDrawElemCollection));
+_COM_SMARTPTR_TYPEDEF(IAgWinProjPos, __uuidof(IAgWinProjPos));
+_COM_SMARTPTR_TYPEDEF(IAgDrawElemLine, __uuidof(IAgDrawElemLine));
+_COM_SMARTPTR_TYPEDEF(IAgUiAxVOCntrlEvents, __uuidof(IAgUiAxVOCntrlEvents));
+_COM_SMARTPTR_TYPEDEF(IAgUiAxVOCntrl, __uuidof(IAgUiAxVOCntrl));
+_COM_SMARTPTR_TYPEDEF(IAgUiAx2DCntrlEvents, __uuidof(IAgUiAx2DCntrlEvents));
+_COM_SMARTPTR_TYPEDEF(IAgUiAx2DCntrl, __uuidof(IAgUiAx2DCntrl));
+_COM_SMARTPTR_TYPEDEF(IAgSTKXApplicationEvents, __uuidof(IAgSTKXApplicationEvents));
+_COM_SMARTPTR_TYPEDEF(IAgUiAxGfxAnalysisCntrlEvents, __uuidof(IAgUiAxGfxAnalysisCntrlEvents));
+_COM_SMARTPTR_TYPEDEF(IAgUiAxGfxAnalysisCntrl, __uuidof(IAgUiAxGfxAnalysisCntrl));
+
+//
+// Type library items
+//
+
+struct __declspec(uuid("6d726798-e69c-4719-ac1a-c5151359cf18"))
+IAgPickInfoData : IDispatch
+{
+    //
+    // Property data
+    //
+
+    __declspec(property(get=GetObjPath))
+    _bstr_t ObjPath;
+    __declspec(property(get=GetLat))
+    double Lat;
+    __declspec(property(get=GetLon))
+    double Lon;
+    __declspec(property(get=GetAlt))
+    double Alt;
+    __declspec(property(get=GetIsObjPathValid))
+    VARIANT_BOOL IsObjPathValid;
+    __declspec(property(get=GetIsLatLonAltValid))
+    VARIANT_BOOL IsLatLonAltValid;
+
+    //
+    // Wrapper methods for error-handling
+    //
+
+    _bstr_t GetObjPath ( );
+    double GetLat ( );
+    double GetLon ( );
+    double GetAlt ( );
+    VARIANT_BOOL GetIsObjPathValid ( );
+    VARIANT_BOOL GetIsLatLonAltValid ( );
+
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall get_ObjPath (
+        /*[out,retval]*/ BSTR * pVal ) = 0;
+      virtual HRESULT __stdcall get_Lat (
+        /*[out,retval]*/ double * pVal ) = 0;
+      virtual HRESULT __stdcall get_Lon (
+        /*[out,retval]*/ double * pVal ) = 0;
+      virtual HRESULT __stdcall get_Alt (
+        /*[out,retval]*/ double * pVal ) = 0;
+      virtual HRESULT __stdcall get_IsObjPathValid (
+        /*[out,retval]*/ VARIANT_BOOL * pIsValid ) = 0;
+      virtual HRESULT __stdcall get_IsLatLonAltValid (
+        /*[out,retval]*/ VARIANT_BOOL * pIsValid ) = 0;
+};
+
+struct __declspec(uuid("51e54fb3-79dd-4621-90e1-793d5c70f233"))
+IAgObjPathCollection : IDispatch
+{
+    //
+    // Property data
+    //
+
+    __declspec(property(get=GetItem))
+    _bstr_t Item[];
+    __declspec(property(get=GetCount))
+    long Count;
+    __declspec(property(get=Get_NewEnum))
+    IUnknownPtr _NewEnum;
+
+    //
+    // Wrapper methods for error-handling
+    //
+
+    long GetCount ( );
+    _bstr_t GetItem (
+        long Index );
+    IUnknownPtr Get_NewEnum ( );
+    SAFEARRAY * Range (
+        long StartIndex,
+        long StopIndex );
+
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall get_Count (
+        /*[out,retval]*/ long * pCount ) = 0;
+      virtual HRESULT __stdcall get_Item (
+        /*[in]*/ long Index,
+        /*[out,retval]*/ BSTR * pItem ) = 0;
+      virtual HRESULT __stdcall get__NewEnum (
+        /*[out,retval]*/ IUnknown * * ppEnum ) = 0;
+      virtual HRESULT __stdcall raw_Range (
+        /*[in]*/ long StartIndex,
+        /*[in]*/ long StopIndex,
+        /*[out,retval]*/ SAFEARRAY * * pVar ) = 0;
+};
+
+struct __declspec(uuid("43e394ed-01ae-46cb-a4f7-670f6c6d9fdd"))
+IAgRubberBandPickInfoData : IDispatch
+{
+    //
+    // Property data
+    //
+
+    __declspec(property(get=GetObjPaths))
+    IAgObjPathCollectionPtr ObjPaths;
+
+    //
+    // Wrapper methods for error-handling
+    //
+
+    IAgObjPathCollectionPtr GetObjPaths ( );
+
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall get_ObjPaths (
+        /*[out,retval]*/ struct IAgObjPathCollection * * ppColl ) = 0;
+};
+
+enum AgELoggingMode
+{
+    eLogInactive = 0,
+    eLogActive = 1,
+    eLogActiveKeepFile = 2
+};
+
+enum AgEFeatureCodes
+{
+    eFeatureCodeEngineRuntime = 1,
+    eFeatureCodeGlobeControl = 2
+};
+
+struct __declspec(uuid("98ac4db1-6e59-4fad-b03d-54a67f1cf350"))
+IAgSTKXApplication : IDispatch
+{
+    //
+    // Property data
+    //
+
+    __declspec(property(get=GetEnableConnect,put=PutEnableConnect))
+    VARIANT_BOOL EnableConnect;
+    __declspec(property(get=GetConnectPort,put=PutConnectPort))
+    short ConnectPort;
+    __declspec(property(get=GetVendorID,put=PutVendorID))
+    _bstr_t VendorID;
+    __declspec(property(get=GetHostID))
+    _bstr_t HostID;
+    __declspec(property(get=GetRegistrationID))
+    _bstr_t RegistrationID;
+    __declspec(property(get=GetVersion))
+    _bstr_t Version;
+    __declspec(property(get=GetConnectMaxConnections,put=PutConnectMaxConnections))
+    long ConnectMaxConnections;
+    __declspec(property(get=GetLogFileFullName))
+    _bstr_t LogFileFullName;
+    __declspec(property(get=GetLoggingMode,put=PutLoggingMode))
+    enum AgELoggingMode LoggingMode;
+
+    //
+    // Wrapper methods for error-handling
+    //
+
+    STKUtil::IAgExecCmdResultPtr ExecuteCommand (
+        _bstr_t Command );
+    VARIANT_BOOL GetEnableConnect ( );
+    void PutEnableConnect (
+        VARIANT_BOOL pVal );
+    short GetConnectPort ( );
+    void PutConnectPort (
+        short pVal );
+    _bstr_t GetHostID ( );
+    _bstr_t GetRegistrationID ( );
+    _bstr_t GetVersion ( );
+    _bstr_t GetLicensingReport ( );
+    _bstr_t GetVendorID ( );
+    void PutVendorID (
+        _bstr_t pbstrVal );
+    VARIANT_BOOL SetOnlineOptions (
+        VARIANT_BOOL UseProxy,
+        _bstr_t ServerName,
+        long PortNum,
+        _bstr_t UserName,
+        _bstr_t Password,
+        VARIANT_BOOL SavePassword );
+    VARIANT_BOOL GetOnlineOptions (
+        VARIANT_BOOL * UseProxy,
+        BSTR * ServerName,
+        long * PortNum,
+        BSTR * UserName );
+    HRESULT SetConnectHandler (
+        _bstr_t CommandID,
+        _bstr_t ProgID );
+    _bstr_t GetLogFileFullName ( );
+    enum AgELoggingMode GetLoggingMode ( );
+    void PutLoggingMode (
+        enum AgELoggingMode pVal );
+    long GetConnectMaxConnections ( );
+    void PutConnectMaxConnections (
+        long pVal );
+    STKUtil::IAgExecMultiCmdResultPtr ExecuteMultipleCommands (
+        SAFEARRAY * * ConnectCommands,
+        enum STKUtil::AgEExecMultiCmdResultAction EAction );
+    VARIANT_BOOL IsFeatureAvailable (
+        enum AgEFeatureCodes FeatureCode );
+
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall raw_ExecuteCommand (
+        /*[in]*/ BSTR Command,
+        /*[out,retval]*/ struct STKUtil::IAgExecCmdResult * * ppExecCmdRes ) = 0;
+      virtual HRESULT __stdcall get_EnableConnect (
+        /*[out,retval]*/ VARIANT_BOOL * pVal ) = 0;
+      virtual HRESULT __stdcall put_EnableConnect (
+        /*[in]*/ VARIANT_BOOL pVal ) = 0;
+      virtual HRESULT __stdcall get_ConnectPort (
+        /*[out,retval]*/ short * pVal ) = 0;
+      virtual HRESULT __stdcall put_ConnectPort (
+        /*[in]*/ short pVal ) = 0;
+      virtual HRESULT __stdcall get_HostID (
+        /*[out,retval]*/ BSTR * pbstrVal ) = 0;
+      virtual HRESULT __stdcall get_RegistrationID (
+        /*[out,retval]*/ BSTR * pbstrVal ) = 0;
+      virtual HRESULT __stdcall get_Version (
+        /*[out,retval]*/ BSTR * pbstrVal ) = 0;
+      virtual HRESULT __stdcall raw_GetLicensingReport (
+        /*[out,retval]*/ BSTR * pbstrVal ) = 0;
+      virtual HRESULT __stdcall get_VendorID (
+        /*[out,retval]*/ BSTR * pbstrVal ) = 0;
+      virtual HRESULT __stdcall put_VendorID (
+        /*[in]*/ BSTR pbstrVal ) = 0;
+      virtual HRESULT __stdcall raw_SetOnlineOptions (
+        /*[in]*/ VARIANT_BOOL UseProxy,
+        /*[in]*/ BSTR ServerName,
+        /*[in]*/ long PortNum,
+        /*[in]*/ BSTR UserName,
+        /*[in]*/ BSTR Password,
+        /*[in]*/ VARIANT_BOOL SavePassword,
+        /*[out,retval]*/ VARIANT_BOOL * pVal ) = 0;
+      virtual HRESULT __stdcall raw_GetOnlineOptions (
+        /*[out]*/ VARIANT_BOOL * UseProxy,
+        /*[out]*/ BSTR * ServerName,
+        /*[out]*/ long * PortNum,
+        /*[out]*/ BSTR * UserName,
+        /*[out,retval]*/ VARIANT_BOOL * pVal ) = 0;
+      virtual HRESULT __stdcall raw_SetConnectHandler (
+        /*[in]*/ BSTR CommandID,
+        /*[in]*/ BSTR ProgID ) = 0;
+      virtual HRESULT __stdcall get_LogFileFullName (
+        /*[out,retval]*/ BSTR * pbstrVal ) = 0;
+      virtual HRESULT __stdcall get_LoggingMode (
+        /*[out,retval]*/ enum AgELoggingMode * pVal ) = 0;
+      virtual HRESULT __stdcall put_LoggingMode (
+        /*[in]*/ enum AgELoggingMode pVal ) = 0;
+      virtual HRESULT __stdcall get_ConnectMaxConnections (
+        /*[out,retval]*/ long * pVal ) = 0;
+      virtual HRESULT __stdcall put_ConnectMaxConnections (
+        /*[in]*/ long pVal ) = 0;
+      virtual HRESULT __stdcall raw_ExecuteMultipleCommands (
+        /*[in]*/ SAFEARRAY * * ConnectCommands,
+        /*[in]*/ enum STKUtil::AgEExecMultiCmdResultAction EAction,
+        /*[out,retval]*/ struct STKUtil::IAgExecMultiCmdResult * * ppResult ) = 0;
+      virtual HRESULT __stdcall raw_IsFeatureAvailable (
+        /*[in]*/ enum AgEFeatureCodes FeatureCode,
+        /*[out,retval]*/ VARIANT_BOOL * pRetVal ) = 0;
+};
+
+struct __declspec(uuid("b7a94c44-0e21-4df6-8570-a278041b9d11"))
+IAgDataObjectFiles : IDispatch
+{
+    //
+    // Property data
+    //
+
+    __declspec(property(get=GetItem))
+    _bstr_t Item[];
+    __declspec(property(get=GetCount))
+    long Count;
+    __declspec(property(get=Get_NewEnum))
+    IUnknownPtr _NewEnum;
+
+    //
+    // Wrapper methods for error-handling
+    //
+
+    IUnknownPtr Get_NewEnum ( );
+    _bstr_t GetItem (
+        long Index );
+    long GetCount ( );
+
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall get__NewEnum (
+        /*[out,retval]*/ IUnknown * * ppUnk ) = 0;
+      virtual HRESULT __stdcall get_Item (
+        /*[in]*/ long Index,
+        /*[out,retval]*/ BSTR * pVal ) = 0;
+      virtual HRESULT __stdcall get_Count (
+        /*[out,retval]*/ long * pVal ) = 0;
+};
+
+struct __declspec(uuid("761405fb-d38f-471d-92ad-dc7ddb4ada0c"))
+IAgDataObject : IDispatch
+{
+    //
+    // Property data
+    //
+
+    __declspec(property(get=GetFiles))
+    IAgDataObjectFilesPtr Files;
+
+    //
+    // Wrapper methods for error-handling
+    //
+
+    IAgDataObjectFilesPtr GetFiles ( );
+
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall get_Files (
+        /*[out,retval]*/ struct IAgDataObjectFiles * * pFile ) = 0;
+};
+
+struct __declspec(uuid("e3a3e71a-fda8-4397-b960-7efcd86f1bd4"))
+IAgDrawElem : IDispatch
+{
+    //
+    // Property data
+    //
+
+    __declspec(property(get=GetVisible,put=PutVisible))
+    VARIANT_BOOL Visible;
+
+    //
+    // Wrapper methods for error-handling
+    //
+
+    VARIANT_BOOL GetVisible ( );
+    void PutVisible (
+        VARIANT_BOOL pVal );
+
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall get_Visible (
+        /*[out,retval]*/ VARIANT_BOOL * pVal ) = 0;
+      virtual HRESULT __stdcall put_Visible (
+        /*[in]*/ VARIANT_BOOL pVal ) = 0;
+};
+
+struct __declspec(uuid("e5e668e8-71bc-4c6e-b62c-491761433a89"))
+IAgDrawElemRect : IAgDrawElem
+{
+    //
+    // Property data
+    //
+
+    __declspec(property(get=GetLeft))
+    OLE_XPOS_PIXELS Left;
+    __declspec(property(get=GetRight))
+    OLE_XPOS_PIXELS Right;
+    __declspec(property(get=GetTop))
+    OLE_YPOS_PIXELS Top;
+    __declspec(property(get=GetBottom))
+    OLE_YPOS_PIXELS Bottom;
+    __declspec(property(get=GetColor,put=PutColor))
+    OLE_COLOR Color;
+    __declspec(property(get=GetLineWidth,put=PutLineWidth))
+    float LineWidth;
+
+    //
+    // Wrapper methods for error-handling
+    //
+
+    OLE_XPOS_PIXELS GetLeft ( );
+    OLE_XPOS_PIXELS GetRight ( );
+    OLE_YPOS_PIXELS GetTop ( );
+    OLE_YPOS_PIXELS GetBottom ( );
+    HRESULT Set (
+        OLE_XPOS_PIXELS Left,
+        OLE_YPOS_PIXELS Top,
+        OLE_XPOS_PIXELS Right,
+        OLE_YPOS_PIXELS Bottom );
+    OLE_COLOR GetColor ( );
+    void PutColor (
+        OLE_COLOR pVal );
+    float GetLineWidth ( );
+    void PutLineWidth (
+        float pVal );
+    enum STKUtil::AgELineStyle GetLineStyle ( );
+    void PutLineStyle (
+        enum STKUtil::AgELineStyle pVal );
+
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall get_Left (
+        /*[out,retval]*/ OLE_XPOS_PIXELS * pVal ) = 0;
+      virtual HRESULT __stdcall get_Right (
+        /*[out,retval]*/ OLE_XPOS_PIXELS * pVal ) = 0;
+      virtual HRESULT __stdcall get_Top (
+        /*[out,retval]*/ OLE_YPOS_PIXELS * pVal ) = 0;
+      virtual HRESULT __stdcall get_Bottom (
+        /*[out,retval]*/ OLE_YPOS_PIXELS * pVal ) = 0;
+      virtual HRESULT __stdcall raw_Set (
+        /*[in]*/ OLE_XPOS_PIXELS Left,
+        /*[in]*/ OLE_YPOS_PIXELS Top,
+        /*[in]*/ OLE_XPOS_PIXELS Right,
+        /*[in]*/ OLE_YPOS_PIXELS Bottom ) = 0;
+      virtual HRESULT __stdcall get_Color (
+        /*[out,retval]*/ OLE_COLOR * pVal ) = 0;
+      virtual HRESULT __stdcall put_Color (
+        /*[in]*/ OLE_COLOR pVal ) = 0;
+      virtual HRESULT __stdcall get_LineWidth (
+        /*[out,retval]*/ float * pVal ) = 0;
+      virtual HRESULT __stdcall put_LineWidth (
+        /*[in]*/ float pVal ) = 0;
+      virtual HRESULT __stdcall get_LineStyle (
+        /*[out,retval]*/ enum STKUtil::AgELineStyle * pVal ) = 0;
+      virtual HRESULT __stdcall put_LineStyle (
+        /*[in]*/ enum STKUtil::AgELineStyle pVal ) = 0;
+};
+
+struct __declspec(uuid("f59ae8be-6856-4b6e-a898-3afb980ee1c7"))
+IAgDrawElemCollection : IDispatch
+{
+    //
+    // Property data
+    //
+
+    __declspec(property(get=GetItem))
+    IAgDrawElemPtr Item[];
+    __declspec(property(get=GetCount))
+    long Count;
+    __declspec(property(get=GetVisible,put=PutVisible))
+    VARIANT_BOOL Visible;
+    __declspec(property(get=Get_NewEnum))
+    IUnknownPtr _NewEnum;
+
+    //
+    // Wrapper methods for error-handling
+    //
+
+    long GetCount ( );
+    IAgDrawElemPtr GetItem (
+        long Index );
+    IUnknownPtr Get_NewEnum ( );
+    HRESULT Clear ( );
+    IAgDrawElemPtr Add (
+        _bstr_t ElemType );
+    HRESULT Remove (
+        struct IAgDrawElem * DrawElem );
+    VARIANT_BOOL GetVisible ( );
+    void PutVisible (
+        VARIANT_BOOL pVal );
+
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall get_Count (
+        /*[out,retval]*/ long * pVal ) = 0;
+      virtual HRESULT __stdcall get_Item (
+        /*[in]*/ long Index,
+        /*[out,retval]*/ struct IAgDrawElem * * pVal ) = 0;
+      virtual HRESULT __stdcall get__NewEnum (
+        /*[out,retval]*/ IUnknown * * ppUnk ) = 0;
+      virtual HRESULT __stdcall raw_Clear ( ) = 0;
+      virtual HRESULT __stdcall raw_Add (
+        /*[in]*/ BSTR ElemType,
+        /*[out,retval]*/ struct IAgDrawElem * * ppDrawElem ) = 0;
+      virtual HRESULT __stdcall raw_Remove (
+        /*[in]*/ struct IAgDrawElem * DrawElem ) = 0;
+      virtual HRESULT __stdcall get_Visible (
+        /*[out,retval]*/ VARIANT_BOOL * pVal ) = 0;
+      virtual HRESULT __stdcall put_Visible (
+        /*[in]*/ VARIANT_BOOL pVal ) = 0;
+};
+
+struct __declspec(uuid("ac389fe1-3150-4ef6-a6a6-6e907d86c620"))
+IAgWinProjPos : IDispatch
+{
+    //
+    // Property data
+    //
+
+    __declspec(property(get=GetXPos))
+    double XPos;
+    __declspec(property(get=GetYPos))
+    double YPos;
+    __declspec(property(get=GetIsWinProjPosValid))
+    VARIANT_BOOL IsWinProjPosValid;
+
+    //
+    // Wrapper methods for error-handling
+    //
+
+    double GetXPos ( );
+    double GetYPos ( );
+    VARIANT_BOOL GetIsWinProjPosValid ( );
+
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall get_XPos (
+        /*[out,retval]*/ double * pVal ) = 0;
+      virtual HRESULT __stdcall get_YPos (
+        /*[out,retval]*/ double * pVal ) = 0;
+      virtual HRESULT __stdcall get_IsWinProjPosValid (
+        /*[out,retval]*/ VARIANT_BOOL * pIsValid ) = 0;
+};
+
+struct __declspec(uuid("0d920698-4342-4ea9-bfb0-6185c01d82a2"))
+IAgDrawElemLine : IAgDrawElem
+{
+    //
+    // Property data
+    //
+
+    __declspec(property(get=GetLeft))
+    OLE_XPOS_PIXELS Left;
+    __declspec(property(get=GetRight))
+    OLE_XPOS_PIXELS Right;
+    __declspec(property(get=GetTop))
+    OLE_YPOS_PIXELS Top;
+    __declspec(property(get=GetBottom))
+    OLE_YPOS_PIXELS Bottom;
+    __declspec(property(get=GetColor,put=PutColor))
+    OLE_COLOR Color;
+    __declspec(property(get=GetLineWidth,put=PutLineWidth))
+    float LineWidth;
+
+    //
+    // Wrapper methods for error-handling
+    //
+
+    OLE_XPOS_PIXELS GetLeft ( );
+    OLE_XPOS_PIXELS GetRight ( );
+    OLE_YPOS_PIXELS GetTop ( );
+    OLE_YPOS_PIXELS GetBottom ( );
+    HRESULT Set (
+        OLE_XPOS_PIXELS Left,
+        OLE_YPOS_PIXELS Top,
+        OLE_XPOS_PIXELS Right,
+        OLE_YPOS_PIXELS Bottom );
+    OLE_COLOR GetColor ( );
+    void PutColor (
+        OLE_COLOR pVal );
+    float GetLineWidth ( );
+    void PutLineWidth (
+        float pVal );
+    enum STKUtil::AgELineStyle GetLineStyle ( );
+    void PutLineStyle (
+        enum STKUtil::AgELineStyle pVal );
+
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall get_Left (
+        /*[out,retval]*/ OLE_XPOS_PIXELS * pVal ) = 0;
+      virtual HRESULT __stdcall get_Right (
+        /*[out,retval]*/ OLE_XPOS_PIXELS * pVal ) = 0;
+      virtual HRESULT __stdcall get_Top (
+        /*[out,retval]*/ OLE_YPOS_PIXELS * pVal ) = 0;
+      virtual HRESULT __stdcall get_Bottom (
+        /*[out,retval]*/ OLE_YPOS_PIXELS * pVal ) = 0;
+      virtual HRESULT __stdcall raw_Set (
+        /*[in]*/ OLE_XPOS_PIXELS Left,
+        /*[in]*/ OLE_YPOS_PIXELS Top,
+        /*[in]*/ OLE_XPOS_PIXELS Right,
+        /*[in]*/ OLE_YPOS_PIXELS Bottom ) = 0;
+      virtual HRESULT __stdcall get_Color (
+        /*[out,retval]*/ OLE_COLOR * pVal ) = 0;
+      virtual HRESULT __stdcall put_Color (
+        /*[in]*/ OLE_COLOR pVal ) = 0;
+      virtual HRESULT __stdcall get_LineWidth (
+        /*[out,retval]*/ float * pVal ) = 0;
+      virtual HRESULT __stdcall put_LineWidth (
+        /*[in]*/ float pVal ) = 0;
+      virtual HRESULT __stdcall get_LineStyle (
+        /*[out,retval]*/ enum STKUtil::AgELineStyle * pVal ) = 0;
+      virtual HRESULT __stdcall put_LineStyle (
+        /*[in]*/ enum STKUtil::AgELineStyle pVal ) = 0;
+};
+
+enum AgEMouseMode
+{
+    eMouseModeAutomatic = 0,
+    eMouseModeManual = 1
+};
+
+enum AgEOLEDropMode
+{
+    eNone = 0,
+    eManual = 1,
+    eAutomatic = 2
+};
+
+enum AgEButtonValues
+{
+    eLeftPressed = 1,
+    eRightPressed = 2,
+    eMiddlePressed = 4
+};
+
+enum AgEShiftValues
+{
+    eShiftPressed = 1,
+    eCtrlPressed = 2,
+    eAltPressed = 4
+};
+
+struct __declspec(uuid("bdd84096-d67d-45b2-aca4-e2d5cd21389c"))
+IAgUiAxVOCntrlEvents : IDispatch
+{
+    //
+    // Wrapper methods for error-handling
+    //
+
+    // Methods:
+    HRESULT KeyDown (
+        short * KeyCode,
+        short Shift );
+    HRESULT KeyPress (
+        short * KeyAscii );
+    HRESULT KeyUp (
+        short * KeyCode,
+        short Shift );
+    HRESULT Click ( );
+    HRESULT DblClick ( );
+    HRESULT MouseDown (
+        short Button,
+        short Shift,
+        OLE_XPOS_PIXELS X,
+        OLE_YPOS_PIXELS Y );
+    HRESULT MouseMove (
+        short Button,
+        short Shift,
+        OLE_XPOS_PIXELS X,
+        OLE_YPOS_PIXELS Y );
+    HRESULT MouseUp (
+        short Button,
+        short Shift,
+        OLE_XPOS_PIXELS X,
+        OLE_YPOS_PIXELS Y );
+    HRESULT OLEDragDrop (
+        struct IAgDataObject * Data,
+        long Effect,
+        short Button,
+        short Shift,
+        long X,
+        long Y );
+    HRESULT MouseWheel (
+        short Button,
+        short Shift,
+        short Delta,
+        OLE_XPOS_PIXELS X,
+        OLE_YPOS_PIXELS Y );
+    HRESULT OnObjectEditingStart (
+        _bstr_t Path );
+    HRESULT OnObjectEditingApply (
+        _bstr_t Path );
+    HRESULT OnObjectEditingCancel (
+        _bstr_t Path );
+    HRESULT OnObjectEditingStop (
+        _bstr_t Path );
+};
+
+enum AgEShowProgressImage
+{
+    eShowProgressImageNone = 1,
+    eShowProgressImageDefault = 2,
+    eShowProgressImageUser = 3
+};
+
+enum AgEProgressImageXOrigin
+{
+    eProgressImageXLeft = 1,
+    eProgressImageXRight = 2,
+    eProgressImageXCenter = 3
+};
+
+enum AgEProgressImageYOrigin
+{
+    eProgressImageYTop = 1,
+    eProgressImageYBottom = 2,
+    eProgressImageYCenter = 3
+};
+
+struct __declspec(uuid("11a577e4-fb9d-4283-96ba-f1a737206671"))
+IAgUiAxVOCntrl : IDispatch
+{
+    //
+    // Property data
+    //
+
+    __declspec(property(get=GetWinID,put=PutWinID))
+    long WinID;
+    __declspec(property(get=GetVendorID,put=PutVendorID))
+    _bstr_t VendorID;
+    __declspec(property(get=GetNoLogo,put=PutNoLogo))
+    VARIANT_BOOL NoLogo;
+    __declspec(property(get=GetOLEDropMode,put=PutOLEDropMode))
+    enum AgEOLEDropMode OLEDropMode;
+    __declspec(property(get=GetBackColor,put=PutBackColor))
+    OLE_COLOR BackColor;
+    __declspec(property(get=GetApplication))
+    IAgSTKXApplicationPtr Application;
+    __declspec(property(get=GetMouseMode,put=PutMouseMode))
+    enum AgEMouseMode MouseMode;
+    __declspec(property(get=GetPptPreloadMode,put=PutPptPreloadMode))
+    VARIANT_BOOL PptPreloadMode;
+    __declspec(property(get=GetAdvancedPickMode,put=PutAdvancedPickMode))
+    VARIANT_BOOL AdvancedPickMode;
+    __declspec(property(get=GetShowProgressImage,put=PutShowProgressImage))
+    enum AgEShowProgressImage ShowProgressImage;
+    __declspec(property(get=GetProgressImageXOffset,put=PutProgressImageXOffset))
+    long ProgressImageXOffset;
+    __declspec(property(get=GetDrawElements))
+    IAgDrawElemCollectionPtr DrawElements;
+    __declspec(property(get=GetReadyState))
+    long ReadyState;
+    __declspec(property(get=GetProgressImageYOffset,put=PutProgressImageYOffset))
+    long ProgressImageYOffset;
+    __declspec(property(get=GetProgressImageFile,put=PutProgressImageFile))
+    _bstr_t ProgressImageFile;
+    __declspec(property(get=GetIsObjectEditing))
+    VARIANT_BOOL IsObjectEditing;
+    __declspec(property(get=GetInZoomMode))
+    VARIANT_BOOL InZoomMode;
+    __declspec(property(get=GetProgressImageXOrigin,put=PutProgressImageXOrigin))
+    enum AgEProgressImageXOrigin ProgressImageXOrigin;
+    __declspec(property(get=GetProgressImageYOrigin,put=PutProgressImageYOrigin))
+    enum AgEProgressImageYOrigin ProgressImageYOrigin;
+    __declspec(property(get=GetPictureFromFile,put=PutPictureFromFile))
+    _bstr_t PictureFromFile;
+
+    //
+    // Wrapper methods for error-handling
+    //
+
+    OLE_COLOR GetBackColor ( );
+    void PutBackColor (
+        OLE_COLOR pclr );
+    IPictureDisp * GetPicture ( );
+    void PutRefPicture (
+        IPictureDisp * ppPicture );
+    void PutPicture (
+        IPictureDisp * ppPicture );
+    IAgPickInfoDataPtr PickInfo (
+        OLE_XPOS_PIXELS X,
+        OLE_YPOS_PIXELS Y );
+    long GetWinID ( );
+    void PutWinID (
+        long pVal );
+    IAgSTKXApplicationPtr GetApplication ( );
+    HRESULT ZoomIn ( );
+    VARIANT_BOOL GetNoLogo ( );
+    void PutNoLogo (
+        VARIANT_BOOL pNoLogo );
+    enum AgEOLEDropMode GetOLEDropMode ( );
+    void PutOLEDropMode (
+        enum AgEOLEDropMode psOLEDropMode );
+    _bstr_t GetVendorID ( );
+    void PutVendorID (
+        _bstr_t pbstrVal );
+    IAgRubberBandPickInfoDataPtr RubberBandPickInfo (
+        OLE_XPOS_PIXELS Left,
+        OLE_YPOS_PIXELS Top,
+        OLE_XPOS_PIXELS Right,
+        OLE_YPOS_PIXELS Bottom );
+    enum AgEMouseMode GetMouseMode ( );
+    void PutMouseMode (
+        enum AgEMouseMode psMouseMode );
+    IAgDrawElemCollectionPtr GetDrawElements ( );
+    long GetReadyState ( );
+    VARIANT_BOOL GetPptPreloadMode ( );
+    void PutPptPreloadMode (
+        VARIANT_BOOL pPptPreloadMode );
+    VARIANT_BOOL GetAdvancedPickMode ( );
+    void PutAdvancedPickMode (
+        VARIANT_BOOL pAdvancePickMode );
+    HRESULT CopyFromWinID (
+        long WinID );
+    HRESULT StartObjectEditing (
+        _bstr_t ObjEditPath );
+    HRESULT ApplyObjectEditing ( );
+    HRESULT StopObjectEditing (
+        VARIANT_BOOL Canceled );
+    VARIANT_BOOL GetIsObjectEditing ( );
+    VARIANT_BOOL GetInZoomMode ( );
+    HRESULT SetMouseCursorFromFile (
+        _bstr_t CursorFileName );
+    HRESULT RestoreMouseCursor ( );
+    HRESULT SetMouseCursorFromHandle (
+        OLE_HANDLE CursorHandle );
+    enum AgEShowProgressImage GetShowProgressImage ( );
+    void PutShowProgressImage (
+        enum AgEShowProgressImage psProgressImage );
+    long GetProgressImageXOffset ( );
+    void PutProgressImageXOffset (
+        long pXOffset );
+    long GetProgressImageYOffset ( );
+    void PutProgressImageYOffset (
+        long pYOffset );
+    _bstr_t GetProgressImageFile ( );
+    void PutProgressImageFile (
+        _bstr_t pImageFile );
+    enum AgEProgressImageXOrigin GetProgressImageXOrigin ( );
+    void PutProgressImageXOrigin (
+        enum AgEProgressImageXOrigin psProgressImageXOrigin );
+    enum AgEProgressImageYOrigin GetProgressImageYOrigin ( );
+    void PutProgressImageYOrigin (
+        enum AgEProgressImageYOrigin psProgressImageYOrigin );
+    _bstr_t GetPictureFromFile ( );
+    void PutPictureFromFile (
+        _bstr_t pPictureFile );
+
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall get_BackColor (
+        /*[out,retval]*/ OLE_COLOR * pclr ) = 0;
+      virtual HRESULT __stdcall put_BackColor (
+        /*[in]*/ OLE_COLOR pclr ) = 0;
+      virtual HRESULT __stdcall get_Picture (
+        /*[out,retval]*/ IPictureDisp * * ppPicture ) = 0;
+      virtual HRESULT __stdcall putref_Picture (
+        /*[in]*/ IPictureDisp * ppPicture ) = 0;
+      virtual HRESULT __stdcall put_Picture (
+        /*[in]*/ IPictureDisp * ppPicture ) = 0;
+      virtual HRESULT __stdcall raw_PickInfo (
+        /*[in]*/ OLE_XPOS_PIXELS X,
+        /*[in]*/ OLE_YPOS_PIXELS Y,
+        /*[out,retval]*/ struct IAgPickInfoData * * ppPickData ) = 0;
+      virtual HRESULT __stdcall get_WinID (
+        /*[out,retval]*/ long * pVal ) = 0;
+      virtual HRESULT __stdcall put_WinID (
+        /*[in]*/ long pVal ) = 0;
+      virtual HRESULT __stdcall get_Application (
+        /*[out,retval]*/ struct IAgSTKXApplication * * pVal ) = 0;
+      virtual HRESULT __stdcall raw_ZoomIn ( ) = 0;
+      virtual HRESULT __stdcall get_NoLogo (
+        /*[out,retval]*/ VARIANT_BOOL * pNoLogo ) = 0;
+      virtual HRESULT __stdcall put_NoLogo (
+        /*[in]*/ VARIANT_BOOL pNoLogo ) = 0;
+      virtual HRESULT __stdcall get_OLEDropMode (
+        /*[out,retval]*/ enum AgEOLEDropMode * psOLEDropMode ) = 0;
+      virtual HRESULT __stdcall put_OLEDropMode (
+        /*[in]*/ enum AgEOLEDropMode psOLEDropMode ) = 0;
+      virtual HRESULT __stdcall get_VendorID (
+        /*[out,retval]*/ BSTR * pbstrVal ) = 0;
+      virtual HRESULT __stdcall put_VendorID (
+        /*[in]*/ BSTR pbstrVal ) = 0;
+      virtual HRESULT __stdcall raw_RubberBandPickInfo (
+        /*[in]*/ OLE_XPOS_PIXELS Left,
+        /*[in]*/ OLE_YPOS_PIXELS Top,
+        /*[in]*/ OLE_XPOS_PIXELS Right,
+        /*[in]*/ OLE_YPOS_PIXELS Bottom,
+        /*[out,retval]*/ struct IAgRubberBandPickInfoData * * ppPickInfoData ) = 0;
+      virtual HRESULT __stdcall get_MouseMode (
+        /*[out,retval]*/ enum AgEMouseMode * psMouseMode ) = 0;
+      virtual HRESULT __stdcall put_MouseMode (
+        /*[in]*/ enum AgEMouseMode psMouseMode ) = 0;
+      virtual HRESULT __stdcall get_DrawElements (
+        /*[out,retval]*/ struct IAgDrawElemCollection * * ppDrawElemColl ) = 0;
+      virtual HRESULT __stdcall get_ReadyState (
+        /*[out,retval]*/ long * pclr ) = 0;
+      virtual HRESULT __stdcall get_PptPreloadMode (
+        /*[out,retval]*/ VARIANT_BOOL * pPptPreloadMode ) = 0;
+      virtual HRESULT __stdcall put_PptPreloadMode (
+        /*[in]*/ VARIANT_BOOL pPptPreloadMode ) = 0;
+      virtual HRESULT __stdcall get_AdvancedPickMode (
+        /*[out,retval]*/ VARIANT_BOOL * pAdvancePickMode ) = 0;
+      virtual HRESULT __stdcall put_AdvancedPickMode (
+        /*[in]*/ VARIANT_BOOL pAdvancePickMode ) = 0;
+      virtual HRESULT __stdcall raw_CopyFromWinID (
+        /*[in]*/ long WinID ) = 0;
+      virtual HRESULT __stdcall raw_StartObjectEditing (
+        /*[in]*/ BSTR ObjEditPath ) = 0;
+      virtual HRESULT __stdcall raw_ApplyObjectEditing ( ) = 0;
+      virtual HRESULT __stdcall raw_StopObjectEditing (
+        /*[in]*/ VARIANT_BOOL Canceled ) = 0;
+      virtual HRESULT __stdcall get_IsObjectEditing (
+        /*[out,retval]*/ VARIANT_BOOL * p3DObjectEditing ) = 0;
+      virtual HRESULT __stdcall get_InZoomMode (
+        /*[out,retval]*/ VARIANT_BOOL * pZoomIn ) = 0;
+      virtual HRESULT __stdcall raw_SetMouseCursorFromFile (
+        /*[in]*/ BSTR CursorFileName ) = 0;
+      virtual HRESULT __stdcall raw_RestoreMouseCursor ( ) = 0;
+      virtual HRESULT __stdcall raw_SetMouseCursorFromHandle (
+        /*[in]*/ OLE_HANDLE CursorHandle ) = 0;
+      virtual HRESULT __stdcall get_ShowProgressImage (
+        /*[out,retval]*/ enum AgEShowProgressImage * psProgressImage ) = 0;
+      virtual HRESULT __stdcall put_ShowProgressImage (
+        /*[in]*/ enum AgEShowProgressImage psProgressImage ) = 0;
+      virtual HRESULT __stdcall get_ProgressImageXOffset (
+        /*[out,retval]*/ long * pXOffset ) = 0;
+      virtual HRESULT __stdcall put_ProgressImageXOffset (
+        /*[in]*/ long pXOffset ) = 0;
+      virtual HRESULT __stdcall get_ProgressImageYOffset (
+        /*[out,retval]*/ long * pYOffset ) = 0;
+      virtual HRESULT __stdcall put_ProgressImageYOffset (
+        /*[in]*/ long pYOffset ) = 0;
+      virtual HRESULT __stdcall get_ProgressImageFile (
+        /*[out,retval]*/ BSTR * pImageFile ) = 0;
+      virtual HRESULT __stdcall put_ProgressImageFile (
+        /*[in]*/ BSTR pImageFile ) = 0;
+      virtual HRESULT __stdcall get_ProgressImageXOrigin (
+        /*[out,retval]*/ enum AgEProgressImageXOrigin * psProgressImageXOrigin ) = 0;
+      virtual HRESULT __stdcall put_ProgressImageXOrigin (
+        /*[in]*/ enum AgEProgressImageXOrigin psProgressImageXOrigin ) = 0;
+      virtual HRESULT __stdcall get_ProgressImageYOrigin (
+        /*[out,retval]*/ enum AgEProgressImageYOrigin * psProgressImageYOrigin ) = 0;
+      virtual HRESULT __stdcall put_ProgressImageYOrigin (
+        /*[in]*/ enum AgEProgressImageYOrigin psProgressImageYOrigin ) = 0;
+      virtual HRESULT __stdcall get_PictureFromFile (
+        /*[out,retval]*/ BSTR * pPictureFile ) = 0;
+      virtual HRESULT __stdcall put_PictureFromFile (
+        /*[in]*/ BSTR pPictureFile ) = 0;
+};
+
+struct __declspec(uuid("d9baadb0-eae1-4dee-a07d-2b9b96a693f7"))
+IAgUiAx2DCntrlEvents : IDispatch
+{
+    //
+    // Wrapper methods for error-handling
+    //
+
+    // Methods:
+    HRESULT KeyDown (
+        short * KeyCode,
+        short Shift );
+    HRESULT KeyPress (
+        short * KeyAscii );
+    HRESULT KeyUp (
+        short * KeyCode,
+        short Shift );
+    HRESULT Click ( );
+    HRESULT DblClick ( );
+    HRESULT MouseDown (
+        short Button,
+        short Shift,
+        OLE_XPOS_PIXELS X,
+        OLE_YPOS_PIXELS Y );
+    HRESULT MouseMove (
+        short Button,
+        short Shift,
+        OLE_XPOS_PIXELS X,
+        OLE_YPOS_PIXELS Y );
+    HRESULT MouseUp (
+        short Button,
+        short Shift,
+        OLE_XPOS_PIXELS X,
+        OLE_YPOS_PIXELS Y );
+    HRESULT OLEDragDrop (
+        struct IAgDataObject * Data,
+        long Effect,
+        short Button,
+        short Shift,
+        long X,
+        long Y );
+    HRESULT MouseWheel (
+        short Button,
+        short Shift,
+        short Delta,
+        OLE_XPOS_PIXELS X,
+        OLE_YPOS_PIXELS Y );
+};
+
+enum AgEGfxDrawCoords
+{
+    ePixelDrawCoords = 1,
+    eScreenDrawCoords = 2
+};
+
+struct __declspec(uuid("7e2066f5-8614-4068-8117-bac32c1f2edc"))
+IAgUiAx2DCntrl : IDispatch
+{
+    //
+    // Property data
+    //
+
+    __declspec(property(get=GetApplication))
+    IAgSTKXApplicationPtr Application;
+    __declspec(property(get=GetWinID,put=PutWinID))
+    long WinID;
+    __declspec(property(get=GetAllowScrollbars,put=PutAllowScrollbars))
+    VARIANT_BOOL AllowScrollbars;
+    __declspec(property(get=GetVendorID,put=PutVendorID))
+    _bstr_t VendorID;
+    __declspec(property(get=GetNoLogo,put=PutNoLogo))
+    VARIANT_BOOL NoLogo;
+    __declspec(property(get=GetOLEDropMode,put=PutOLEDropMode))
+    enum AgEOLEDropMode OLEDropMode;
+    __declspec(property(get=GetBackColor,put=PutBackColor))
+    OLE_COLOR BackColor;
+    __declspec(property(get=GetMouseMode,put=PutMouseMode))
+    enum AgEMouseMode MouseMode;
+    __declspec(property(get=GetAdvancedPickMode,put=PutAdvancedPickMode))
+    VARIANT_BOOL AdvancedPickMode;
+    __declspec(property(get=GetInZoomMode))
+    VARIANT_BOOL InZoomMode;
+    __declspec(property(get=GetShowProgressImage,put=PutShowProgressImage))
+    enum AgEShowProgressImage ShowProgressImage;
+    __declspec(property(get=GetProgressImageXOffset,put=PutProgressImageXOffset))
+    long ProgressImageXOffset;
+    __declspec(property(get=GetReadyState))
+    long ReadyState;
+    __declspec(property(get=GetProgressImageYOffset,put=PutProgressImageYOffset))
+    long ProgressImageYOffset;
+    __declspec(property(get=GetProgressImageFile,put=PutProgressImageFile))
+    _bstr_t ProgressImageFile;
+    __declspec(property(get=GetProgressImageXOrigin,put=PutProgressImageXOrigin))
+    enum AgEProgressImageXOrigin ProgressImageXOrigin;
+    __declspec(property(get=GetProgressImageYOrigin,put=PutProgressImageYOrigin))
+    enum AgEProgressImageYOrigin ProgressImageYOrigin;
+    __declspec(property(get=GetPictureFromFile,put=PutPictureFromFile))
+    _bstr_t PictureFromFile;
+
+    //
+    // Wrapper methods for error-handling
+    //
+
+    OLE_COLOR GetBackColor ( );
+    void PutBackColor (
+        OLE_COLOR pclr );
+    IPictureDisp * GetPicture ( );
+    void PutRefPicture (
+        IPictureDisp * ppPicture );
+    void PutPicture (
+        IPictureDisp * ppPicture );
+    long GetWinID ( );
+    void PutWinID (
+        long pVal );
+    HRESULT ZoomIn ( );
+    HRESULT ZoomOut ( );
+    IAgPickInfoDataPtr PickInfo (
+        OLE_XPOS_PIXELS X,
+        OLE_YPOS_PIXELS Y );
+    IAgSTKXApplicationPtr GetApplication ( );
+    VARIANT_BOOL GetAllowScrollbars ( );
+    void PutAllowScrollbars (
+        VARIANT_BOOL pAllowScrollBars );
+    VARIANT_BOOL GetNoLogo ( );
+    void PutNoLogo (
+        VARIANT_BOOL pNoLogo );
+    enum AgEOLEDropMode GetOLEDropMode ( );
+    void PutOLEDropMode (
+        enum AgEOLEDropMode psOLEDropMode );
+    _bstr_t GetVendorID ( );
+    void PutVendorID (
+        _bstr_t pbstrVal );
+    enum AgEMouseMode GetMouseMode ( );
+    void PutMouseMode (
+        enum AgEMouseMode psMouseMode );
+    long GetReadyState ( );
+    HRESULT CopyFromWinID (
+        long WinID );
+    IAgRubberBandPickInfoDataPtr RubberBandPickInfo (
+        OLE_XPOS_PIXELS Left,
+        OLE_YPOS_PIXELS Top,
+        OLE_XPOS_PIXELS Right,
+        OLE_YPOS_PIXELS Bottom );
+    VARIANT_BOOL GetAdvancedPickMode ( );
+    void PutAdvancedPickMode (
+        VARIANT_BOOL pAdvancePickMode );
+    IAgWinProjPosPtr GetWindowProjectedPosition (
+        double Lat,
+        double Lon,
+        double Alt,
+        enum AgEGfxDrawCoords DrawCoords );
+    VARIANT_BOOL GetInZoomMode ( );
+    HRESULT SetMouseCursorFromFile (
+        _bstr_t CursorFileName );
+    HRESULT RestoreMouseCursor ( );
+    HRESULT SetMouseCursorFromHandle (
+        OLE_HANDLE CursorHandle );
+    enum AgEShowProgressImage GetShowProgressImage ( );
+    void PutShowProgressImage (
+        enum AgEShowProgressImage psProgressImage );
+    long GetProgressImageXOffset ( );
+    void PutProgressImageXOffset (
+        long pXOffset );
+    long GetProgressImageYOffset ( );
+    void PutProgressImageYOffset (
+        long pYOffset );
+    _bstr_t GetProgressImageFile ( );
+    void PutProgressImageFile (
+        _bstr_t pImageFile );
+    enum AgEProgressImageXOrigin GetProgressImageXOrigin ( );
+    void PutProgressImageXOrigin (
+        enum AgEProgressImageXOrigin psProgressImageXOrigin );
+    enum AgEProgressImageYOrigin GetProgressImageYOrigin ( );
+    void PutProgressImageYOrigin (
+        enum AgEProgressImageYOrigin psProgressImageYOrigin );
+    _bstr_t GetPictureFromFile ( );
+    void PutPictureFromFile (
+        _bstr_t pPictureFile );
+
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall get_BackColor (
+        /*[out,retval]*/ OLE_COLOR * pclr ) = 0;
+      virtual HRESULT __stdcall put_BackColor (
+        /*[in]*/ OLE_COLOR pclr ) = 0;
+      virtual HRESULT __stdcall get_Picture (
+        /*[out,retval]*/ IPictureDisp * * ppPicture ) = 0;
+      virtual HRESULT __stdcall putref_Picture (
+        /*[in]*/ IPictureDisp * ppPicture ) = 0;
+      virtual HRESULT __stdcall put_Picture (
+        /*[in]*/ IPictureDisp * ppPicture ) = 0;
+      virtual HRESULT __stdcall get_WinID (
+        /*[out,retval]*/ long * pVal ) = 0;
+      virtual HRESULT __stdcall put_WinID (
+        /*[in]*/ long pVal ) = 0;
+      virtual HRESULT __stdcall raw_ZoomIn ( ) = 0;
+      virtual HRESULT __stdcall raw_ZoomOut ( ) = 0;
+      virtual HRESULT __stdcall raw_PickInfo (
+        /*[in]*/ OLE_XPOS_PIXELS X,
+        /*[in]*/ OLE_YPOS_PIXELS Y,
+        /*[out,retval]*/ struct IAgPickInfoData * * ppPickData ) = 0;
+      virtual HRESULT __stdcall get_Application (
+        /*[out,retval]*/ struct IAgSTKXApplication * * ppApp ) = 0;
+      virtual HRESULT __stdcall get_AllowScrollbars (
+        /*[out,retval]*/ VARIANT_BOOL * pAllowScrollBars ) = 0;
+      virtual HRESULT __stdcall put_AllowScrollbars (
+        /*[in]*/ VARIANT_BOOL pAllowScrollBars ) = 0;
+      virtual HRESULT __stdcall get_NoLogo (
+        /*[out,retval]*/ VARIANT_BOOL * pNoLogo ) = 0;
+      virtual HRESULT __stdcall put_NoLogo (
+        /*[in]*/ VARIANT_BOOL pNoLogo ) = 0;
+      virtual HRESULT __stdcall get_OLEDropMode (
+        /*[out,retval]*/ enum AgEOLEDropMode * psOLEDropMode ) = 0;
+      virtual HRESULT __stdcall put_OLEDropMode (
+        /*[in]*/ enum AgEOLEDropMode psOLEDropMode ) = 0;
+      virtual HRESULT __stdcall get_VendorID (
+        /*[out,retval]*/ BSTR * pbstrVal ) = 0;
+      virtual HRESULT __stdcall put_VendorID (
+        /*[in]*/ BSTR pbstrVal ) = 0;
+      virtual HRESULT __stdcall get_MouseMode (
+        /*[out,retval]*/ enum AgEMouseMode * psMouseMode ) = 0;
+      virtual HRESULT __stdcall put_MouseMode (
+        /*[in]*/ enum AgEMouseMode psMouseMode ) = 0;
+      virtual HRESULT __stdcall get_ReadyState (
+        /*[out,retval]*/ long * pclr ) = 0;
+      virtual HRESULT __stdcall raw_CopyFromWinID (
+        /*[in]*/ long WinID ) = 0;
+      virtual HRESULT __stdcall raw_RubberBandPickInfo (
+        /*[in]*/ OLE_XPOS_PIXELS Left,
+        /*[in]*/ OLE_YPOS_PIXELS Top,
+        /*[in]*/ OLE_XPOS_PIXELS Right,
+        /*[in]*/ OLE_YPOS_PIXELS Bottom,
+        /*[out,retval]*/ struct IAgRubberBandPickInfoData * * ppPickInfoData ) = 0;
+      virtual HRESULT __stdcall get_AdvancedPickMode (
+        /*[out,retval]*/ VARIANT_BOOL * pAdvancePickMode ) = 0;
+      virtual HRESULT __stdcall put_AdvancedPickMode (
+        /*[in]*/ VARIANT_BOOL pAdvancePickMode ) = 0;
+      virtual HRESULT __stdcall raw_GetWindowProjectedPosition (
+        /*[in]*/ double Lat,
+        /*[in]*/ double Lon,
+        /*[in]*/ double Alt,
+        /*[in]*/ enum AgEGfxDrawCoords DrawCoords,
+        /*[out,retval]*/ struct IAgWinProjPos * * ppWinProjPos ) = 0;
+      virtual HRESULT __stdcall get_InZoomMode (
+        /*[out,retval]*/ VARIANT_BOOL * pZoomIn ) = 0;
+      virtual HRESULT __stdcall raw_SetMouseCursorFromFile (
+        /*[in]*/ BSTR CursorFileName ) = 0;
+      virtual HRESULT __stdcall raw_RestoreMouseCursor ( ) = 0;
+      virtual HRESULT __stdcall raw_SetMouseCursorFromHandle (
+        /*[in]*/ OLE_HANDLE CursorHandle ) = 0;
+      virtual HRESULT __stdcall get_ShowProgressImage (
+        /*[out,retval]*/ enum AgEShowProgressImage * psProgressImage ) = 0;
+      virtual HRESULT __stdcall put_ShowProgressImage (
+        /*[in]*/ enum AgEShowProgressImage psProgressImage ) = 0;
+      virtual HRESULT __stdcall get_ProgressImageXOffset (
+        /*[out,retval]*/ long * pXOffset ) = 0;
+      virtual HRESULT __stdcall put_ProgressImageXOffset (
+        /*[in]*/ long pXOffset ) = 0;
+      virtual HRESULT __stdcall get_ProgressImageYOffset (
+        /*[out,retval]*/ long * pYOffset ) = 0;
+      virtual HRESULT __stdcall put_ProgressImageYOffset (
+        /*[in]*/ long pYOffset ) = 0;
+      virtual HRESULT __stdcall get_ProgressImageFile (
+        /*[out,retval]*/ BSTR * pImageFile ) = 0;
+      virtual HRESULT __stdcall put_ProgressImageFile (
+        /*[in]*/ BSTR pImageFile ) = 0;
+      virtual HRESULT __stdcall get_ProgressImageXOrigin (
+        /*[out,retval]*/ enum AgEProgressImageXOrigin * psProgressImageXOrigin ) = 0;
+      virtual HRESULT __stdcall put_ProgressImageXOrigin (
+        /*[in]*/ enum AgEProgressImageXOrigin psProgressImageXOrigin ) = 0;
+      virtual HRESULT __stdcall get_ProgressImageYOrigin (
+        /*[out,retval]*/ enum AgEProgressImageYOrigin * psProgressImageYOrigin ) = 0;
+      virtual HRESULT __stdcall put_ProgressImageYOrigin (
+        /*[in]*/ enum AgEProgressImageYOrigin psProgressImageYOrigin ) = 0;
+      virtual HRESULT __stdcall get_PictureFromFile (
+        /*[out,retval]*/ BSTR * pPictureFile ) = 0;
+      virtual HRESULT __stdcall put_PictureFromFile (
+        /*[in]*/ BSTR pPictureFile ) = 0;
+};
+
+struct __declspec(uuid("4d39e7bb-8991-483c-81ae-0450bf6273b1"))
+IAgSTKXApplicationEvents : IDispatch
+{
+    //
+    // Wrapper methods for error-handling
+    //
+
+    // Methods:
+    HRESULT OnScenarioNew (
+        _bstr_t Path );
+    HRESULT OnScenarioLoad (
+        _bstr_t Path );
+    HRESULT OnScenarioClose ( );
+    HRESULT OnScenarioSave (
+        _bstr_t Path );
+    HRESULT OnLogMessage (
+        _bstr_t Message,
+        enum STKUtil::AgELogMsgType MsgType,
+        long ErrorCode,
+        _bstr_t FileName,
+        long LineNo,
+        enum STKUtil::AgELogMsgDispID DispID );
+    HRESULT OnAnimUpdate (
+        double TimeEpSec );
+    HRESULT OnNewGlobeCtrlRequest (
+        long SceneID );
+    HRESULT OnNewMapCtrlRequest (
+        long WinID );
+    HRESULT OnBeforeNewScenario (
+        _bstr_t Scenario );
+    HRESULT OnBeforeLoadScenario (
+        _bstr_t Scenario );
+    HRESULT OnBeginScenarioClose ( );
+    HRESULT OnNewGfxAnalysisCtrlRequest (
+        long SceneID,
+        enum AgEGfxAnalysisMode eGfxAnalysisMode );
+};
+
+enum AgEGfxAnalysisMode
+{
+    eSolarPanelTool = 1,
+    eAreaTool = 2,
+    eObscurationTool = 3,
+    eAzElMaskTool = 4
+};
+
+struct __declspec(uuid("88610772-fbb2-413f-aec7-cb70e00e6395"))
+IAgUiAxGfxAnalysisCntrlEvents : IDispatch
+{
+    //
+    // Wrapper methods for error-handling
+    //
+
+    // Methods:
+    HRESULT KeyDown (
+        short * KeyCode,
+        short Shift );
+    HRESULT KeyPress (
+        short * KeyAscii );
+    HRESULT KeyUp (
+        short * KeyCode,
+        short Shift );
+    HRESULT Click ( );
+    HRESULT DblClick ( );
+    HRESULT MouseDown (
+        short Button,
+        short Shift,
+        OLE_XPOS_PIXELS X,
+        OLE_YPOS_PIXELS Y );
+    HRESULT MouseMove (
+        short Button,
+        short Shift,
+        OLE_XPOS_PIXELS X,
+        OLE_YPOS_PIXELS Y );
+    HRESULT MouseUp (
+        short Button,
+        short Shift,
+        OLE_XPOS_PIXELS X,
+        OLE_YPOS_PIXELS Y );
+};
+
+struct __declspec(uuid("60563f7f-1899-4bf6-81e1-d51f412c420c"))
+IAgUiAxGfxAnalysisCntrl : IDispatch
+{
+    //
+    // Property data
+    //
+
+    __declspec(property(get=GetApplication))
+    IAgSTKXApplicationPtr Application;
+    __declspec(property(get=GetWinID,put=PutWinID))
+    long WinID;
+    __declspec(property(get=GetVendorID,put=PutVendorID))
+    _bstr_t VendorID;
+    __declspec(property(get=GetNoLogo,put=PutNoLogo))
+    VARIANT_BOOL NoLogo;
+    __declspec(property(get=GetBackColor,put=PutBackColor))
+    OLE_COLOR BackColor;
+    __declspec(property(get=GetControlMode,put=PutControlMode))
+    enum AgEGfxAnalysisMode ControlMode;
+    __declspec(property(get=GetReadyState))
+    long ReadyState;
+    __declspec(property(get=GetPictureFromFile,put=PutPictureFromFile))
+    _bstr_t PictureFromFile;
+
+    //
+    // Wrapper methods for error-handling
+    //
+
+    OLE_COLOR GetBackColor ( );
+    void PutBackColor (
+        OLE_COLOR pclr );
+    IPictureDisp * GetPicture ( );
+    void PutRefPicture (
+        IPictureDisp * ppPicture );
+    void PutPicture (
+        IPictureDisp * ppPicture );
+    VARIANT_BOOL GetNoLogo ( );
+    void PutNoLogo (
+        VARIANT_BOOL pNoLogo );
+    _bstr_t GetVendorID ( );
+    void PutVendorID (
+        _bstr_t pbstrVal );
+    long GetReadyState ( );
+    IAgSTKXApplicationPtr GetApplication ( );
+    enum AgEGfxAnalysisMode GetControlMode ( );
+    void PutControlMode (
+        enum AgEGfxAnalysisMode peGfxAnalysisMode );
+    _bstr_t GetPictureFromFile ( );
+    void PutPictureFromFile (
+        _bstr_t pPictureFile );
+    long GetWinID ( );
+    void PutWinID (
+        long pVal );
+
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall get_BackColor (
+        /*[out,retval]*/ OLE_COLOR * pclr ) = 0;
+      virtual HRESULT __stdcall put_BackColor (
+        /*[in]*/ OLE_COLOR pclr ) = 0;
+      virtual HRESULT __stdcall get_Picture (
+        /*[out,retval]*/ IPictureDisp * * ppPicture ) = 0;
+      virtual HRESULT __stdcall putref_Picture (
+        /*[in]*/ IPictureDisp * ppPicture ) = 0;
+      virtual HRESULT __stdcall put_Picture (
+        /*[in]*/ IPictureDisp * ppPicture ) = 0;
+      virtual HRESULT __stdcall get_NoLogo (
+        /*[out,retval]*/ VARIANT_BOOL * pNoLogo ) = 0;
+      virtual HRESULT __stdcall put_NoLogo (
+        /*[in]*/ VARIANT_BOOL pNoLogo ) = 0;
+      virtual HRESULT __stdcall get_VendorID (
+        /*[out,retval]*/ BSTR * pbstrVal ) = 0;
+      virtual HRESULT __stdcall put_VendorID (
+        /*[in]*/ BSTR pbstrVal ) = 0;
+      virtual HRESULT __stdcall get_ReadyState (
+        /*[out,retval]*/ long * pclr ) = 0;
+      virtual HRESULT __stdcall get_Application (
+        /*[out,retval]*/ struct IAgSTKXApplication * * pVal ) = 0;
+      virtual HRESULT __stdcall get_ControlMode (
+        /*[out,retval]*/ enum AgEGfxAnalysisMode * peGfxAnalysisMode ) = 0;
+      virtual HRESULT __stdcall put_ControlMode (
+        /*[in]*/ enum AgEGfxAnalysisMode peGfxAnalysisMode ) = 0;
+      virtual HRESULT __stdcall get_PictureFromFile (
+        /*[out,retval]*/ BSTR * pPictureFile ) = 0;
+      virtual HRESULT __stdcall put_PictureFromFile (
+        /*[in]*/ BSTR pPictureFile ) = 0;
+      virtual HRESULT __stdcall get_WinID (
+        /*[out,retval]*/ long * pVal ) = 0;
+      virtual HRESULT __stdcall put_WinID (
+        /*[in]*/ long pVal ) = 0;
+};
+
+struct __declspec(uuid("4d7dcf2c-3cf7-4c28-abc2-e507e477e292"))
+AgUiAxVOCntrl;
+    // [ default ] interface IAgUiAxVOCntrl
+    // [ default, source ] dispinterface IAgUiAxVOCntrlEvents
+
+struct __declspec(uuid("7c55f3c4-7629-4fcc-b9fe-572b3f4ce46b"))
+AgUiAx2DCntrl;
+    // [ default ] interface IAgUiAx2DCntrl
+    // [ default, source ] dispinterface IAgUiAx2DCntrlEvents
+
+struct __declspec(uuid("d74dc72e-fc13-4055-a7e1-4207415ab1e3"))
+AgPickInfoData;
+    // [ default ] interface IAgPickInfoData
+
+struct __declspec(uuid("1b01a596-d761-4e01-87fd-e9fb928b69ac"))
+AgSTKXApplication;
+    // [ default ] interface IAgSTKXApplication
+    // [ default, source ] dispinterface IAgSTKXApplicationEvents
+
+struct __declspec(uuid("c938b88e-0fca-45e2-8f82-d9c45d1fbc79"))
+AgDataObject;
+    // [ default ] interface IAgDataObject
+
+struct __declspec(uuid("d7d68ade-1118-4d3c-bc36-c5ed6d8eab3c"))
+AgDataObjectFiles;
+    // [ default ] interface IAgDataObjectFiles
+
+struct __declspec(uuid("7b17151c-1d35-48a8-98fe-26b0f37811aa"))
+AgRubberBandPickInfoData;
+    // [ default ] interface IAgRubberBandPickInfoData
+
+struct __declspec(uuid("3186c1e0-d061-406b-a6f9-6d14058fc5e7"))
+AgObjPathCollection;
+    // [ default ] interface IAgObjPathCollection
+
+struct __declspec(uuid("6c9db875-2db8-4ee1-9b63-e3c210375c02"))
+AgDrawElemRect;
+    // [ default ] interface IAgDrawElemRect
+
+struct __declspec(uuid("469345b7-acdc-433a-a17e-f79533d7930e"))
+AgDrawElemCollection;
+    // [ default ] interface IAgDrawElemCollection
+
+struct __declspec(uuid("d0f1d2d4-4b9b-4595-b3ce-2f6cbb330dbc"))
+AgDraw2DElemRect;
+    // [ default ] interface IAgDrawElemRect
+
+struct __declspec(uuid("6e193268-ea76-4e61-bbbf-748d5e235bc9"))
+AgDraw2DElemCollection;
+    // [ default ] interface IAgDrawElemCollection
+
+struct __declspec(uuid("ab2193a6-a686-4bc6-9374-92e1d6afc5cb"))
+AgUiAxGfxAnalysisCntrl;
+    // [ default ] interface IAgUiAxGfxAnalysisCntrl
+    // [ default, source ] dispinterface IAgUiAxGfxAnalysisCntrlEvents
+
+struct __declspec(uuid("f1b79cdc-0775-4393-ae40-5a9eb377eee9"))
+AgWinProjPos;
+    // [ default ] interface IAgWinProjPos
+
+struct __declspec(uuid("29d2a7a1-8d71-428a-a908-5da986f6917d"))
+AgDrawElemLine;
+    // [ default ] interface IAgDrawElemLine
+
+} // namespace STKXLib
+
+#pragma pack(pop)
