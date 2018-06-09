@@ -31,16 +31,17 @@ memoryset=weirdfishes.ReinforcementLearningUnit()#记忆单元，存储每次的
 #radio REQUEST-SIZE EXP 24000 _ 18000 _ RND EXP 22000
 
 figpath="./Figure/"
-datapath='D:/data/2400_18000_20000/'
+datapath='G:/testData/2400_18000_20000/'
 #datapath='./OutConfigfile/'
 
-for i in range(353):
+for i in range(10):
     for sappi_i in superappinterval:
         for sapps_i in superappsize:
             for vbri_i in vbrinterval:
                 for vbrs_i in vbrsize:
                     for trafi_i in trafinterval: 
                         for trafs_i in trafsize:
+                            i=i+244
                             """
                             读取数据，对数据进行分类处理
                             """
@@ -63,14 +64,13 @@ for i in range(353):
                             vbr,superapp,trafficgen
                             """
                             eva=weirdfishes.EvaluationUnit()
+                            superapp=readdb.meandata('superapp')
+                            eva.calculateMetricEvaValue(superapp)
                             vbr=readdb.meandata('vbr')
                             eva.calculateMetricEvaValue(vbr)
                             trafficgen=readdb.meandata('trafficgen')
                             eva.calculateMetricEvaValue(trafficgen)
-                            superapp=readdb.meandata('superapp')
-                            eva.calculateMetricEvaValue(superapp)
-                            value=eva.evaluationvalue()
-                            print(value)                        
+                            value=eva.evaluationvalue()                     
                             """
                             状态动作保存：当前状态、评估值、动作、收益
                             如果是第一次仿真，动作与收益为缺省值null
@@ -82,24 +82,22 @@ for i in range(353):
                             """
                             state=[sappi_i,sapps_i,vbri_i,vbrs_i,trafi_i,trafs_i]
                             print(state)
+                            qos=eva.qoslist
+                            print(qos)
                             memoryset.insertmemoryunit(state=state,value=value)
-                        
-#===============================================================================================     
-                   
-GMMgamer=weirdfishes.GMMOptimizationUnit()
-data=GMMgamer.dropNaNworker(memoryset.memoryunit)                          
-c=GMMgamer.clusterworker(data,col1="value",col2="trafs")
-print(c)
-d=GMMgamer.componentselecter(c,0)
-print(d)
-bayesgamer=weirdfishes.BayesianOptimizationUnit()
-bayesgamer.gussianproccessfitter(d)
-test=bayesgamer.acquisitionfunction(kappa=0.67)
-bayesgamer.heatpointer(test)
-
-
-
-
+                            memoryset.qosinserter(state=state,qos=qos)
+print(memoryset.qosmemoryunit)        
+#==============================================================================                 
+#GMMgamer=weirdfishes.GMMOptimizationUnit()
+#data=GMMgamer.dropNaNworker(memoryset.memoryunit)                          
+#c=GMMgamer.clusterworker(data,col1="value",col2="trafs")
+#print(c)
+#d=GMMgamer.componentselecter(c,0)
+#print(d)
+#bayesgamer=weirdfishes.BayesianOptimizationUnit()
+#bayesgamer.gussianproccessfitter(d)
+#test=bayesgamer.acquisitionfunction(kappa=0.67)
+#bayesgamer.heatpointer(test)
 
 # =============================================================================
 # #EM算法
