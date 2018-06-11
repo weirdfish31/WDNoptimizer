@@ -86,6 +86,8 @@ for i in range(10):
                             print(qos)
                             memoryset.insertmemoryunit(state=state,value=value)
                             memoryset.qosinserter(state=state,qos=qos)
+                            
+                        
 print(memoryset.qosmemoryunit)        
 #==============================================================================                 
 #GMMgamer=weirdfishes.GMMOptimizationUnit()
