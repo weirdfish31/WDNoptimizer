@@ -142,13 +142,16 @@ vbrsize=[" 24000 "]
 # =============================================================================
 trafficgeninterval=[' DET 30MS ']
 #trafficgensize=[' RND DET 12000 ']
-trafficgensize=[' RND DET 8000 ',' RND DET 10000 ',' RND DET 12000 ',
-                ' RND DET 14000 ',' RND DET 16000 ',' RND DET 18000 ',
-                ' RND DET 20000 ',' RND DET 22000 ',' RND DET 24000 ',
-                ' RND DET 26000 ',' RND DET 28000 ',' RND DET 30000 ',
-                ' RND DET 32000 ',' RND DET 34000 ',' RND DET 36000 ',
-                ]
-
+# =============================================================================
+# trafficgensize=[' RND DET 8000 ',' RND DET 10000 ',' RND DET 12000 ',
+#                 ' RND DET 14000 ',' RND DET 16000 ',' RND DET 18000 ',
+#                 ' RND DET 20000 ',' RND DET 22000 ',' RND DET 24000 ',
+#                 ' RND DET 26000 ',' RND DET 28000 ',' RND DET 30000 ',
+#                 ' RND DET 32000 ',' RND DET 34000 ',' RND DET 36000 ',
+#                 ]
+# =============================================================================
+trafficgensize=[' RND DET 24000 ',' RND DET 26000 ',' RND DET 28000 ',' RND DET 30000 ',
+                ' RND DET 32000 ',' RND DET 34000 ',' RND DET 36000 ',]
 deliveryType = [' DELIVERY-TYPE UNRELIABLE ']
 routing =['OSPFv2']
 
@@ -223,7 +226,7 @@ def runTest():
                                                         if False:
                                                             continue
                                                         try:
-                                                            runWDNwordPro()
+#                                                            runWDNwordPro()
                                                             runbuildconfigfile()
                                                             runexata()
                                                             #+++++++++++++++++++++++++++++++++++
