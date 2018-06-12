@@ -10,6 +10,7 @@ main program
 import radiohead
 import weirdfishes
 import pandas as pd
+import numpy as np
 
 
 
@@ -91,26 +92,23 @@ for sappi_i in superappinterval:
                                 4）收益：动作之后的评估值的变化，遇上一次评估值之间的差
                             """
                             state=[sappi_i,sapps_i,vbri_i,vbrs_i,trafi_i,trafs_i]
-                            qos=eva.normalizedata
+                            qos=eva.qoslist
                             print(state)
                             memoryset.insertmemoryunit(state=state,value=value)
-                        
-#===============================================================================================                       
-print(memoryset.memoryunit)
-gmmgamer=weirdfishes.GMMOptimizationUnit(cluster=2)
-data=gmmgamer.dropNaNworker(memoryset.memoryunit)
-data=gmmgamer.clusterworker(data,col1="value",col2="vbrs")
-print(data)
-gmmgamer.gmmbuilder(data)
+                            memoryset.qosinserter(state=state,qos=qos)
+#==============================================================================                     
 
-boagamer=weirdfishes.BayesianOptimizationUnit()
-boagamer.gussianproccessfitter(data)
-ttt=boagamer.acquisitionfunction(0.6)
-gmmgamer.heatgragher(ttt)
+#==============================================================================
+ttt=np.array([[40000,20000]])
+print(memoryset.qosmemoryunit)
+qosgmmgamer=weirdfishes.GMMOptimizationUnit(cluster=4)
+testdata=qosgmmgamer.dropNaNworker(memoryset.qosmemoryunit)
+print(testdata)
+testdata=qosgmmgamer.clusterworker(testdata,col1='traf_messagecompletionrate',col2='sapp_jitter')
 
-#boagamer.gussianproccessfitter(data)
-#test=boagamer.acquisitionfunction(kappa=0.6)
-#boagamer.heatpointer(test)
+qosgmmgamer.gmmbuilder(testdata,fitx=1,fity=5,fitz=7)
+qosgmmgamer.heatgragher(ttt)
+
 
 
 
