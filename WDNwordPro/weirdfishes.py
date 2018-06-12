@@ -48,7 +48,7 @@ class GMMOptimizationUnit:
         testdata=data.dropna(axis=0,how='any')
         testdata=testdata.reset_index(drop=True)
         return testdata
-    def gmmbuilder(self,data):
+    def gmmbuilder(self,data,fitx=1,fity=5,fitz=6):
         """
         根据聚类的结果，对用以标签下的数据进行GP回归，得到均值标准差
         """
