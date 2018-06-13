@@ -23,6 +23,7 @@ import scipy
 from sklearn import mixture
 from sklearn.mixture import GMM
 from sklearn.cluster import KMeans
+import time
 
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 class GMMOptimizationUnit:
@@ -38,6 +39,7 @@ class GMMOptimizationUnit:
         self.n_clusters=cluster
         self.kernel=Matern(nu=2.5)
         self.wirecolor=['mediumpurple','lightgreen','gold','maroon']
+        self.componentweight={}#各components的权重，根据样本数分配
     
     def componentselecter(self,data,i):
         testdata=data[data.label==i]
@@ -48,6 +50,7 @@ class GMMOptimizationUnit:
         testdata=data.dropna(axis=0,how='any')
         testdata=testdata.reset_index(drop=True)
         return testdata
+            
     def gmmbuilder(self,data,fitx=1,fity=5,fitz=6):
         """
         根据聚类的结果，对用以标签下的数据进行GP回归，得到均值标准差
@@ -58,7 +61,7 @@ class GMMOptimizationUnit:
             testdata=testdata.reset_index(drop=True)
             self.npdata=np.array(testdata)
             self.reg=GaussianProcessRegressor(kernel=self.kernel,n_restarts_optimizer=10,alpha=0.1)
-            self.reg.fit(self.npdata[:,[1,5]],self.npdata[:,6])
+            self.reg.fit(self.npdata[:,[fitx,fity]],self.npdata[:,fitz])
             self.obj['output'+str(i)],self.obj['err'+str(i)]=self.reg.predict(np.c_[self.xset.ravel(),self.yset.ravel()],return_std=True)
             self.obj['output'+str(i)],self.obj['err'+str(i)]=self.obj['output'+str(i)].reshape(self.xset.shape),self.obj['err'+str(i)].reshape(self.xset.shape)
             self.obj['sigma'+str(i)]=np.sum(self.reg.predict(self.npdata[:,[1,5]],return_std=True)[1])
@@ -97,7 +100,94 @@ class GMMOptimizationUnit:
         plt.colorbar(mappable=im,ax=ax)
         plt.show() 
         
+    def UCBmethodhelper(self,x,gp,kappa):
+        """
+        upper confidence bound 方法
+        根据随机过程的方差和均值进行选择，不会陷入局部最优
+        这种做法比较的是置信区间内的最大值，尽管看起来简单，但是实际效果却意外的好
+        """
+        mean,std=gp.predict(x,return_std=True)
+        return mean + kappa*std
+    
+    def acquisitionfunctionmethod2(self,data,kappa,fitx=1,fity=5,fitz=6):
+        """
+        设计2
+        将不同聚类的得到的预测结果存入dataframe，
+        则根据聚类的道德权重甲醛得到UCB之和，得到选择的最大UCB值的query point
+        """
+        times  = time.clock() 
+        bounds=pd.DataFrame()
+        x_tries = np.random.uniform(0, 64000,size=(100000))
+        y_tries = np.random.uniform(0, 64000,size=(100000))
+        bounds['sapps']=x_tries
+        bounds['trafs']=y_tries
+        try_data = np.array(bounds)
+        componentmodel={}
+        UCBdic={}
+        for i in range(self.n_clusters):
+            testdata=data[data['label']==i]
+            testdata=testdata.reset_index(drop=True)
+            npdata=np.array(testdata)
+            componentmodel['reg'+str(i)]=GaussianProcessRegressor(kernel=self.kernel,n_restarts_optimizer=10,alpha=0.1)
+            componentmodel['reg'+str(i)].fit(npdata[:,[fitx,fity]],npdata[:,fitz])
+            ys=self.UCBmethodhelper(try_data,gp=componentmodel['reg'+str(i)],kappa=kappa)
+            UCBdic["ucb"+str(i)]=ys
+#            yyy=np.hstack(yyy,ys)
+        aaa=pd.DataFrame(UCBdic)
+        for i in range(aaa.shape[0]):
+            for j in range(self.n_clusters):
+                aaa.iloc[i,j]=aaa.iloc[i,j]*self.componentweight[str(j)]
+        aaa['total']=aaa.apply(lambda x: x.sum(), axis=1)
+        print(aaa)
+        ucbarray=np.array(aaa['total'])
+        try_max=try_data[ucbarray.argmax()]
+        max_acq=ucbarray.max()
+        print(max_acq)
+        print(try_max)
+        timee = time.clock()
+        rtime = timee - times
+        print('the config remote sensor select file run time is : %fS' % rtime)
+        return try_max
+                
+                
+                
         
+        
+    
+    def acquisitionfunctionmethod1(self,data,kappa,fitx=1,fity=5,fitz=6):
+        """
+        设计1：
+        1）先随机选取100000点进行估计，得到每个components上的UCB值最大的坐标
+        2）得到n个query point
+        """
+        times  = time.clock() 
+        bounds=pd.DataFrame()
+        x_tries = np.random.uniform(0, 64000,size=(100000))
+        y_tries = np.random.uniform(0, 64000,size=(100000))
+        bounds['sapps']=x_tries
+        bounds['trafs']=y_tries
+        try_data = np.array(bounds)
+        aaa=pd.DataFrame()
+        for i in range(self.n_clusters):
+            testdata=data[data['label']==i]
+            testdata=testdata.reset_index(drop=True)
+            npdata=np.array(testdata)
+            reg=GaussianProcessRegressor(kernel=self.kernel,n_restarts_optimizer=10,alpha=0.1)
+            reg.fit(npdata[:,[fitx,fity]],npdata[:,fitz])
+            ys=self.UCBmethodhelper(try_data,gp=reg,kappa=kappa)
+#            print(ys)
+#            print(np.shape(ys))
+            try_max=try_data[ys.argmax()]
+            max_acq=ys.max()
+            print(try_max)
+            print(max_acq)
+            test =pd.DataFrame([try_max])
+            aaa=aaa.append(test)
+        aaa=aaa.reset_index(drop=True)
+        timee = time.clock()
+        rtime = timee - times
+        print('the config remote sensor select file run time is : %fS' % rtime)
+        return aaa
             
     def clusterworker(self,data,col1,col2):
         """
@@ -113,11 +203,14 @@ class GMMOptimizationUnit:
         estimator.fit(c)
         lable_pred=estimator.labels_
         #统计各类的数据的数目
-        r1=pd.Series(estimator.labels_).value_counts()
-        print(r1)
+        self.r1=pd.Series(estimator.labels_).value_counts()
+        self.samplecount=data.iloc[:,0].size
+        for i in range(self.n_clusters):
+            self.componentweight[str(i)]=self.r1[i]/self.samplecount
+        print("The sample count is "+str(self.samplecount))
+        print(self.r1)
         r = pd.concat([data, pd.Series(estimator.labels_, index = data.index)], axis = 1)
         r.rename(columns={0:'label'},inplace=True)
-        print(r)
         for i in range(len(c)):
             if int(lable_pred[i])==0:
                 plt.scatter(c[i][0],c[i][1],color='red')
@@ -175,6 +268,8 @@ class BayesianOptimizationUnit:
     def gussianproccessfitter(self,data):
         """
         输入dataframe，进行GP拟合
+        output:预测的均值Mean of predictive distribution a query points
+        err:预测的标准差Standard deviation of predictive distribution at query points. Only returned when return_std is True.
         """
         self.train_data=np.array(data)
         self.reg=GaussianProcessRegressor(kernel=self.kernel,n_restarts_optimizer=10,alpha=0.1)
@@ -258,8 +353,8 @@ class BayesianOptimizationUnit:
         3）得到下一个仿真的点向量
         """
         bounds=pd.DataFrame()
-        x_tries = np.random.uniform(1, 64001,size=(100000))
-        y_tries = np.random.uniform(1, 64001,size=(100000))
+        x_tries = np.random.uniform(0, 64000,size=(100000))
+        y_tries = np.random.uniform(0, 64000,size=(100000))
         bounds['sapps']=x_tries
         bounds['trafs']=y_tries
         try_data = np.array(bounds)
@@ -270,8 +365,8 @@ class BayesianOptimizationUnit:
         print(max_acq)
         try:
             bounds_throughly=pd.DataFrame()
-            x_tries_throughly = np.random.uniform(1, 64001,size=(250))
-            y_tries_throughly = np.random.uniform(1, 64001,size=(250))
+            x_tries_throughly = np.random.uniform(0, 64000,size=(50))
+            y_tries_throughly = np.random.uniform(0, 64000,size=(50))
             bounds_throughly['sapps']=x_tries_throughly
             bounds_throughly['trafs']=y_tries_throughly
             try_data_throughly = np.array(bounds_throughly)
@@ -279,7 +374,7 @@ class BayesianOptimizationUnit:
                 # Find the minimum of minus the acquisition function
                 res = scipy.optimize.minimize(lambda x: -self.UCBmethod(x.reshape(-1, 2), gp=self.reg,kappa=kappa),
                                x_try.reshape(-1, 2),
-                               bounds=((1,64001),(1,64001)),
+                               bounds=((0,64000),(0,64000)),
                                method="L-BFGS-B")
                 if max_acq is None or -res.fun[0] >= max_acq:
                     try_max = res.x
