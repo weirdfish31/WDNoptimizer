@@ -99,18 +99,16 @@ for sappi_i in superappinterval:
 #==============================================================================                     
 
 #==============================================================================
+import weirdfishes
 ttt=np.array([[40000,20000]])
-print(memoryset.qosmemoryunit)
 qosgmmgamer=weirdfishes.GMMOptimizationUnit(cluster=4)
 testdata=qosgmmgamer.dropNaNworker(memoryset.qosmemoryunit)
 print(testdata)
 testdata=qosgmmgamer.clusterworker(testdata,col1='traf_messagecompletionrate',col2='sapp_jitter')
-
-qosgmmgamer.gmmbuilder(testdata,fitx=1,fity=5,fitz=7)
+#fitz=7 16
+qosgmmgamer.gmmbuilder(testdata,fitx=1,fity=5,fitz=16)
 qosgmmgamer.heatgragher(ttt)
-
-
-
+bbb=qosgmmgamer.acquisitionfunctionmethod2(testdata,0.6,1,5,16)
 
 
 
