@@ -1,19 +1,22 @@
-tipsï¼š
-1ï¼‰outaccessæ–‡ä»¶å¤¹å’Œnodetxtæ–‡ä»¶å¤¹é‡Œé¢çš„reportä¸å…¨ï¼Œgithubä¸€æ¬¡åªèƒ½ä¸Šä¼ 100ä¸ªæ–‡ä»¶ï¼ŒåŽç»­çš„WDNwordProç¨‹åºå¯ä»¥ç”Ÿæˆè¡¥å…¨æ‰€æœ‰çš„report
+2
 
+018/5/26
+ÔÚweirdfishes.pyÖÐµÄ¸ßË¹»ìºÏÄ£ÐÍÀàÖÐ¼ÓÈëÁË¾ÛÀàºÍnanÊý¾Ý´¦Àíº¯Êý
 
-
-ç”Ÿæˆæ•°æ®éƒ¨åˆ†ç¨‹åºï¼š
+2018/5/24
+Éú³ÉÊý¾Ý²¿·Ö³ÌÐò£º
 =======================================
-WDNwordPro.slnï¼šæ–°å»ºSTKåœºæ™¯ï¼Œç”Ÿæˆå¯è§æ€§æŠ¥è¡¨çš„c++ç¨‹åº
-readhelper.pyï¼šç”ŸæˆEXATAåœºæ™¯æ–‡ä»¶çš„configæ‰€éœ€è¦çš„å„ç§å‡½æ•°ã€ç±»
-confighandle.pyï¼šç”Ÿæˆconfigæ–‡ä»¶çš„ç¨‹åº
-firstdemo.pyï¼šå¾ªçŽ¯é…ç½®å‚æ•°EXATAå¯åŠ¨ä»¿çœŸè¾“å‡ºæ•°æ®çš„ç¨‹åº
+WDNwordPro.sln£ºÐÂ½¨STK³¡¾°£¬Éú³É¿É¼ûÐÔ±¨±íµÄc++³ÌÐò
+readhelper.py£ºÉú³ÉEXATA³¡¾°ÎÄ¼þµÄconfigËùÐèÒªµÄ¸÷ÖÖº¯Êý¡¢Àà
+confighandle.py£ºÉú³ÉconfigÎÄ¼þµÄ³ÌÐò
+firstdemo.py£ºÑ­»·ÅäÖÃ²ÎÊýEXATAÆô¶¯·ÂÕæÊä³öÊý¾ÝµÄ³ÌÐò
 
 
-æ•°æ®å¤„ç†éƒ¨åˆ†ç¨‹åºï¼š
+Êý¾Ý´¦Àí²¿·Ö³ÌÐò£º
 =======================================
-radiohead.pyï¼šEXATAReaderç±»ï¼Œè¯»å–æ•°æ®ä¸“ç”¨ç±»
-weirdfishes.pyï¼šé«˜æ–¯æ··åˆæ¨¡åž‹ç±»ã€è´å¶æ–¯ä¼˜åŒ–ç±»ã€ç½‘ç»œè¯„ä¼°ç±»ã€å¼ºåŒ–å­¦ä¹ ç±»ï¼ˆæœªå®Œæˆï¼Œå®šä¹‰stateï¼‰
-truelovewaits.py:æ•°æ®å¤„ç†ç¨‹åº
-reckoner.pyï¼šé«˜æ–¯æ··åˆæ¨¡åž‹å¤„ç†ç¨‹åº
+radiohead.py£ºEXATAReaderÀà£¬¶ÁÈ¡Êý¾Ý×¨ÓÃÀà
+weirdfishes.py£º¸ßË¹»ìºÏÄ£ÐÍÀà£¨¶Ôµ¥ÊýÖµµÄ´¦ÀíÒÑ¾­Íê³É£¬ÕýÔÚ¶Ô¶àÊýÖµµÄÀà½øÐÐ´¦Àí£©¡¢±´Ò¶Ë¹ÓÅ»¯Àà£¨»ù±¾Íê³É£©¡¢ÍøÂçÆÀ¹ÀÀà£¨Éú³Évalue£©¡¢Ç¿»¯Ñ§Ï°Àà£¨×´Ì¬ÐÅÏ¢´æ´¢£¬value»òqosÖ¸±ê£©
+truelovewaits.py:Êý¾Ý´¦Àí³ÌÐò£¨²âÊÔ³ÌÐò£©
+reckoner.py£º¸ßË¹»ìºÏÄ£ÐÍ´¦Àí³ÌÐò£¨·Ö²¼Í¼ºËÃÜ¶È¹À¼ÆÍ¼£©
+
+feedbackprocess.py£º½«µÃµ½µÄquery point ·µ»Ø·ÂÕæÖÐ£¬Éú³ÉÐÂÊý¾Ý
