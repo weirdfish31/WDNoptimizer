@@ -7,7 +7,7 @@ Created on Wed Apr 11 14:55:46 2018
 Bayesian Optimization Units
 Evaluation Units
 ReinforcementLearning Units
-主要针对单数值优化的类与函数
+主要针对单数值优化的类
 """
 #评估，增强学习记忆单元所需
 import math
@@ -41,6 +41,8 @@ class GMMOptimizationUnit:
         self.kernel=Matern(nu=2.5)
         self.wirecolor=['mediumpurple','lightgreen','gold','maroon']
         self.componentweight={}#各components的权重，根据样本数分配
+        self.obj={}
+        self.qosname=[]
     
     def componentselecter(self,data,i):
         testdata=data[data.label==i]
@@ -51,54 +53,96 @@ class GMMOptimizationUnit:
         testdata=data.dropna(axis=0,how='any')
         testdata=testdata.reset_index(drop=True)
         return testdata
-            
+    
+    def multiGMMbuilder(self,data,):
+        """
+        its important
+        根据历史选择的Qos指标得到的GMM模型，综合合成一个总体的分布，
+        从原来的直接对数据进行权重分配编程对预测后的模型之间的权重分配
+        """
+        for i in range(self.n_clusters):
+            self.obj['output_total_'+str(i)]=np.empty((128,128))
+            self.obj['err_total_'+str(i)]=np.empty((128,128))
+            for j in self.qosname:
+                self.obj['output_total_'+str(i)]=self.obj['output_total_'+str(i)]+self.obj['output_'+j+'_'+str(i)]
+                self.obj['err_total_'+str(i)]=self.obj['err_total_'+str(i)]+self.obj['err_'+j+'_'+str(i)]
+                self.obj['up_total_'+str(i)],self.obj['down_total_'+str(i)]=self.obj['output_total_'+str(i)]*(1+1.96*self.obj['err_total_'+str(i)]),self.obj['output_total_'+str(i)]*(1-1.96*self.obj['err_total_'+str(i)])
+    
+#    def mulitgragher(self,test,):
+#        """
+#        绘图，单指标的图与多指标合成的3D图
+#        """
+#        fig = plt.figure(figsize=(32,10))  
+#        for j in (range(self.qosname)+1):
+#            
+#        ax1 = fig.add_subplot(133, projection='3d')
+#        for i in range(self.n_clusters):
+#            ax1.plot_surface(self.xset,self.yset,self.obj['output_total_'+str(i)], cmap=plt.get_cmap('rainbow'),linewidth=0, antialiased=False)
+#            ax1.plot_wireframe(self.xset,self.yset,self.obj['up_total_'+str(i)],colors=self.wirecolor[i],linewidths=1,  
+#                                    rstride=10, cstride=2, antialiased=True)
+#            ax1.plot_wireframe(self.xset,self.yset,self.obj['down_total_'+str(i)],colors=self.wirecolor[i],linewidths=1,  
+#                                    rstride=10, cstride=2, antialiased=True)
+#        
+#        
+    
     def gmmbuilder(self,data,fitx=1,fity=5,fitz=6):
         """
         根据聚类的结果，对用以标签下的数据进行GP回归，得到均值标准差
         """
-        self.obj={}
+        collist=data.columns.values.tolist()
+        value=collist[fitz]
+        self.qosname.append(value)
         for i in range(self.n_clusters):
             testdata=data[data['label']==i]
             testdata=testdata.reset_index(drop=True)
             self.npdata=np.array(testdata)
             self.reg=GaussianProcessRegressor(kernel=self.kernel,n_restarts_optimizer=10,alpha=0.1)
             self.reg.fit(self.npdata[:,[fitx,fity]],self.npdata[:,fitz])
-            self.obj['output'+str(i)],self.obj['err'+str(i)]=self.reg.predict(np.c_[self.xset.ravel(),self.yset.ravel()],return_std=True)
-            self.obj['output'+str(i)],self.obj['err'+str(i)]=self.obj['output'+str(i)].reshape(self.xset.shape),self.obj['err'+str(i)].reshape(self.xset.shape)
-            self.obj['sigma'+str(i)]=np.sum(self.reg.predict(self.npdata[:,[1,5]],return_std=True)[1])
-            self.obj['up'+str(i)],self.obj['down'+str(i)]=self.obj['output'+str(i)]*(1+1.96*self.obj['err'+str(i)]),self.obj['output'+str(i)]*(1-1.96*self.obj['err'+str(i)])
-    def heatgragher(self,test):
+            self.obj['output_'+value+'_'+str(i)],self.obj['err_'+value+'_'+str(i)]=self.reg.predict(np.c_[self.xset.ravel(),self.yset.ravel()],return_std=True)
+            self.obj['output_'+value+'_'+str(i)],self.obj['err_'+value+'_'+str(i)]=self.obj['output_'+value+'_'+str(i)].reshape(self.xset.shape),self.obj['err_'+value+'_'+str(i)].reshape(self.xset.shape)
+            self.obj['sigma_'+str(i)]=np.sum(self.reg.predict(self.npdata[:,[1,5]],return_std=True)[1])
+            self.obj['up_'+value+'_'+str(i)],self.obj['down_'+value+'_'+str(i)]=self.obj['output_'+value+'_'+str(i)]*(1+1.96*self.obj['err_'+value+'_'+str(i)]),self.obj['output_'+value+'_'+str(i)]*(1-1.96*self.obj['err_'+value+'_'+str(i)])
+    def heatgragher(self,data,test,fitz=6):
         """
         绘制热力图和预测的下一个点，坐标是自适应的
         """
+        collist=data.columns.values.tolist()
+        value=collist[fitz]
         fig = plt.figure(figsize=(21,10))  
         ax1 = fig.add_subplot(121, projection='3d')
         for i in range(self.n_clusters):
-            self.obj['surf'+str(i)]=ax1.plot_surface(self.xset,self.yset,self.obj['output'+str(i)], cmap=plt.get_cmap('rainbow'),linewidth=0, antialiased=False)
-            self.obj['surf_u'+str(i)]=ax1.plot_wireframe(self.xset,self.yset,self.obj['up'+str(i)],colors=self.wirecolor[i],linewidths=1,  
+            ax1.plot_surface(self.xset,self.yset,self.obj['output_'+value+'_'+str(i)], cmap=plt.get_cmap('rainbow'),linewidth=0, antialiased=False)
+            ax1.plot_wireframe(self.xset,self.yset,self.obj['up_'+value+'_'+str(i)],colors=self.wirecolor[i],linewidths=1,  
                                     rstride=10, cstride=2, antialiased=True)
-            self.obj['surf_d'+str(i)]=ax1.plot_wireframe(self.xset,self.yset,self.obj['down'+str(i)],colors=self.wirecolor[i],linewidths=1,  
+            ax1.plot_wireframe(self.xset,self.yset,self.obj['down_'+value+'_'+str(i)],colors=self.wirecolor[i],linewidths=1,  
                                     rstride=10, cstride=2, antialiased=True)
-        ax1.scatter(self.npdata[:,1],self.npdata[:,5],self.npdata[:,6],c='black')  
-        ax1.set_title('the predict mean value at ('+str(test[0,0])+'  '+str(test[0,1])+'): {0} '.format(self.reg.predict(test)[0]))  
-        ax1.set_xlabel('sapps')  
-        ax1.set_ylabel('trafs')  
-        ax1.set_zlabel('value') 
-        
-        ax = fig.add_subplot(122)  
-        s = ax.scatter(self.npdata[:,1],self.npdata[:,5],self.npdata[:,6],cmap=plt.cm.viridis,c='red')
-        im=ax.imshow(self.obj['output1'], interpolation='bilinear', origin='lower',  
-                       extent=(self.xmin, self.xmax-1, self.ymin, self.ymax), aspect='auto')
-          
-        ax.set_title('the predict mean ')  
-        ax.hlines(test[0,1],self.xmin, self.xmax-1)  
-        ax.vlines(test[0,0],self.ymin, self.ymax)  
-        ax.text(test[0,0],test[0,1],'{0}'.format(self.reg.predict(test)[0]),ha='left',
-                va='bottom',color='k',size=15,rotation=0)  
-        ax.set_xlabel('sapps')  
-        ax.set_ylabel('trafs')  
-        plt.subplots_adjust(left=0.05, top=0.95, right=0.95)
-        plt.colorbar(mappable=im,ax=ax)
+# =============================================================================
+#             self.obj['surf'+str(i)]=ax1.plot_surface(self.xset,self.yset,self.obj['output_'+value+'_'+str(i)], cmap=plt.get_cmap('rainbow'),linewidth=0, antialiased=False)
+#             self.obj['surf_u'+str(i)]=ax1.plot_wireframe(self.xset,self.yset,self.obj['up_'+value+'_'+str(i)],colors=self.wirecolor[i],linewidths=1,  
+#                                     rstride=10, cstride=2, antialiased=True)
+#             self.obj['surf_d'+str(i)]=ax1.plot_wireframe(self.xset,self.yset,self.obj['down_'+value+'_'+str(i)],colors=self.wirecolor[i],linewidths=1,  
+#                                     rstride=10, cstride=2, antialiased=True)
+# =============================================================================
+#        ax1.scatter(self.npdata[:,1],self.npdata[:,5],self.npdata[:,6],c='black')  
+#        ax1.set_title('the predict mean output at ('+str(test[0,0])+'  '+str(test[0,1])+'): {0} '.format(self.reg.predict(test)[0]))  
+#        ax1.set_xlabel('sapps')  
+#        ax1.set_ylabel('trafs')  
+#        ax1.set_zlabel('value') 
+#        
+#        ax = fig.add_subplot(122)  
+#        s = ax.scatter(self.npdata[:,1],self.npdata[:,5],self.npdata[:,6],cmap=plt.cm.viridis,c='red')
+#        im=ax.imshow(self.obj['output_'+value+'_1'], interpolation='bilinear', origin='lower',  
+#                       extent=(self.xmin, self.xmax-1, self.ymin, self.ymax), aspect='auto')
+#          
+#        ax.set_title('the predict mean ')  
+#        ax.hlines(test[0,1],self.xmin, self.xmax-1)  
+#        ax.vlines(test[0,0],self.ymin, self.ymax)  
+#        ax.text(test[0,0],test[0,1],'{0}'.format(self.reg.predict(test)[0]),ha='left',
+#                va='bottom',color='k',size=15,rotation=0)  
+#        ax.set_xlabel('sapps')  
+#        ax.set_ylabel('trafs')  
+#        plt.subplots_adjust(left=0.05, top=0.95, right=0.95)
+#        plt.colorbar(mappable=im,ax=ax)
         plt.show() 
         
     def UCBmethodhelper(self,x,gp,kappa):
