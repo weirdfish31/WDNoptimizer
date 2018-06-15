@@ -68,22 +68,28 @@ class GMMOptimizationUnit:
                 self.obj['err_total_'+str(i)]=self.obj['err_total_'+str(i)]+self.obj['err_'+j+'_'+str(i)]
                 self.obj['up_total_'+str(i)],self.obj['down_total_'+str(i)]=self.obj['output_total_'+str(i)]*(1+1.96*self.obj['err_total_'+str(i)]),self.obj['output_total_'+str(i)]*(1-1.96*self.obj['err_total_'+str(i)])
     
-    def mulitgragher(self,test,):
+    def mulitgragher(self,data,test):
         """
         绘图，单指标的图与多指标合成的3D图
         """
-        fig = plt.figure(figsize=(32,10))  
-        for j in (range(self.qosname)+1):
+#        npdata=np.array(data)
+        fig = plt.figure(figsize=(21,10))  
+
             
-        ax1 = fig.add_subplot(133, projection='3d')
+        ax3 = fig.add_subplot(121, projection='3d')
         for i in range(self.n_clusters):
-            ax1.plot_surface(self.xset,self.yset,self.obj['output_total_'+str(i)], cmap=plt.get_cmap('rainbow'),linewidth=0, antialiased=False)
-            ax1.plot_wireframe(self.xset,self.yset,self.obj['up_total_'+str(i)],colors=self.wirecolor[i],linewidths=1,  
+            ax3.plot_surface(self.xset,self.yset,self.obj['output_total_'+str(i)], cmap=plt.get_cmap('rainbow'),linewidth=0, antialiased=False)
+            ax3.plot_wireframe(self.xset,self.yset,self.obj['up_total_'+str(i)],colors=self.wirecolor[i],linewidths=1,  
                                     rstride=10, cstride=2, antialiased=True)
-            ax1.plot_wireframe(self.xset,self.yset,self.obj['down_total_'+str(i)],colors=self.wirecolor[i],linewidths=1,  
+            ax3.plot_wireframe(self.xset,self.yset,self.obj['down_total_'+str(i)],colors=self.wirecolor[i],linewidths=1,  
                                     rstride=10, cstride=2, antialiased=True)
-#        
-#        
+#        ax3.scatter(npdata[:,1],npdata[:,5],npdata[:,7],c='black')  
+        ax3.set_title('the predict mean output at ('+str(test[0,0])+'  '+str(test[0,1])+'): {0} '.format(self.reg.predict(test)[0]))  
+        ax3.set_xlabel('sapps')  
+        ax3.set_ylabel('trafs')  
+        ax3.set_zlabel('value') 
+        plt.show() 
+        
     
     def gmmbuilder(self,data,fitx=1,fity=5,fitz=6):
         """
@@ -102,6 +108,8 @@ class GMMOptimizationUnit:
             self.obj['output_'+value+'_'+str(i)],self.obj['err_'+value+'_'+str(i)]=self.obj['output_'+value+'_'+str(i)].reshape(self.xset.shape),self.obj['err_'+value+'_'+str(i)].reshape(self.xset.shape)
             self.obj['sigma_'+str(i)]=np.sum(self.reg.predict(self.npdata[:,[1,5]],return_std=True)[1])
             self.obj['up_'+value+'_'+str(i)],self.obj['down_'+value+'_'+str(i)]=self.obj['output_'+value+'_'+str(i)]*(1+1.96*self.obj['err_'+value+'_'+str(i)]),self.obj['output_'+value+'_'+str(i)]*(1-1.96*self.obj['err_'+value+'_'+str(i)])
+    
+    
     def heatgragher(self,data,test,fitz=6):
         """
         绘制热力图和预测的下一个点，坐标是自适应的
