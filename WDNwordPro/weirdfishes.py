@@ -7,6 +7,7 @@ Created on Wed Apr 11 14:55:46 2018
 Bayesian Optimization Units
 Evaluation Units
 ReinforcementLearning Units
+主要针对单数值优化的类与函数
 """
 #评估，增强学习记忆单元所需
 import math
@@ -138,7 +139,7 @@ class GMMOptimizationUnit:
             for j in range(self.n_clusters):
                 aaa.iloc[i,j]=aaa.iloc[i,j]*self.componentweight[str(j)]
         aaa['total']=aaa.apply(lambda x: x.sum(), axis=1)
-        print(aaa)
+#        print(aaa)
         ucbarray=np.array(aaa['total'])
         try_max=try_data[ucbarray.argmax()]
         max_acq=ucbarray.max()
@@ -146,7 +147,7 @@ class GMMOptimizationUnit:
         print(try_max)
         timee = time.clock()
         rtime = timee - times
-        print('the config remote sensor select file run time is : %fS' % rtime)
+        print('the AFmethod2 run time is : %fS' % rtime)
         return try_max
                 
                 
@@ -186,7 +187,7 @@ class GMMOptimizationUnit:
         aaa=aaa.reset_index(drop=True)
         timee = time.clock()
         rtime = timee - times
-        print('the config remote sensor select file run time is : %fS' % rtime)
+        print('theAFmethod1 run time is : %fS' % rtime)
         return aaa
             
     def clusterworker(self,data,col1,col2):
