@@ -53,21 +53,33 @@ class GMMOptimizationUnit:
         testdata=data.dropna(axis=0,how='any')
         testdata=testdata.reset_index(drop=True)
         return testdata
-    
-    def multiGMMbuilder(self,data,):
+
+    def multiGMMbuilder(self):
         """
         its important
         根据历史选择的Qos指标得到的GMM模型，综合合成一个总体的分布，
         从原来的直接对数据进行权重分配编程对预测后的模型之间的权重分配
+        temp editon
         """
         for i in range(self.n_clusters):
-            self.obj['output_total_'+str(i)]=np.empty((128,128))
-            self.obj['err_total_'+str(i)]=np.empty((128,128))
-            for j in self.qosname:
-                self.obj['output_total_'+str(i)]=self.obj['output_total_'+str(i)]+self.obj['output_'+j+'_'+str(i)]
-                self.obj['err_total_'+str(i)]=self.obj['err_total_'+str(i)]+self.obj['err_'+j+'_'+str(i)]
-                self.obj['up_total_'+str(i)],self.obj['down_total_'+str(i)]=self.obj['output_total_'+str(i)]*(1+1.96*self.obj['err_total_'+str(i)]),self.obj['output_total_'+str(i)]*(1-1.96*self.obj['err_total_'+str(i)])
-    
+            self.obj['output_total_'+str(i)]=self.obj['output_traf_messagecompletionrate_'+str(i)]+self.obj['output_sapp_jitter_'+str(i)]
+            self.obj['err_total_'+str(i)]=self.obj['err_traf_messagecompletionrate_'+str(i)]+self.obj['err_sapp_jitter_'+str(i)]
+            self.obj['up_total_'+str(i)],self.obj['down_total_'+str(i)]=self.obj['output_total_'+str(i)]*(1+1.96*self.obj['err_total_'+str(i)]),self.obj['output_total_'+str(i)]*(1-1.96*self.obj['err_total_'+str(i)])
+       
+#    def multiGMMbuilder(self,data,):
+#        """
+#        its important
+#        根据历史选择的Qos指标得到的GMM模型，综合合成一个总体的分布，
+#        从原来的直接对数据进行权重分配编程对预测后的模型之间的权重分配
+#        """
+#        for i in range(self.n_clusters):
+#            self.obj['output_total_'+str(i)]=np.empty((128,128))
+#            self.obj['err_total_'+str(i)]=np.empty((128,128))
+#            for j in self.qosname:
+#                self.obj['output_total_'+str(i)]=self.obj['output_total_'+str(i)]+self.obj['output_'+j+'_'+str(i)]
+#                self.obj['err_total_'+str(i)]=self.obj['err_total_'+str(i)]+self.obj['err_'+j+'_'+str(i)]
+#                self.obj['up_total_'+str(i)],self.obj['down_total_'+str(i)]=self.obj['output_total_'+str(i)]*(1+1.96*self.obj['err_total_'+str(i)]),self.obj['output_total_'+str(i)]*(1-1.96*self.obj['err_total_'+str(i)])
+#    
     def mulitgragher(self,data,test):
         """
         绘图，单指标的图与多指标合成的3D图
@@ -116,6 +128,7 @@ class GMMOptimizationUnit:
         """
         collist=data.columns.values.tolist()
         value=collist[fitz]
+        npdata=np.array(data)
         fig = plt.figure(figsize=(21,10))  
         ax1 = fig.add_subplot(121, projection='3d')
         for i in range(self.n_clusters):
@@ -131,26 +144,26 @@ class GMMOptimizationUnit:
 #             self.obj['surf_d'+str(i)]=ax1.plot_wireframe(self.xset,self.yset,self.obj['down_'+value+'_'+str(i)],colors=self.wirecolor[i],linewidths=1,  
 #                                     rstride=10, cstride=2, antialiased=True)
 # =============================================================================
-        ax1.scatter(self.npdata[:,1],self.npdata[:,5],self.npdata[:,6],c='black')  
+        ax1.scatter(npdata[:,1],npdata[:,5],npdata[:,6],c='black')  
         ax1.set_title('the predict mean output at ('+str(test[0,0])+'  '+str(test[0,1])+'): {0} '.format(self.reg.predict(test)[0]))  
         ax1.set_xlabel('sapps')  
         ax1.set_ylabel('trafs')  
         ax1.set_zlabel('value') 
         
-        ax = fig.add_subplot(122)  
-        s = ax.scatter(self.npdata[:,1],self.npdata[:,5],self.npdata[:,6],cmap=plt.cm.viridis,c='red')
-        im=ax.imshow(self.obj['output_'+value+'_1'], interpolation='bilinear', origin='lower',  
-                       extent=(self.xmin, self.xmax-1, self.ymin, self.ymax), aspect='auto')
-          
-        ax.set_title('the predict mean ')  
-        ax.hlines(test[0,1],self.xmin, self.xmax-1)  
-        ax.vlines(test[0,0],self.ymin, self.ymax)  
-        ax.text(test[0,0],test[0,1],'{0}'.format(self.reg.predict(test)[0]),ha='left',
-                va='bottom',color='k',size=15,rotation=0)  
-        ax.set_xlabel('sapps')  
-        ax.set_ylabel('trafs')  
-        plt.subplots_adjust(left=0.05, top=0.95, right=0.95)
-        plt.colorbar(mappable=im,ax=ax)
+#        ax = fig.add_subplot(122)  
+#        s = ax.scatter(self.npdata[:,1],self.npdata[:,5],self.npdata[:,6],cmap=plt.cm.viridis,c='red')
+#        im=ax.imshow(self.obj['output_'+value+'_1'], interpolation='bilinear', origin='lower',  
+#                       extent=(self.xmin, self.xmax-1, self.ymin, self.ymax), aspect='auto')
+#          
+#        ax.set_title('the predict mean ')  
+#        ax.hlines(test[0,1],self.xmin, self.xmax-1)  
+#        ax.vlines(test[0,0],self.ymin, self.ymax)  
+#        ax.text(test[0,0],test[0,1],'{0}'.format(self.reg.predict(test)[0]),ha='left',
+#                va='bottom',color='k',size=15,rotation=0)  
+#        ax.set_xlabel('sapps')  
+#        ax.set_ylabel('trafs')  
+#        plt.subplots_adjust(left=0.05, top=0.95, right=0.95)
+#        plt.colorbar(mappable=im,ax=ax)
         plt.show() 
         
     def UCBmethodhelper(self,x,gp,kappa):
