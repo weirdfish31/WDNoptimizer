@@ -11,7 +11,7 @@ this is the Scenario test build process,
         the usage is :
             WDNwordPro.exe
 ###3: run the WNDconfigHandle.py to build the Scenario config file,
-        the input config file : appConfig.json, tcpbuffer.json, linkConfig.json,
+        the input config file : appConfig. json, tcpbuffer.json, linkConfig.json,
         under the ./configfile folder, so the modify the files represents the different config of net
         the usage is :
             python WNDconfigHandle.py
@@ -25,8 +25,6 @@ import  os
 import time
 import shutil
 import json
-
-import weirdfishes
 import pandas as pd
 
 # pythonexe = 'F:\\ProgramData\\Anaconda3\\python.exe'
@@ -141,7 +139,7 @@ vbrsize=[" 24000 "]
 #          ]
 # =============================================================================
 trafficgeninterval=[' DET 30MS ']
-#trafficgensize=[' RND DET 12000 ']
+trafficgensize=[' RND DET 36000 ']
 # =============================================================================
 # trafficgensize=[' RND DET 8000 ',' RND DET 10000 ',' RND DET 12000 ',
 #                 ' RND DET 14000 ',' RND DET 16000 ',' RND DET 18000 ',
@@ -150,8 +148,7 @@ trafficgeninterval=[' DET 30MS ']
 #                 ' RND DET 32000 ',' RND DET 34000 ',' RND DET 36000 ',
 #                 ]
 # =============================================================================
-trafficgensize=[' RND DET 24000 ',' RND DET 26000 ',' RND DET 28000 ',' RND DET 30000 ',
-                ' RND DET 32000 ',' RND DET 34000 ',' RND DET 36000 ',]
+
 deliveryType = [' DELIVERY-TYPE UNRELIABLE ']
 routing =['OSPFv2']
 
@@ -162,10 +159,6 @@ rsBand = ['0.03G']
 rsDrop = ['0.0015']
 
 
-
-flowdata=pd.DataFrame()#所有数据库的流聚合
-appdata=pd.DataFrame()#所有数据库的某种业务的聚合
-memoryset=weirdfishes.ReinforcementLearningUnit()#记忆单元，存储每次的状态
 
 #dataset='test_ REQUEST-SIZE EXP 18000 _ 2000'
 #radio REQUEST-SIZE EXP 24000 _ 18000 _ RND EXP 22000
@@ -190,7 +183,7 @@ def runTest():
                                             for trafficgeninterval_i in trafficgeninterval:
                                                 for trafficgensize_i in trafficgensize:
                                                     for i in range(60):                                                        
-#                                                        i = i +43
+#                                                        i = i +24
                                                         linkconfig = jsonread('./configfile/linkConfig.json')
                                                         linkconfig['Sat'][0] = satBand_i
                                                         linkconfig['Sat'][1] = satDrop_i
@@ -229,9 +222,6 @@ def runTest():
 #                                                            runWDNwordPro()
                                                             runbuildconfigfile()
                                                             runexata()
-                                                            #+++++++++++++++++++++++++++++++++++
-     
-                                                            #+++++++++++++++++++++++++++++++++++
                                                             """
                                                             暂时注释
                                                             """
@@ -240,7 +230,7 @@ def runTest():
                                                             continue
     #                                                    except Exception as e:
     #                                                        ferro = open(simName + '.erro', 'w')
-    #                                                        ferro.write(writeStr)
+#                                                            ferro.write(writeStr)
 
 
 
