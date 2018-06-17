@@ -151,7 +151,9 @@ class GMMOptimizationUnit:
         ax1.set_xlabel('sapps')  
         ax1.set_ylabel('trafs')  
         ax1.set_zlabel('value') 
-        
+        """
+        单层的热力图目前GMM模型不好画
+        """
 #        ax = fig.add_subplot(122)  
 #        s = ax.scatter(self.npdata[:,1],self.npdata[:,5],self.npdata[:,6],cmap=plt.cm.viridis,c='red')
 #        im=ax.imshow(self.obj['output_'+value+'_1'], interpolation='bilinear', origin='lower',  
@@ -194,13 +196,11 @@ class GMMOptimizationUnit:
             componentmodel['reg'+str(fita)+str(i)].fit(npdata[:,[fitx,fity]],npdata[:,fitz])
             ys=self.UCBmethodhelper(try_data,gp=componentmodel['reg'+str(fitz)+str(i)],kappa=kappa)+self.UCBmethodhelper(try_data,gp=componentmodel['reg'+str(fita)+str(i)],kappa=kappa)
             UCBdic["ucb"+str(i)]=ys
-#            yyy=np.hstack(yyy,ys)
         aaa=pd.DataFrame(UCBdic)
         for i in range(aaa.shape[0]):
             for j in range(self.n_clusters):
                 aaa.iloc[i,j]=aaa.iloc[i,j]*self.componentweight[str(j)]
         aaa['total']=aaa.apply(lambda x: x.sum(), axis=1)
-#        print(aaa)
         ucbarray=np.array(aaa['total'])
         try_max=try_data[ucbarray.argmax()]
         try_max=try_max.astype(int)#为了EXATA配置文件，把询问点改为整数型
@@ -263,10 +263,6 @@ class GMMOptimizationUnit:
         print('the AFmethod2 run time is : %fS' % rtime)
         return try_max
                 
-                
-                
-        
-        
     
     def acquisitionfunctionmethod1(self,data,kappa,fitx=1,fity=5,fitz=6):
         """
