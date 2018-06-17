@@ -59,7 +59,7 @@ class GMMOptimizationUnit:
         its important
         根据历史选择的Qos指标得到的GMM模型，综合合成一个总体的分布，
         从原来的直接对数据进行权重分配编程对预测后的模型之间的权重分配
-        temp editon
+        temp editon 固定的两个指标的合成加权
         """
         for i in range(self.n_clusters):
             self.obj['output_total_'+str(i)]=self.obj['output_traf_messagecompletionrate_'+str(i)]+self.obj['output_sapp_jitter_'+str(i)]
@@ -79,7 +79,9 @@ class GMMOptimizationUnit:
 #                self.obj['output_total_'+str(i)]=self.obj['output_total_'+str(i)]+self.obj['output_'+j+'_'+str(i)]
 #                self.obj['err_total_'+str(i)]=self.obj['err_total_'+str(i)]+self.obj['err_'+j+'_'+str(i)]
 #                self.obj['up_total_'+str(i)],self.obj['down_total_'+str(i)]=self.obj['output_total_'+str(i)]*(1+1.96*self.obj['err_total_'+str(i)]),self.obj['output_total_'+str(i)]*(1-1.96*self.obj['err_total_'+str(i)])
-#    
+#  
+
+
     def mulitgragher(self,data,test):
         """
         绘图，单指标的图与多指标合成的3D图
@@ -166,6 +168,51 @@ class GMMOptimizationUnit:
 #        plt.colorbar(mappable=im,ax=ax)
         plt.show() 
         
+    def multiUCBhelper(self,data,kappa,fitx=1,fity=5,fitz=7,fita=16):
+        """
+        设计2
+        将不同聚类得到的预测结果存入dataframe，生成对100000个随机点的预测的reg模型
+        不同指标的UCB值相加
+        则根据聚类得到的权重加权得到UCB之和，得到选择的最大UCB值的query point
+        """
+        times  = time.clock() 
+        bounds=pd.DataFrame()
+        x_tries = np.random.uniform(0, 64000,size=(100000))
+        y_tries = np.random.uniform(0, 64000,size=(100000))
+        bounds['sapps']=x_tries
+        bounds['trafs']=y_tries
+        try_data = np.array(bounds)
+        componentmodel={}
+        UCBdic={}
+        for i in range(self.n_clusters):
+            testdata=data[data['label']==i]
+            testdata=testdata.reset_index(drop=True)
+            npdata=np.array(testdata)
+            componentmodel['reg'+str(fitz)+str(i)]=GaussianProcessRegressor(kernel=self.kernel,n_restarts_optimizer=10,alpha=0.1)
+            componentmodel['reg'+str(fitz)+str(i)].fit(npdata[:,[fitx,fity]],npdata[:,fitz])
+            componentmodel['reg'+str(fita)+str(i)]=GaussianProcessRegressor(kernel=self.kernel,n_restarts_optimizer=10,alpha=0.1)
+            componentmodel['reg'+str(fita)+str(i)].fit(npdata[:,[fitx,fity]],npdata[:,fitz])
+            ys=self.UCBmethodhelper(try_data,gp=componentmodel['reg'+str(fitz)+str(i)],kappa=kappa)+self.UCBmethodhelper(try_data,gp=componentmodel['reg'+str(fita)+str(i)],kappa=kappa)
+            UCBdic["ucb"+str(i)]=ys
+#            yyy=np.hstack(yyy,ys)
+        aaa=pd.DataFrame(UCBdic)
+        for i in range(aaa.shape[0]):
+            for j in range(self.n_clusters):
+                aaa.iloc[i,j]=aaa.iloc[i,j]*self.componentweight[str(j)]
+        aaa['total']=aaa.apply(lambda x: x.sum(), axis=1)
+#        print(aaa)
+        ucbarray=np.array(aaa['total'])
+        try_max=try_data[ucbarray.argmax()]
+        try_max=try_max.astype(int)#为了EXATA配置文件，把询问点改为整数型
+        max_acq=ucbarray.max()
+        print(max_acq)
+        print(try_max)
+        timee = time.clock()
+        rtime = timee - times
+        print('the multi-AF run time is : %fS' % rtime)
+        return try_max
+    
+    
     def UCBmethodhelper(self,x,gp,kappa):
         """
         upper confidence bound 方法
@@ -207,6 +254,7 @@ class GMMOptimizationUnit:
 #        print(aaa)
         ucbarray=np.array(aaa['total'])
         try_max=try_data[ucbarray.argmax()]
+        try_max=try_max.astype(int)#为了EXATA配置文件，把询问点改为整数型
         max_acq=ucbarray.max()
         print(max_acq)
         print(try_max)
@@ -244,6 +292,7 @@ class GMMOptimizationUnit:
 #            print(ys)
 #            print(np.shape(ys))
             try_max=try_data[ys.argmax()]
+            try_max=try_max.astype(int)#为了EXATA配置文件，把询问点改为整数型
             max_acq=ys.max()
             print(try_max)
             print(max_acq)
@@ -426,6 +475,7 @@ class BayesianOptimizationUnit:
         try_data = np.array(bounds)
         ys=self.UCBmethod(try_data,gp=self.reg,kappa=kappa)
         try_max=try_data[ys.argmax()]
+        try_max=try_max.astype(int)#为了EXATA配置文件，把询问点改为整数型
         max_acq=ys.max()
         print(try_max)
         print(max_acq)
@@ -444,6 +494,7 @@ class BayesianOptimizationUnit:
                                method="L-BFGS-B")
                 if max_acq is None or -res.fun[0] >= max_acq:
                     try_max = res.x
+                    try_max=try_max.astype(int)#为了EXATA配置文件，把询问点改为整数型
                     max_acq = -res.fun[0]
         except:
             print('L-BFGS-B didn\'t work!!!')
