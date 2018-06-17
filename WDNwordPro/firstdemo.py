@@ -121,7 +121,7 @@ def writefile(file, wStr):
 #                ]
 # =============================================================================
 superapinterval = [' REQUEST-INTERVAL EXP 20MS ']
-superappsize=[" REQUEST-SIZE DET 30000 "]
+superappsize=[" REQUEST-SIZE DET 60000 "]
 # =============================================================================
 # superappsize=[" REQUEST-SIZE EXP 8000 "," REQUEST-SIZE EXP 10000 "," REQUEST-SIZE EXP 12000 ",
 #          " REQUEST-SIZE EXP 14000 "," REQUEST-SIZE EXP 16000 "," REQUEST-SIZE EXP 18000 ",
@@ -139,15 +139,13 @@ vbrsize=[" 24000 "]
 #          ]
 # =============================================================================
 trafficgeninterval=[' DET 30MS ']
-trafficgensize=[' RND DET 36000 ']
-# =============================================================================
-# trafficgensize=[' RND DET 8000 ',' RND DET 10000 ',' RND DET 12000 ',
-#                 ' RND DET 14000 ',' RND DET 16000 ',' RND DET 18000 ',
-#                 ' RND DET 20000 ',' RND DET 22000 ',' RND DET 24000 ',
-#                 ' RND DET 26000 ',' RND DET 28000 ',' RND DET 30000 ',
-#                 ' RND DET 32000 ',' RND DET 34000 ',' RND DET 36000 ',
-#                 ]
-# =============================================================================
+#trafficgensize=[' RND DET 36000 ']
+trafficgensize=[' RND DET 10000 ',' RND DET 12000 ',
+                ' RND DET 14000 ',' RND DET 16000 ',' RND DET 18000 ',
+                ' RND DET 20000 ',' RND DET 22000 ',' RND DET 24000 ',
+                ' RND DET 26000 ',' RND DET 28000 ',' RND DET 30000 ',
+                ' RND DET 32000 ',' RND DET 34000 ',' RND DET 36000 ',
+                ]
 
 deliveryType = [' DELIVERY-TYPE UNRELIABLE ']
 routing =['OSPFv2']
