@@ -27,22 +27,30 @@ class FeedBackWorker:
         self.figpath="./Figure/"
         self.outdatapath='./OutConfigfile/'
         
-        self.superapinterval = [' REQUEST-INTERVAL EXP 20MS ']
-        self.superappsize=[" REQUEST-SIZE DET 30000 "]
+        self.superapinterval = ' REQUEST-INTERVAL EXP 20MS '
+        self.superappsize=" REQUEST-SIZE DET 30000 "
         
-        self.vbrInterval = [ " 30MS "]
-        self.vbrsize=[" 24000 "]
+        self.vbrInterval = " 30MS "
+        self.vbrsize=" 24000 "
         
-        self.trafficgeninterval=[' DET 30MS ']
-        self.trafficgensize=[' RND DET 34000 ']
+        self.trafficgeninterval=' DET 30MS '
+        self.trafficgensize=' RND DET 34000 '
         
-        self.deliveryType = [' DELIVERY-TYPE UNRELIABLE ']
-        self.routing =['OSPFv2']
-        self.satBand = ['1G']
-        self.satDrop = ['0.0006']
-        self.rsBand = ['0.03G']
-        self.rsDrop = ['0.0015']
+        self.deliveryType = ' DELIVERY-TYPE UNRELIABLE '
+        self.routing ='OSPFv2'
+        self.satBand = '1G'
+        self.satDrop = '0.0006'
+        self.rsBand = '0.03G'
+        self.rsDrop = '0.0015'
         
+    def updateQuerypointworker(self,point):
+        '''
+        将querypoint的参数加入实例化的反馈类中，更新参数
+        '''
+        #ttt=np.array([[40000,20000]])
+        #ttt[0][0]=sapps,ttt[0][1]=trafs
+        self.superappsize=" REQUEST-SIZE DET "+str(point[0])+" "
+        self.trafficgensize=' RND DET '+str(point[1])+' '
         
     def runTest(self,count=60):
         """
@@ -109,18 +117,7 @@ class FeedBackWorker:
         #                                                    except Exception as e:
         #                                                        ferro = open(simName + '.erro', 'w')
     #                                                            ferro.write(writeStr)
-                                                            
-                                                            
-                                                            
-                                                            
-                                                            
-                                                            
-                                                            
-        
-        
-        
-        
-        
+      
         
         
     def jsonread(self,filename):
