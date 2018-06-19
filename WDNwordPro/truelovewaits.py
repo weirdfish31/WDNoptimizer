@@ -120,20 +120,20 @@ qosgmmgamer.mulitgragher(data=testdata,test=ttt,path=figpath)#多指标合成的
 "反馈函数+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 simucount=1
 for i in range(100):
-    print(memoryset.qosmemoryunit)
-    teaser=feedbackprocess.FeedBackWorker()
-    teaser.updateQuerypointworker(ttt)
-    print(ttt)
+#    print(memoryset.qosmemoryunit)
+    teaser=feedbackprocess.FeedBackWorker()#实例化反馈类
+    teaser.updateQuerypointworker(ttt)#更新反馈参数
+#    print(ttt)
     #ttt=np.array([[41,485]])
-    teaser.runTest(count=1)#仿真
+    teaser.runTest(count=60)#仿真
     newdata=teaser.updatetrainningsetworker(dataset=priordataset,point=ttt,count=60)
     simucount=teaser.acquisitioncount
     simucount
     priordataset=priordataset.append(newdata)#将新数据加入至原始训练集中
-    print(priordataset)
+#    print(priordataset)
     newgammer=weirdfishes.GMMOptimizationUnit(cluster=4)#实例化GMM模型
     newdataset=newgammer.dropNaNworker(priordataset)#去掉nan数据
-    print(newdataset)
+#    print(newdataset)
     newdataset=newgammer.clusterworker(newdataset,col1='traf_messagecompletionrate',col2='sapp_jitter',count=simucount)#kmeans++聚类
     "上面的新数据聚类完成，下面进行画图和querypoint的更新"
     newgammer.gmmbuilder(newdataset,fitx=1,fity=5,fitz=16)#生成traf_messagecompletionrate均值，标准差平面的预测结果，用于画图
