@@ -12,6 +12,8 @@ import time
 import shutil
 import json
 import pandas as pd
+import radiohead#读取数据
+import weirdfishes#建模，画图，AF函数
 
 class FeedBackWorker:
     """
@@ -42,7 +44,45 @@ class FeedBackWorker:
         self.satDrop = '0.0006'
         self.rsBand = '0.03G'
         self.rsDrop = '0.0015'
-        
+        self.acquisitioncount=1
+        self.querydatasetlist=[]
+    
+    def updatetrainningsetworker(self,dataset,point,count=60):
+        """
+        将querypoint得到的仿真数据读取并加入到原始训练集中
+        目前是固定4个参数，2个参数可变
+        """
+        appSize_i=self.superappsize
+        trafficgensize_i=self.trafficgensize
+        vbrsize_i=self.vbrsize
+        simname='radio'+appSize_i+"_"+vbrsize_i+"_"+trafficgensize_i
+        self.querydatasetlist.append(simname)#将每次调用此函数时的数据库名字保存至list中
+        newdata=weirdfishes.ReinforcementLearningUnit()
+        datapath='./OutConfigfile/'
+        for i in range(count):
+            dataset=simname+'_'+str(i)
+            reader=radiohead.ExataDBreader()
+            reader.opendataset(dataset,datapath)#读取特定路径下的数据库
+            reader.appnamereader()#读取业务层的业务名称
+            reader.appfilter()#将业务名称分类至三个list
+            reader.appdatareader()#将每个业物流的输出数据存到实例化的类中的字典里面
+            reader.inputparainsert(20,point[0],30,24000,30,point[1])
+            "================================================================="
+            eva=weirdfishes.EvaluationUnit()
+            superapp=reader.meandata('superapp')
+            eva.calculateMetricEvaValue(superapp)
+            vbr=reader.meandata('vbr')
+            eva.calculateMetricEvaValue(vbr)
+            trafficgen=reader.meandata('trafficgen')
+            eva.calculateMetricEvaValue(trafficgen)
+            state=[20,point[0],30,24000,30,point[1]]
+            print(state)
+            qos=eva.qoslist
+#           memoryset.insertmemoryunit(state=state,value=value)
+            newdata.qosinserter(state=state,qos=qos)
+        return newdata.qosmemoryunit
+
+    
     def updateQuerypointworker(self,point):
         '''
         将querypoint的参数加入实例化的反馈类中，更新参数
@@ -51,72 +91,74 @@ class FeedBackWorker:
         #ttt[0][0]=sapps,ttt[0][1]=trafs
         self.superappsize=" REQUEST-SIZE DET "+str(point[0])+" "
         self.trafficgensize=' RND DET '+str(point[1])+' '
-        
+    
+    
     def runTest(self,count=60):
         """
         配置仿真参数，生成配置文件，运行仿真
         """
         outlogfile = open('./outThrd.log', 'w')
-        for delivery_i in self.deliveryType:
-            for routing_i in self.routing:
-                for rsBand_i in self.rsBand:
-                    for satBand_i in self.satBand:
-                        for rsDrop_i in self.rsDrop:
-                            for satDrop_i in self.satDrop:
-                                for appInterval_i in self.superapinterval:
-                                    for appSize_i in self.superappsize:
-                                        for vbrInterval_i in self.vbrInterval:  
-                                            for vbrsize_i in self.vbrsize:
-                                                for trafficgeninterval_i in self.trafficgeninterval:
-                                                    for trafficgensize_i in self.trafficgensize:
-                                                        for i in range(count):
-                                                            linkconfig = self.jsonread('./configfile/linkConfig.json')
-                                                            linkconfig['Sat'][0] = satBand_i
-                                                            linkconfig['Sat'][1] = satDrop_i
-                                                            linkconfig['RS'][0] = rsBand_i
-                                                            linkconfig['RS'][1] = rsDrop_i
-                                                            linkconfig['Ground'][0] = rsBand_i
-                                                            linkconfig['Ground'][1] = rsDrop_i
-                                                            linkconfig['ROUTING'] = routing_i
-                                                            appconfig = self.jsonread('./configfile/SuperappConfig.json')
-                                                            vbrconfig = self.jsonread('./configfile/VBRConfig.json')
-                                                            trafconfig = self.jsonread('./configfile/TrafficGenConfig.json')
-                                                            vbrconfig["MEAN-INTERVAL"]= vbrInterval_i
-                                                            vbrconfig["ITEM-SIZE"]=vbrsize_i
-                                                            trafconfig["PACKET-INTERVAL"]=trafficgeninterval_i
-                                                            trafconfig["PACKET-SIZE"]=trafficgensize_i
-                                                            appconfig['REQUEST-INTERVAL'] = appInterval_i
-                                                            appconfig['REQUEST-SIZE'] = appSize_i
-                                                            appconfig['DELIVERY-TYPE'] = delivery_i
-                                                            # write the parameter to file
-                                                            self.jsonwrite(linkconfig, './configfile/linkConfig.json')
-                                                            self.jsonwrite(appconfig, './configfile/SuperappConfig.json')
-                                                            self.jsonwrite(vbrconfig, './configfile/VBRConfig.json')
-                                                            self.jsonwrite(trafconfig, './configfile/TrafficGenConfig.json')
-                                                            # run the simulation and store the simulation out file
-                                                            simName = 'radio'+appSize_i+"_"+vbrsize_i+"_"+trafficgensize_i+'_'+str(i)
-                                                            simStr = 'EXPERIMENT-NAME ' + simName + '\n'
-                                                            simename = './OutConfigfile/sim.name'
-                                                            self.writefile(simename, simStr)
-                                                            paraStr = 'SatBand: %s, RSBand: %s, Drop: %s, Route:%s, Interval: %s , Delivery: %s' % (satBand_i, rsBand_i, rsDrop_i, routing_i, appInterval_i, delivery_i)
-                                                            writeStr = "%s : {%s}\n" % (simName, paraStr)
-                                                            outlogfile.write(writeStr)
-                                                            print(writeStr)
-                                                            if False:
-                                                                continue
-                                                            try:
-    #                                                            runWDNwordPro()
-                                                                self.runbuildconfigfile()
-                                                                self.runexata()
-                                                                """
-                                                                暂时注释
-                                                                """
-        #                                                            self.runOutfileStore(simName)
-                                                            except:
-                                                                continue
-        #                                                    except Exception as e:
-        #                                                        ferro = open(simName + '.erro', 'w')
-    #                                                            ferro.write(writeStr)
+        delivery_i=self.deliveryType
+        routing_i=self.routing
+        rsBand_i=self.rsBand
+        satBand_i=self.satBand
+        rsDrop_i=self.rsDrop
+        satDrop_i=self.satDrop
+        appInterval_i=self.superapinterval
+        appSize_i=self.superappsize
+        vbrInterval_i=self.vbrInterval
+        vbrsize_i=self.vbrsize
+        trafficgeninterval_i=self.trafficgeninterval
+        trafficgensize_i=self.trafficgensize
+        self.acquisitioncount=self.acquisitioncount+1
+        for i in range(count):
+            linkconfig = self.jsonread('./configfile/linkConfig.json')
+            linkconfig['Sat'][0] = satBand_i
+            linkconfig['Sat'][1] = satDrop_i
+            linkconfig['RS'][0] = rsBand_i
+            linkconfig['RS'][1] = rsDrop_i
+            linkconfig['Ground'][0] = rsBand_i
+            linkconfig['Ground'][1] = rsDrop_i
+            linkconfig['ROUTING'] = routing_i
+            appconfig = self.jsonread('./configfile/SuperappConfig.json')
+            vbrconfig = self.jsonread('./configfile/VBRConfig.json')
+            trafconfig = self.jsonread('./configfile/TrafficGenConfig.json')
+            vbrconfig["MEAN-INTERVAL"]= vbrInterval_i
+            vbrconfig["ITEM-SIZE"]=vbrsize_i
+            trafconfig["PACKET-INTERVAL"]=trafficgeninterval_i
+            trafconfig["PACKET-SIZE"]=trafficgensize_i
+            appconfig['REQUEST-INTERVAL'] = appInterval_i
+            appconfig['REQUEST-SIZE'] = appSize_i
+            appconfig['DELIVERY-TYPE'] = delivery_i
+            # write the parameter to file
+            self.jsonwrite(linkconfig, './configfile/linkConfig.json')
+            self.jsonwrite(appconfig, './configfile/SuperappConfig.json')
+            self.jsonwrite(vbrconfig, './configfile/VBRConfig.json')
+            self.jsonwrite(trafconfig, './configfile/TrafficGenConfig.json')
+            # run the simulation and store the simulation out file
+            simName = 'radio'+appSize_i+"_"+vbrsize_i+"_"+trafficgensize_i+'_'+str(i)
+            simStr = 'EXPERIMENT-NAME ' + simName + '\n'
+            simename = './OutConfigfile/sim.name'
+            self.writefile(simename, simStr)
+            paraStr = 'SatBand: %s, RSBand: %s, Drop: %s, Route:%s, Interval: %s , Delivery: %s' % (satBand_i, rsBand_i, rsDrop_i, routing_i, appInterval_i, delivery_i)
+            writeStr = "%s : {%s}\n" % (simName, paraStr)
+            outlogfile.write(writeStr)
+            print(writeStr)
+            if False:
+                continue
+            try:
+#                self.runWDNwordPro()
+                self.runbuildconfigfile()
+                self.runexata()
+                """
+                暂时注释
+                """
+#                self.runOutfileStore(simName)
+            except:
+                continue
+#            except Exception as e:
+#                erro = open(simName + '.erro', 'w')
+#                ferro.write(writeStr)
       
         
         
