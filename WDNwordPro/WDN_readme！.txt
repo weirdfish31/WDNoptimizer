@@ -17,10 +17,11 @@ radiohead.py£ºEXATAReaderÀà£¬¶ÁÈ¡Êý¾Ý×¨ÓÃÀà£¨Á÷¾ÛºÏÓëÒµÎñ¾ÛºÏº¯ÊýÓÐÒ»µãÐ¡µÄÎÊÌâ£
 weirdfishes.py£º¸ßË¹»ìºÏÄ£ÐÍÀà£¨¶Ôµ¥ÊýÖµµÄ´¦ÀíÒÑ¾­Íê³É£¬ÕýÔÚ¶Ô¶àÊýÖµµÄÀà½øÐÐ´¦Àí£©¡¢
 ±´Ò¶Ë¹ÓÅ»¯Àà£¨»ù±¾Íê³É£©¡¢ÍøÂçÆÀ¹ÀÀà£¨Éú³Évalue£©¡¢Ç¿»¯Ñ§Ï°Àà£¨×´Ì¬ÐÅÏ¢´æ´¢£¬value»òqosÖ¸±ê£©
 Íê³ÉÁË¹Ì¶¨Á½¸öÖ¸±êµÄÊý¾ÝºÏ³É£¬¶¯Ì¬ºÏ³ÉÎ´Íê³É
+Íê³ÉÁË»­Í¼µÄ×Ô¶¯±£´æ
 
 
 truelovewaits.py:Êý¾Ý´¦Àí³ÌÐò£¨²âÊÔ³ÌÐò£©
 
 reckoner.py£º¸ßË¹»ìºÏÄ£ÐÍ´¦Àí³ÌÐò£¨·Ö²¼Í¼ºËÃÜ¶È¹À¼ÆÍ¼£©
 
-feedbackprocess.py£º½«µÃµ½µÄquery point ·µ»Ø·ÂÕæÖÐ£¬Éú³ÉÐÂÊý¾Ý
+feedbackprocess.py£º½«µÃµ½µÄquery point ·µ»Ø·ÂÕæÖÐ£¬Éú³ÉÐÂÊý¾Ý,¸üÐÂÊý¾Ý¼¯
