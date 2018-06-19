@@ -82,26 +82,46 @@ class GMMOptimizationUnit:
 #  
 
 
-    def mulitgragher(self,data,test):
+    def mulitgragher(self,data,path,test,count=0):
         """
         绘图，单指标的图与多指标合成的3D图
         """
-#        npdata=np.array(data)
+        test=test.tolist()
+        test=np.array([test])
+        self.npdata=np.array(data)
+#        fig = plt.figure()  
         fig = plt.figure(figsize=(21,10))  
 
             
         ax3 = fig.add_subplot(121, projection='3d')
         for i in range(self.n_clusters):
             ax3.plot_surface(self.xset,self.yset,self.obj['output_total_'+str(i)], cmap=plt.get_cmap('rainbow'),linewidth=0, antialiased=False)
-            ax3.plot_wireframe(self.xset,self.yset,self.obj['up_total_'+str(i)],colors=self.wirecolor[i],linewidths=1,  
+            ax3.plot_wireframe(self.xset,self.yset,self.obj['up_total_'+str(i)],colors='gold',linewidths=1,  
                                     rstride=10, cstride=2, antialiased=True)
-            ax3.plot_wireframe(self.xset,self.yset,self.obj['down_total_'+str(i)],colors=self.wirecolor[i],linewidths=1,  
+            ax3.plot_wireframe(self.xset,self.yset,self.obj['down_total_'+str(i)],colors='lightgreen',linewidths=1,  
                                     rstride=10, cstride=2, antialiased=True)
 #        ax3.scatter(npdata[:,1],npdata[:,5],npdata[:,7],c='black')  
         ax3.set_title('the predict mean output at ('+str(test[0,0])+'  '+str(test[0,1])+'): {0} '.format(self.reg.predict(test)[0]))  
         ax3.set_xlabel('sapps')  
         ax3.set_ylabel('trafs')  
         ax3.set_zlabel('value') 
+        
+        ax = fig.add_subplot(122)  
+        s = ax.scatter(self.npdata[:,1],self.npdata[:,5],self.npdata[:,6],cmap=plt.cm.viridis,c='red')
+        im=ax.imshow(self.obj['output_total_1'], interpolation='bilinear', origin='lower',  
+                       extent=(self.xmin, self.xmax-1, self.ymin, self.ymax), aspect='auto')
+          
+        ax.set_title('the predict mean ')  
+        ax.hlines(test[0,1],self.xmin, self.xmax-1)  
+        ax.vlines(test[0,0],self.ymin, self.ymax)  
+#        ax.text(test[0,0],test[0,1],'{0}'.format(self.reg.predict(test)[0]),ha='left',
+#                va='bottom',color='k',size=15,rotation=0)  
+        ax.set_xlabel('sapps')  
+        ax.set_ylabel('trafs')  
+        plt.subplots_adjust(left=0.05, top=0.95, right=0.95)
+        plt.colorbar(mappable=im,ax=ax)
+        
+        plt.savefig(path+'GMM_multi'+str(count)+".jpg")
         plt.show() 
         
     
@@ -128,6 +148,8 @@ class GMMOptimizationUnit:
         """
         绘制热力图和预测的下一个点，坐标是自适应的
         """
+        test=test.tolist()
+        test=np.array([test])
         collist=data.columns.values.tolist()
         value=collist[fitz]
         npdata=np.array(data)
@@ -300,7 +322,7 @@ class GMMOptimizationUnit:
         print('theAFmethod1 run time is : %fS' % rtime)
         return aaa
             
-    def clusterworker(self,data,col1,col2):
+    def clusterworker(self,data,col1,col2,count=0):
         """
         SKlearn.cluster里面自带的KMeans函数，这里我们只取了数据的二维，方便画图
         """
@@ -326,11 +348,12 @@ class GMMOptimizationUnit:
             if int(lable_pred[i])==0:
                 plt.scatter(c[i][0],c[i][1],color='red')
             if int(lable_pred[i])==1:
-                plt.scatter(c[i][0],c[i][1],color='orangered')
+                plt.scatter(c[i][0],c[i][1],color='blue')
             if int(lable_pred[i])==2:
                 plt.scatter(c[i][0],c[i][1],color='gold')
             if int(lable_pred[i])==3:
                 plt.scatter(c[i][0],c[i][1],color='violet')
+        plt.savefig('./Figure/Cluster'+str(count)+".jpg")
         plt.show()
         return r
     
