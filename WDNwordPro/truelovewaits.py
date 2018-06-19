@@ -7,16 +7,17 @@ main program
 主程序 大部分的读取数据，画图，BOA的实现代码都在这一部分
 
 """
-import radiohead
-import weirdfishes
+import radiohead#读取数据
+import weirdfishes#建模，画图，AF函数
+import feedbackprocess#反馈
 import pandas as pd
 import numpy as np
 
 
-
+"高斯混合模型动态优化过程预处理================================================="
 superappinterval=[20]
 #superappsize=[8000,10000,12000,14000,16000,18000,20000,22000,24000]
-superappsize=[16000]
+superappsize=[16000,30000]
 vbrinterval=[30]
 #vbrsize=[8000,10000,12000,14000,16000,18000]
 vbrsize=[24000]
@@ -26,24 +27,22 @@ trafsize=[8000,10000,12000,14000,16000,18000,20000,22000,24000,26000,28000,30000
 
 flowdata=pd.DataFrame()#所有数据库的流聚合
 appdata=pd.DataFrame()#所有数据库的某种业务的聚合
-
 memoryset=weirdfishes.ReinforcementLearningUnit()#记忆单元，存储每次的状态
 
 #dataset='test_ REQUEST-SIZE EXP 18000 _ 2000'
 #radio REQUEST-SIZE EXP 24000 _ 18000 _ RND EXP 22000
-
 figpath="./Figure/"
 datapath='G:/testData/2DGMM(16000_8000-36000)/'
 #datapath='./OutConfigfile/'
 
-
+"读取训练数据集================================================================"
 for sappi_i in superappinterval:
     for sapps_i in superappsize:
         for vbri_i in vbrinterval:
             for vbrs_i in vbrsize:
                 for trafi_i in trafinterval: 
                     for trafs_i in trafsize:
-                        for i in range(120):
+                        for i in range(60):
                             """
                             读取数据，对数据进行分类处理
                             """
@@ -56,15 +55,14 @@ for sappi_i in superappinterval:
                             readdb.inputparainsert(sappi_i,sapps_i,vbri_i,vbrs_i,trafi_i,trafs_i)
                             #将每条流的业务设计参数加入类中的字典
                             print(sapps_i,vbrs_i,trafs_i)
-                            #===================================================以上步骤不可省略，下方处理可以根据需求修改
-                            a=readdb.flowaggregator(sappi_i,sapps_i,vbri_i,vbrs_i,trafi_i,trafs_i)
-                            #将同一个源到目的业务数据聚合在一起输出一个dataframe，一个数据库生成一个流聚合frame
-                            flowdata=flowdata.append(a)
-                            b=readdb.alltypeaggregator(sappi_i,sapps_i,vbri_i,vbrs_i,trafi_i,trafs_i,'trafficgen')
+                            "======================以上步骤不可省略，下方处理可以根据需求修改"
+#                            a=readdb.flowaggregator(sappi_i,sapps_i,vbri_i,vbrs_i,trafi_i,trafs_i)
+#                            #将同一个源到目的业务数据聚合在一起输出一个dataframe，一个数据库生成一个流聚合frame
+#                            flowdata=flowdata.append(a)
+#                            b=readdb.alltypeaggregator(sappi_i,sapps_i,vbri_i,vbrs_i,trafi_i,trafs_i,'trafficgen')
                             #将同一种业务，如VBR数据聚合在一起 输出一个dataframe，
                             #一个数据库可以生成三个，VBR，Superapp，Trafficgen三种业务聚合frame
-                            appdata=appdata.append(b)
-                            
+#                            appdata=appdata.append(b)                         
                             """
                             评估部分，对于三种不同的业务有不同的权重:时延、抖动、丢包率、吞吐量
                             vbr:        [1,2,3,4]
@@ -79,9 +77,8 @@ for sappi_i in superappinterval:
                             eva.calculateMetricEvaValue(vbr)
                             trafficgen=readdb.meandata('trafficgen')
                             eva.calculateMetricEvaValue(trafficgen)
-
-                            value=eva.evaluationvalue()
-                            print(value)                        
+#                            value=eva.evaluationvalue()
+#                            print(value)                        
                             """
                             状态动作保存：当前状态、评估值、动作、收益
                             如果是第一次仿真，动作与收益为缺省值null
@@ -92,26 +89,68 @@ for sappi_i in superappinterval:
                                 4）收益：动作之后的评估值的变化，遇上一次评估值之间的差
                             """
                             state=[sappi_i,sapps_i,vbri_i,vbrs_i,trafi_i,trafs_i]
-                            qos=eva.qoslist
                             print(state)
-                            memoryset.insertmemoryunit(state=state,value=value)
-                            memoryset.qosinserter(state=state,qos=qos)
-#==============================================================================                     
+                            qos=eva.qoslist
+#                            memoryset.insertmemoryunit(state=state,value=value)
+                            memoryset.qosinserter(state=state,qos=qos)                    
 
-#==============================================================================
+"数据预处理===================================================================="
 import weirdfishes
-ttt=np.array([[40000,20000]])
-qosgmmgamer=weirdfishes.GMMOptimizationUnit(cluster=4)
-testdata=qosgmmgamer.dropNaNworker(memoryset.qosmemoryunit)
+priordataset=memoryset.qosmemoryunit#将原始的数据保存到内存中
+qosgmmgamer=weirdfishes.GMMOptimizationUnit(cluster=4)#实例化GMM模型
+testdata=qosgmmgamer.dropNaNworker(memoryset.qosmemoryunit)#去掉nan数据
 print(testdata)
-testdata=qosgmmgamer.clusterworker(testdata,col1='traf_messagecompletionrate',col2='sapp_jitter')
-#fitz=7 16
-qosgmmgamer.gmmbuilder(testdata,fitx=1,fity=5,fitz=16)
-qosgmmgamer.heatgragher(ttt)
-bbb=qosgmmgamer.acquisitionfunctionmethod2(testdata,0.6,1,5,16)
+testdata=qosgmmgamer.clusterworker(testdata,col1='traf_messagecompletionrate',col2='sapp_jitter')#kmeans++聚类
+
+"AF函数======================================================================="
+#bbb=qosgmmgamer.acquisitionfunctionmethod2(testdata,0.6,1,5,16)#单指标的AF函数设计2
+#ccc=qosgmmgamer.acquisitionfunctionmethod1(testdata,0.6,1,5,16)#单指标的AF函数设计1
+#ttt=qosgmmgamer.multiUCBhelper(data=testdata,kappa= 0.6)#多指标的AF函数
+ttt=np.array([41,485])
+"画图+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+##fitz=7 16
+qosgmmgamer.gmmbuilder(testdata,fitx=1,fity=5,fitz=16)#生成traf_messagecompletionrate均值，标准差平面的预测结果，用于画图
+qosgmmgamer.gmmbuilder(testdata,fitx=1,fity=5,fitz=7)#生成sapp_jitter均值标准差的平面的预测结果，用于画图
+qosgmmgamer.multiGMMbuilder()#生成多指标的加权平面，保存的功能还未实现，需要实现
+
+qosgmmgamer.mulitgragher(data=testdata,test=ttt,path=figpath)#多指标合成的画图
+#qosgmmgamer.heatgragher(testdata,ttt,fitz=7)#绘图
+#qosgmmgamer.heatgragher(testdata,ttt,fitz=16)#绘图
+
+"反馈函数+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+simucount=1
+for i in range(100):
+    print(memoryset.qosmemoryunit)
+    teaser=feedbackprocess.FeedBackWorker()
+    teaser.updateQuerypointworker(ttt)
+    print(ttt)
+    #ttt=np.array([[41,485]])
+    teaser.runTest(count=1)#仿真
+    newdata=teaser.updatetrainningsetworker(dataset=priordataset,point=ttt,count=60)
+    simucount=teaser.acquisitioncount
+    simucount
+    priordataset=priordataset.append(newdata)#将新数据加入至原始训练集中
+    print(priordataset)
+    newgammer=weirdfishes.GMMOptimizationUnit(cluster=4)#实例化GMM模型
+    newdataset=newgammer.dropNaNworker(priordataset)#去掉nan数据
+    print(newdataset)
+    newdataset=newgammer.clusterworker(newdataset,col1='traf_messagecompletionrate',col2='sapp_jitter',count=simucount)#kmeans++聚类
+    "上面的新数据聚类完成，下面进行画图和querypoint的更新"
+    newgammer.gmmbuilder(newdataset,fitx=1,fity=5,fitz=16)#生成traf_messagecompletionrate均值，标准差平面的预测结果，用于画图
+    newgammer.gmmbuilder(newdataset,fitx=1,fity=5,fitz=7)#生成sapp_jitter均值标准差的平面的预测结果，用于画图
+    newgammer.multiGMMbuilder()#生成多指标的加权平面，保存的功能还未实现，需要实现
+    newgammer.mulitgragher(data=newdataset,test=ttt,path=figpath,count=simucount)#多指标合成的画图
+    simucount=simucount+1
+    ttt=newgammer.multiUCBhelper(data=testdata,kappa= 0.6)
 
 
 
+
+
+
+
+
+"原始未模块化的BOA过程=========================================================="
 # =============================================================================
 # import numpy as np
 # import matplotlib.pyplot as plt  
