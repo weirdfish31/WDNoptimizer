@@ -215,7 +215,7 @@ class GMMOptimizationUnit:
             componentmodel['reg'+str(fitz)+str(i)]=GaussianProcessRegressor(kernel=self.kernel,n_restarts_optimizer=10,alpha=0.1)
             componentmodel['reg'+str(fitz)+str(i)].fit(npdata[:,[fitx,fity]],npdata[:,fitz])
             componentmodel['reg'+str(fita)+str(i)]=GaussianProcessRegressor(kernel=self.kernel,n_restarts_optimizer=10,alpha=0.1)
-            componentmodel['reg'+str(fita)+str(i)].fit(npdata[:,[fitx,fity]],npdata[:,fitz])
+            componentmodel['reg'+str(fita)+str(i)].fit(npdata[:,[fitx,fity]],npdata[:,fita])
             ys=self.UCBmethodhelper(try_data,gp=componentmodel['reg'+str(fitz)+str(i)],kappa=kappa)+self.UCBmethodhelper(try_data,gp=componentmodel['reg'+str(fita)+str(i)],kappa=kappa)
             UCBdic["ucb"+str(i)]=ys
         aaa=pd.DataFrame(UCBdic)
