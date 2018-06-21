@@ -36,6 +36,7 @@ datapath='G:/testData/2DGMM(16000_8000-36000)/'
 #datapath='./OutConfigfile/'
 
 "读取训练数据集================================================================"
+"""用来读取原始数据集，得到priordataset，绘制聚类图，拟合的GMM热力图"""
 for sappi_i in superappinterval:
     for sapps_i in superappsize:
         for vbri_i in vbrinterval:
@@ -105,30 +106,31 @@ testdata=qosgmmgamer.clusterworker(testdata,col1='traf_messagecompletionrate',co
 "AF函数======================================================================="
 #bbb=qosgmmgamer.acquisitionfunctionmethod2(testdata,0.6,1,5,16)#单指标的AF函数设计2
 #ccc=qosgmmgamer.acquisitionfunctionmethod1(testdata,0.6,1,5,16)#单指标的AF函数设计1
-#ttt=qosgmmgamer.multiUCBhelper(data=testdata,kappa= 0.6)#多指标的AF函数
-ttt=np.array([41,485])
+ttt=qosgmmgamer.multiUCBhelper(data=testdata,kappa= 0.7)#多指标的AF函数
+#ttt=np.array([41,485])
 "画图+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 ##fitz=7 16
 qosgmmgamer.gmmbuilder(testdata,fitx=1,fity=5,fitz=16)#生成traf_messagecompletionrate均值，标准差平面的预测结果，用于画图
 qosgmmgamer.gmmbuilder(testdata,fitx=1,fity=5,fitz=7)#生成sapp_jitter均值标准差的平面的预测结果，用于画图
 qosgmmgamer.multiGMMbuilder()#生成多指标的加权平面，保存的功能还未实现，需要实现
-
+"要绘制多指标合成的曲面，必须进行上面两个步骤，生成"
 qosgmmgamer.mulitgragher(data=testdata,test=ttt,path=figpath)#多指标合成的画图
+
 #qosgmmgamer.heatgragher(testdata,ttt,fitz=7)#绘图
 #qosgmmgamer.heatgragher(testdata,ttt,fitz=16)#绘图
 
 "反馈函数+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+"""根据原始数据集的模型和质询点，仿真X次，读取新的数据，加入到Priordataset，绘图，并找到下一个质询点"""
 simucount=1
 for i in range(100):
 #    print(memoryset.qosmemoryunit)
     teaser=feedbackprocess.FeedBackWorker()#实例化反馈类
     teaser.updateQuerypointworker(ttt)#更新反馈参数
 #    print(ttt)
-    #ttt=np.array([[41,485]])
-    teaser.runTest(count=60)#仿真
-    newdata=teaser.updatetrainningsetworker(dataset=priordataset,point=ttt,count=60)
-    simucount=teaser.acquisitioncount
-    simucount
+#    ttt=np.array([[41,485]])
+    teaser.runTest(count=30)#仿真
+    newdata=teaser.updatetrainningsetworker(dataset=priordataset,point=ttt,count=30)
+#    simucount
     priordataset=priordataset.append(newdata)#将新数据加入至原始训练集中
 #    print(priordataset)
     newgammer=weirdfishes.GMMOptimizationUnit(cluster=4)#实例化GMM模型
@@ -140,8 +142,8 @@ for i in range(100):
     newgammer.gmmbuilder(newdataset,fitx=1,fity=5,fitz=7)#生成sapp_jitter均值标准差的平面的预测结果，用于画图
     newgammer.multiGMMbuilder()#生成多指标的加权平面，保存的功能还未实现，需要实现
     newgammer.mulitgragher(data=newdataset,test=ttt,path=figpath,count=simucount)#多指标合成的画图
-    simucount=simucount+1
-    ttt=newgammer.multiUCBhelper(data=testdata,kappa= 0.6)
+    simucount=simucount+1#计数，修改文件名称
+    ttt=newgammer.multiUCBhelper(data=testdata,kappa= 0.7)#AF函数
 
 
 
@@ -174,7 +176,6 @@ for i in range(100):
 # xset, yset = np.meshgrid(np.arange(x_min, x_max, 500), np.arange(y_min, y_max, 500))
 # output,err = reg.predict(np.c_[xset.ravel(), yset.ravel()],return_std=True)  
 # output,err = output.reshape(xset.shape),err.reshape(xset.shape) 
-# 
 # sigma = np.sum(reg.predict(X, return_std=True)[1])  
 # up,down = output*(1+1.96*err), output*(1-1.96*err) 
 # =============================================================================
@@ -193,7 +194,6 @@ for i in range(100):
 # bounds['sapps']=x_tries
 # bounds['trafs']=y_tries
 # try_data = np.array(bounds)
-# 
 # 
 # ys=acquisitionfunction(try_data,gp=reg,kappa=0.67)
 # try_max=try_data[ys.argmax()]
@@ -219,7 +219,6 @@ for i in range(100):
 #  
 # test =np.array([try_max])
 # print(test)    
-# 
 # =============================================================================
 
 
