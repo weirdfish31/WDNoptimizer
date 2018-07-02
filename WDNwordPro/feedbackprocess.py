@@ -6,6 +6,9 @@ Created on Wed Jun 13 14:40:27 2018
 自优化的0反馈过程：
 在得到query point之后（根据acquisition function得到），需要将query的参数加入进2EXATA的配置文件中
 并进行仿真
+
+修改：2018/6/26
+对读取数据库的函数进行了优化（增加了数据库路径的选项）
 """
 import  os
 import time
@@ -47,7 +50,7 @@ class FeedBackWorker:
         self.acquisitioncount=1
         self.querydatasetlist=[]
     
-    def updatetrainningsetworker(self,dataset,point,count=60):
+    def updatetrainningsetworker(self,path,dataset,point,count=60):
         """
         将querypoint得到的仿真数据读取并加入到原始训练集中
         目前是固定4个参数，2个参数可变
@@ -58,7 +61,8 @@ class FeedBackWorker:
         simname='radio'+appSize_i+"_"+vbrsize_i+"_"+trafficgensize_i
         self.querydatasetlist.append(simname)#将每次调用此函数时的数据库名字保存至list中
         newdata=weirdfishes.ReinforcementLearningUnit()
-        datapath='./OutConfigfile/'
+        datapath=path
+#        datapath='G:/testData/GMM1/'
         for i in range(count):
             dataset=simname+'_'+str(i)
             reader=radiohead.ExataDBreader()
