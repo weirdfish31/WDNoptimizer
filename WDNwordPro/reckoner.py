@@ -15,13 +15,13 @@ import pandas as pd
 
 superappinterval=[20]
 #superappsize=[8000,10000,12000,14000,16000,18000,20000,22000,24000]
-superappsize=[2400]
+superappsize=[12000]
 vbrinterval=[30]
 #vbrsize=[8000,10000,12000,14000,16000,18000]
-vbrsize=[18000]
+vbrsize=[16000]
 trafinterval=[30]
 #trafsize=[8000,10000,12000,14000,16000,18000,20000,22000,24000]
-trafsize=[20000]
+trafsize=[30000]
 
 flowdata=pd.DataFrame()#所有数据库的流聚合
 appdata=pd.DataFrame()#所有数据库的某种业务的聚合
@@ -31,17 +31,17 @@ memoryset=weirdfishes.ReinforcementLearningUnit()#记忆单元，存储每次的
 #radio REQUEST-SIZE EXP 24000 _ 18000 _ RND EXP 22000
 
 figpath="./Figure/"
-datapath='G:/testData/2400_18000_20000/'
+datapath='G:/testData/12000_16000_30000/'
 #datapath='./OutConfigfile/'
 
-for i in range(10):
+for i in range(120):
     for sappi_i in superappinterval:
         for sapps_i in superappsize:
             for vbri_i in vbrinterval:
                 for vbrs_i in vbrsize:
                     for trafi_i in trafinterval: 
                         for trafs_i in trafsize:
-                            i=i+244
+                            i=i+354
                             """
                             读取数据，对数据进行分类处理
                             """
@@ -88,7 +88,9 @@ for i in range(10):
                             memoryset.qosinserter(state=state,qos=qos)
                             
                         
-print(memoryset.qosmemoryunit)        
+print(memoryset.qosmemoryunit)
+import seaborn as sns 
+sns.jointplot('traf_messagecompletionrate','sapp_jitter',data=memoryset.qosmemoryunit, kind='kde')        
 #==============================================================================                 
 #GMMgamer=weirdfishes.GMMOptimizationUnit()
 #data=GMMgamer.dropNaNworker(memoryset.memoryunit)                          
