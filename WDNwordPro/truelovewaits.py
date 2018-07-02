@@ -6,13 +6,16 @@ Created on Sat Mar 31 14:29:15 2018
 main program
 主程序 大部分的读取数据，画图，BOA的实现代码都在这一部分
 
+目前修改：2018/6/26
+1）将原始数据的聚类方式设计的更加科学：分别对每一组数据进行聚类之后在进行合成
+2）添加了querypoint写入log文件的命令
+
 """
 import radiohead#读取数据
 import weirdfishes#建模，画图，AF函数
 import feedbackprocess#反馈
 import pandas as pd
 import numpy as np
-
 
 "高斯混合模型动态优化过程预处理================================================="
 superappinterval=[20]
@@ -33,7 +36,9 @@ memoryset=weirdfishes.ReinforcementLearningUnit()#记忆单元，存储每次的
 #radio REQUEST-SIZE EXP 24000 _ 18000 _ RND EXP 22000
 figpath="./Figure/"
 datapath='G:/testData/2DGMM(16000_8000-36000)/'
-#datapath='./OutConfigfile/'
+newdatapath='./OutConfigfile/'
+
+distriubuteculsterdata=pd.DataFrame()
 
 "读取训练数据集================================================================"
 """用来读取原始数据集，得到priordataset，绘制聚类图，拟合的GMM热力图"""
@@ -43,6 +48,8 @@ for sappi_i in superappinterval:
             for vbrs_i in vbrsize:
                 for trafi_i in trafinterval: 
                     for trafs_i in trafsize:
+                        gamer=weirdfishes.GMMOptimizationUnit(cluster=2)
+                        tempmemoryset=weirdfishes.ReinforcementLearningUnit()
                         for i in range(60):
                             """
                             读取数据，对数据进行分类处理
@@ -93,28 +100,34 @@ for sappi_i in superappinterval:
                             print(state)
                             qos=eva.qoslist
 #                            memoryset.insertmemoryunit(state=state,value=value)
-                            memoryset.qosinserter(state=state,qos=qos)                    
-
+                            memoryset.qosinserter(state=state,qos=qos)    
+                            tempmemoryset.qosinserter(state=state,qos=qos)
+                        tempdataset=gamer.dropNaNworker(tempmemoryset.qosmemoryunit)
+                        tempdataset=gamer.clusterworker(tempdataset,col1='traf_throughput',col2='sapp_throughput')
+                        distriubuteculsterdata=distriubuteculsterdata.append(tempdataset)
+                        
 "数据预处理===================================================================="
 import weirdfishes
 priordataset=memoryset.qosmemoryunit#将原始的数据保存到内存中
-qosgmmgamer=weirdfishes.GMMOptimizationUnit(cluster=4)#实例化GMM模型
-testdata=qosgmmgamer.dropNaNworker(memoryset.qosmemoryunit)#去掉nan数据
-print(testdata)
-testdata=qosgmmgamer.clusterworker(testdata,col1='traf_messagecompletionrate',col2='sapp_jitter')#kmeans++聚类
+qosgmmgamer=weirdfishes.GMMOptimizationUnit(cluster=2)#实例化GMM模型
+#testdata=qosgmmgamer.dropNaNworker(memoryset.qosmemoryunit)#去掉nan数据
+#print(testdata)
+print(distriubuteculsterdata)#这个聚类结果是分别对每一组数据进行聚类之后聚合而成的数据
+print(priordataset)
+#testdata=qosgmmgamer.clusterworker(testdata,col1='traf_throughput',col2='sapp_throughput')#kmeans++聚类
 
 "AF函数======================================================================="
 #bbb=qosgmmgamer.acquisitionfunctionmethod2(testdata,0.6,1,5,16)#单指标的AF函数设计2
 #ccc=qosgmmgamer.acquisitionfunctionmethod1(testdata,0.6,1,5,16)#单指标的AF函数设计1
-ttt=qosgmmgamer.multiUCBhelper(data=testdata,kappa= 0.7)#多指标的AF函数
-#ttt=np.array([41,485])
+ttt=qosgmmgamer.multiUCBhelper(data=distriubuteculsterdata,kappa= 0.7,fitz=9,fita=17)#多指标的AF函数
+#ttt=np.array([63670,63990])
 "画图+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-##fitz=7 16
-qosgmmgamer.gmmbuilder(testdata,fitx=1,fity=5,fitz=16)#生成traf_messagecompletionrate均值，标准差平面的预测结果，用于画图
-qosgmmgamer.gmmbuilder(testdata,fitx=1,fity=5,fitz=7)#生成sapp_jitter均值标准差的平面的预测结果，用于画图
-qosgmmgamer.multiGMMbuilder()#生成多指标的加权平面，保存的功能还未实现，需要实现
+##fitz=7 17
+qosgmmgamer.gmmbuilder(distriubuteculsterdata,fitx=1,fity=5,fitz=17)#生成traf_messagecompletionrate均值，标准差平面的预测结果，用于画图
+qosgmmgamer.gmmbuilder(distriubuteculsterdata,fitx=1,fity=5,fitz=9)#生成sapp_jitter均值标准差的平面的预测结果，用于画图
+qosgmmgamer.multiGMMbuilder(distriubuteculsterdata,fitz=9,fita=17)#生成多指标的加权平面，保存的功能还未实现，需要实现
 "要绘制多指标合成的曲面，必须进行上面两个步骤，生成"
-qosgmmgamer.mulitgragher(data=testdata,test=ttt,path=figpath)#多指标合成的画图
+qosgmmgamer.mulitgragher(data=distriubuteculsterdata,test=ttt,path=figpath)#多指标合成的画图
 
 #qosgmmgamer.heatgragher(testdata,ttt,fitz=7)#绘图
 #qosgmmgamer.heatgragher(testdata,ttt,fitz=16)#绘图
@@ -122,28 +135,34 @@ qosgmmgamer.mulitgragher(data=testdata,test=ttt,path=figpath)#多指标合成的
 "反馈函数+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 """根据原始数据集的模型和质询点，仿真X次，读取新的数据，加入到Priordataset，绘图，并找到下一个质询点"""
 simucount=1
-for i in range(100):
+"把querypoint存储到log文件中"
+outlogfile = open('./queryPoint.log', 'w')
+
+for i in range(30):
 #    print(memoryset.qosmemoryunit)
     teaser=feedbackprocess.FeedBackWorker()#实例化反馈类
     teaser.updateQuerypointworker(ttt)#更新反馈参数
 #    print(ttt)
 #    ttt=np.array([[41,485]])
+    "将反馈次数和querypoint写入log文件"
+    querypoint=str(ttt)
+    writeStr = "%s : {%s}\n" % (simucount, querypoint)
+    outlogfile.write(writeStr)
     teaser.runTest(count=30)#仿真
-    newdata=teaser.updatetrainningsetworker(dataset=priordataset,point=ttt,count=30)
-#    simucount
+    newdata=teaser.updatetrainningsetworker(path=newdatapath,dataset=priordataset,point=ttt,count=30)
     priordataset=priordataset.append(newdata)#将新数据加入至原始训练集中
 #    print(priordataset)
-    newgammer=weirdfishes.GMMOptimizationUnit(cluster=4)#实例化GMM模型
-    newdataset=newgammer.dropNaNworker(priordataset)#去掉nan数据
-#    print(newdataset)
-    newdataset=newgammer.clusterworker(newdataset,col1='traf_messagecompletionrate',col2='sapp_jitter',count=simucount)#kmeans++聚类
+    newgammer=weirdfishes.GMMOptimizationUnit(cluster=2)#实例化GMM模型
+    newdataset=newgammer.dropNaNworker(newdata)#去掉nan数据
+    newdataset=newgammer.clusterworker(newdataset,col1='traf_throughput',col2='sapp_throughput',count=simucount)#kmeans++聚类
+    distriubuteculsterdata=distriubuteculsterdata.append(newdataset)
     "上面的新数据聚类完成，下面进行画图和querypoint的更新"
-    newgammer.gmmbuilder(newdataset,fitx=1,fity=5,fitz=16)#生成traf_messagecompletionrate均值，标准差平面的预测结果，用于画图
-    newgammer.gmmbuilder(newdataset,fitx=1,fity=5,fitz=7)#生成sapp_jitter均值标准差的平面的预测结果，用于画图
-    newgammer.multiGMMbuilder()#生成多指标的加权平面，保存的功能还未实现，需要实现
-    newgammer.mulitgragher(data=newdataset,test=ttt,path=figpath,count=simucount)#多指标合成的画图
+    newgammer.gmmbuilder(distriubuteculsterdata,fitx=1,fity=5,fitz=17)#生成traf_messagecompletionrate均值，标准差平面的预测结果，用于画图
+    newgammer.gmmbuilder(distriubuteculsterdata,fitx=1,fity=5,fitz=9)#生成sapp_jitter均值标准差的平面的预测结果，用于画图
+    newgammer.multiGMMbuilder(distriubuteculsterdata,fitz=9,fita=17)#生成多指标的加权平面，保存的功能还未实现，需要实现
+    newgammer.mulitgragher(data=distriubuteculsterdata,test=ttt,path=figpath,count=simucount)#多指标合成的画图
     simucount=simucount+1#计数，修改文件名称
-    ttt=newgammer.multiUCBhelper(data=testdata,kappa= 0.7)#AF函数
+    ttt=newgammer.multiUCBhelper(data=distriubuteculsterdata,kappa= 0.7,fitz=9,fita=17)#AF函数
 
 
 
