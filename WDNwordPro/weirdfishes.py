@@ -54,20 +54,23 @@ class GMMOptimizationUnit:
         testdata=testdata.reset_index(drop=True)
         return testdata
 
-    def multiGMMbuilder(self):
+    def multiGMMbuilder(self,data,fitz=7,fita=16):
         """
         its important
         根据历史选择的Qos指标得到的GMM模型，综合合成一个总体的分布，
         从原来的直接对数据进行权重分配编程对预测后的模型之间的权重分配
         temp editon 固定的两个指标的合成加权
         """
+        collist=data.columns.values.tolist()
+        value1=collist[fitz]
+        value2=collist[fita]
         for i in range(self.n_clusters):
-            self.obj['output_total_'+str(i)]=self.obj['output_traf_messagecompletionrate_'+str(i)]+self.obj['output_sapp_jitter_'+str(i)]
-            self.obj['err_total_'+str(i)]=self.obj['err_traf_messagecompletionrate_'+str(i)]+self.obj['err_sapp_jitter_'+str(i)]
+            self.obj['output_total_'+str(i)]=self.obj['output_'+value1+'_'+str(i)]+self.obj['output_'+value2+'_'+str(i)]
+            self.obj['err_total_'+str(i)]=self.obj['err_'+value1+'_'+str(i)]+self.obj['err_'+value2+'_'+str(i)]
             self.obj['up_total_'+str(i)],self.obj['down_total_'+str(i)]=self.obj['output_total_'+str(i)]*(1+1.96*self.obj['err_total_'+str(i)]),self.obj['output_total_'+str(i)]*(1-1.96*self.obj['err_total_'+str(i)])
        
 #    def multiGMMbuilder(self,data,):
-#        """
+#        """ 
 #        its important
 #        根据历史选择的Qos指标得到的GMM模型，综合合成一个总体的分布，
 #        从原来的直接对数据进行权重分配编程对预测后的模型之间的权重分配
@@ -234,7 +237,6 @@ class GMMOptimizationUnit:
         print('the multi-AF run time is : %fS' % rtime)
         return try_max
     
-    
     def UCBmethodhelper(self,x,gp,kappa):
         """
         upper confidence bound 方法
@@ -291,6 +293,7 @@ class GMMOptimizationUnit:
         设计1：
         1）先随机选取100000点进行估计，得到每个components上的UCB值最大的坐标
         2）得到n个query point
+        目前仿真没办法一次仿真几个，这个方法暂时用不了
         """
         times  = time.clock() 
         bounds=pd.DataFrame()
@@ -353,7 +356,7 @@ class GMMOptimizationUnit:
                 plt.scatter(c[i][0],c[i][1],color='gold')
             if int(lable_pred[i])==3:
                 plt.scatter(c[i][0],c[i][1],color='violet')
-        plt.savefig('./Figure/Cluster'+str(count)+".jpg")
+#        plt.savefig('./Figure/Cluster'+str(count)+".jpg")
         plt.show()
         return r
     
@@ -467,8 +470,6 @@ class BayesianOptimizationUnit:
         z = (mean - self.ymax - xi)/std
         return (mean - self.ymax - xi)*np.linalg.norm.cdf(z) + std*np.linalg.norm.pdf(z)
         
-        
-        
     def POImethod(self,x,gp,xi):
         """
         probability of improvement 方法
@@ -478,8 +479,7 @@ class BayesianOptimizationUnit:
         mean,std=gp.predict(x,return_std=True)
         z=(mean-self.ymax-xi)/std
         return np.linalg.norm.cdf(z)
-    
-        
+     
     def acquisitionfunction(self,kappa):
         """
         1）先随机选取100000点进行估计，得到UCB值最大的坐标
@@ -543,31 +543,26 @@ class BayesianOptimizationUnit:
         dataframe.insertmemortunit(state=predictstate,value=value)
         return dataframe
         
-        
-        
-        
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 class EvaluationUnit:
     """
     性能评估类：
     用来对业务仿真数据进行评分
-    
     目前所有的评估指标权重相等：  分为三种业务：trafficgenerator，superapp，cbr 
                                 每种业务分四种指标：吞吐量、时延、时延抖动、消息完成率
-    
     得到value
     """
     def __init__(self):
         self.weight= np.array([[0.0825,0.0825,0.0825,0.0825],
                                [0.0825,0.0825,0.0825,0.0825],
                                [0.0825,0.0825,0.0825,0.0825]], dtype=float) 
-        self.normalizedata=[]
-        self.qoslist=[]
+        self.normalizedata=[]#用来存储归一化结果，格式为dataframe，用来提供给计算评估值
+        self.qoslist=[]#用来存储不同业务的qos指标归一化结果，格式为list直接为外部调用
     def calculateMetricEvaValue(self,dataset):
         """
         归一化处理：对于四种不同的指标，进行不同的归一化处理
         before the evaluation proccess must modify the raw data
-        
+        这里的归一化处理很重要，在不同良港之间的qos指标之间如何要比较的话需要对
         """
         #delay  x=3,y=0.5,flag=0
         delay = dataset['delay']
@@ -586,6 +581,7 @@ class EvaluationUnit:
             d = self.sqrtNormalizer(x=100000000,value=throughput)
         self.normalizedata.append([a,b,c,d])
         self.qoslist=self.qoslist+[a,b,c,d]
+        
     def evaluationvalue(self):
         """
         输出评估分数，对归一化之后的数据乘权重向量，得到分数
@@ -641,7 +637,6 @@ class ReinforcementLearningUnit:
         self.memoryunit=pd.DataFrame()
         self.count=0
         self.qosmemoryunit=pd.DataFrame()
-        
 #        self.n_actions
 #        self.n_states
 #        self.lr#学习速率
@@ -649,8 +644,7 @@ class ReinforcementLearningUnit:
 #        self.epsilon_max
 #        self.replace_target_iter
 #        self.memory_size
-#        self.batch_size=batch_size
-#        
+#        self.batch_size=batch_size       
 #        self.epsilon_increment = e_greedy_increment
 #        self.epsilon = 0 if e_greedy_increment is not None else self.epsilon_max
     def qosinserter(self,state,qos):
