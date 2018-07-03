@@ -121,14 +121,14 @@ listaaa=[[63670,63990],[63979,240],[24773,63990],[92,63993],[63730,32765],[34308
          [45047,35287],[44082,34484],[32056,52314],[37898,43319],[37711,44133],[36070,47304],[37326,44649],
          [37307,44596],[28670,53413],[27218,54348],[36729,43344],[34307,47951],[36263,44555],[33717,48207],
          [24941,56549],[33413,46767]]
-#ttt=np.array([41,485])
+ttt=np.array([41,485])
 "画图+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 #fitz=7 16
-#qosgmmgamer.gmmbuilder(distriubuteculsterdata,fitx=1,fity=5,fitz=16)#生成traf_messagecompletionrate均值，标准差平面的预测结果，用于画图
-#qosgmmgamer.gmmbuilder(distriubuteculsterdata,fitx=1,fity=5,fitz=7)#生成sapp_jitter均值标准差的平面的预测结果，用于画图
-#qosgmmgamer.multiGMMbuilder()#生成多指标的加权平面，保存的功能还未实现，需要实现
+qosgmmgamer.gmmbuilder(distriubuteculsterdata,fitx=1,fity=5,fitz=17)#生成traf_messagecompletionrate均值，标准差平面的预测结果，用于画图
+qosgmmgamer.gmmbuilder(distriubuteculsterdata,fitx=1,fity=5,fitz=9)#生成sapp_jitter均值标准差的平面的预测结果，用于画图
+qosgmmgamer.multiGMMbuilder(distriubuteculsterdata,fitz=9,fita=17)#生成多指标的加权平面，保存的功能还未实现，需要实现
 "要绘制多指标合成的曲面，必须进行上面两个步骤，生成"
-#qosgmmgamer.mulitgragher(data=distriubuteculsterdata,test=ttt,path=figpath)#多指标合成的画图
+qosgmmgamer.mulitgragher(data=distriubuteculsterdata,test=ttt,path=figpath)#多指标合成的画图
 
 "反馈函数+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 """根据原始数据集的模型和质询点，仿真X次，读取新的数据，加入到Priordataset，绘图，并找到下一个质询点"""
