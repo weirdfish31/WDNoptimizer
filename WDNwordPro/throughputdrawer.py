@@ -31,7 +31,7 @@ memoryset=weirdfishes.ReinforcementLearningUnit()#记忆单元，存储每次的
 #radio REQUEST-SIZE EXP 24000 _ 18000 _ RND EXP 22000
 figpath="./Figure/"
 datapath_old='G:/testData/2DGMM(16000_8000-36000)/'
-datapath='./OutConfigfile/'
+datapath='G:/testData/2cluster_throughput_GMM/'
 
 distriubuteculsterdata=pd.DataFrame()
 
