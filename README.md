@@ -15,6 +15,15 @@ WDNwordPro文件夹：
 →configfile文件夹：
 主要存放生成EXATA配置文件所需的各种参数配置json文件，包括场景中移动节点文件夹、FTP参数json文件、地面站节点参数、链路参数json文件、移动节点名称配置文件等
 
+→Debug文件夹：
+STK生成可见性报表，生成节点坐标轨迹文件的exe程序文件夹
+
+→nodetxt文件夹：
+存放给EXATA生成场景配置文件的节点坐标txt文件
+
+→outAccess文件夹：
+存放给EXATA生成link相关配置文件的STK节点之间的csv可见性报表
+
 
 未补完
 
