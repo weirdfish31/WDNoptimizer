@@ -50,7 +50,7 @@ class FeedBackWorker:
         self.acquisitioncount=1
         self.querydatasetlist=[]
     
-    def updatetrainningsetworker(self,path,dataset,point,count=60):
+    def updatetrainningsetworker(self,path,point,count=60):
         """
         将querypoint得到的仿真数据读取并加入到原始训练集中
         目前是固定4个参数，2个参数可变
