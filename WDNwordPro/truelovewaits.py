@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sat Mar 31 14:29:15 2018
+Created on Thu Jul 12 17:07:52 2018
 
-@author: WDN
-main program
-主程序 大部分的读取数据，画图，BOA的实现代码都在这一部分
-
-目前修改：2018/6/26
-1）将原始数据的聚类方式设计的更加科学：分别对每一组数据进行聚类之后在进行合成
-2）添加了querypoint写入log文件的命令
+@author: WDN\
+lastorder:对比实验，
+目前的设计，用高斯过程模型进行拟合，
+同样的迭代30次，每次仿真30次，AF函数也沿用GMM模型试验中的参数和策略
 
 """
 import radiohead#读取数据
@@ -322,6 +319,8 @@ drawwer module
 #readdb.scatterdrawer('sapps','vbrs','throughput',dataset=flowdata)
 #readdb.rawdatadrawer(figpath,c='coral')
 #readdb.kdedrawer("delay","hopcount",figpath)
+
+
 
 
 
