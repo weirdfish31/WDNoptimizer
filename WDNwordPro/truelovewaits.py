@@ -8,9 +8,9 @@ lastorder:对比实验，
 同样的迭代30次，每次仿真30次，AF函数也沿用GMM模型试验中的参数和策略
 
 """
-import radiohead#读取数据
-import weirdfishes#建模，画图，AF函数
-import feedbackprocess#反馈
+import WDNexataReader#读取数据
+import WDNoptimizer#建模，画图，AF函数
+import WDNfeedback#反馈
 import pandas as pd
 import numpy as np
 
@@ -29,7 +29,7 @@ trafsize=[8000,10000,12000,14000,16000,18000,20000,22000,24000,26000,28000,30000
 
 flowdata=pd.DataFrame()#所有数据库的流聚合
 appdata=pd.DataFrame()#所有数据库的某种业务的聚合
-memoryset=weirdfishes.ReinforcementLearningUnit()#记忆单元，存储每次的状态
+memoryset=WDNoptimizer.ReinforcementLearningUnit()#记忆单元，存储每次的状态
 
 #dataset='test_ REQUEST-SIZE EXP 18000 _ 2000'
 #radio REQUEST-SIZE EXP 24000 _ 18000 _ RND EXP 22000
@@ -50,14 +50,14 @@ for sappi_i in superappinterval:
             for vbrs_i in vbrsize:
                 for trafi_i in trafinterval: 
                     for trafs_i in trafsize:
-                        gamer=weirdfishes.GMMOptimizationUnit(cluster=2)
-                        tempmemoryset=weirdfishes.ReinforcementLearningUnit()
+                        gamer=WDNoptimizer.GMMOptimizationUnit(cluster=2)
+                        tempmemoryset=WDNoptimizer.ReinforcementLearningUnit()
                         for i in range(60):
                             """
                             读取数据，对数据进行分类处理
                             """
                             dataset='radio REQUEST-SIZE DET '+str(sapps_i)+' _ '+str(vbrs_i)+' _ RND DET '+str(trafs_i)+' _'+str(i)
-                            readdb=radiohead.ExataDBreader()#实例化
+                            readdb=WDNexataReader.ExataDBreader()#实例化
                             readdb.opendataset(dataset,datapath)#读取特定路径下的数据库
                             readdb.appnamereader()#读取业务层的业务名称
                             readdb.appfilter()#将业务名称分类至三个list
@@ -80,7 +80,7 @@ for sappi_i in superappinterval:
                             superapp:   [9,10,11,12]
                             vbr,superapp,trafficgen
                             """
-                            eva=weirdfishes.EvaluationUnit()
+                            eva=WDNoptimizer.EvaluationUnit()
                             superapp=readdb.meandata('superapp')
                             eva.calculateMetricEvaValue(superapp)
                             vbr=readdb.meandata('vbr')
@@ -109,9 +109,9 @@ for sappi_i in superappinterval:
                         distriubuteculsterdata=distriubuteculsterdata.append(tempdataset)
                         
 "数据预处理===================================================================="
-import weirdfishes
+import WDNoptimizer
 priordataset=memoryset.qosmemoryunit#将原始的数据保存到内存中
-qosgmmgamer=weirdfishes.GMMOptimizationUnit(cluster=2)#实例化GMM模型
+qosgmmgamer=WDNoptimizer.GMMOptimizationUnit(cluster=2)#实例化GMM模型
 #    testdata=qosgmmgamer.dropNaNworker(memoryset.qosmemoryunit)#去掉nan数据
 #    print(testdata)
 print(distriubuteculsterdata)#这个聚类结果是分别对每一组数据进行聚类之后聚合而成的数据
@@ -121,8 +121,9 @@ print(priordataset)
 "AF函数======================================================================="
 #    bbb=qosgmmgamer.acquisitionfunctionmethod2(testdata,0.6,1,5,16)#单指标的AF函数设计2
 #    ccc=qosgmmgamer.acquisitionfunctionmethod1(testdata,0.6,1,5,16)#单指标的AF函数设计1
+qosgmmgamer.weightchanger(distriubuteculsterdata)
 ttt=qosgmmgamer.multiUCBhelper(data=distriubuteculsterdata,kappa= 0.7,fitz=9,fita=17)#多指标的AF函数
-#ttt=np.array([63670,63990])
+ttt=np.array([63670,63990])
 "画图+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 #    fitz=7 17
 qosgmmgamer.gmmbuilder(distriubuteculsterdata,fitx=1,fity=5,fitz=17)#生成traf_messagecompletionrate均值，标准差平面的预测结果，用于画图
@@ -141,7 +142,7 @@ simucount=1
 
 for i in range(30):
 #        print(memoryset.qosmemoryunit)
-    teaser=feedbackprocess.FeedBackWorker()#实例化反馈类
+    teaser=WDNfeedback.FeedBackWorker()#实例化反馈类
     teaser.updateQuerypointworker(ttt)#更新反馈参数
 #        print(ttt)
 #        ttt=np.array([[41,485]])
@@ -153,7 +154,7 @@ for i in range(30):
     newdata=teaser.updatetrainningsetworker(path=newdatapath,dataset=priordataset,point=ttt,count=30)
     priordataset=priordataset.append(newdata)#将新数据加入至原始训练集中
 #        print(priordataset)
-    newgammer=weirdfishes.GMMOptimizationUnit(cluster=2)#实例化GMM模型
+    newgammer=WDNoptimizer.GMMOptimizationUnit(cluster=2)#实例化GMM模型
     newdataset=newgammer.dropNaNworker(newdata)#去掉nan数据
     newdataset=newgammer.clusterworker(newdataset,col1='traf_throughput',col2='sapp_throughput',count=simucount)#kmeans++聚类
     distriubuteculsterdata=distriubuteculsterdata.append(newdataset)
@@ -163,11 +164,8 @@ for i in range(30):
     newgammer.multiGMMbuilder(distriubuteculsterdata,fitz=9,fita=17)#生成多指标的加权平面，保存的功能还未实现，需要实现
     newgammer.mulitgragher(data=distriubuteculsterdata,test=ttt,path=figpath,count=simucount)#多指标合成的画图
     simucount=simucount+1#计数，修改文件名称
+    newgammer.weightchanger(distriubuteculsterdata)#重新对权值进行更新
     ttt=newgammer.multiUCBhelper(data=distriubuteculsterdata,kappa= 0.7,fitz=9,fita=17)#AF函数
-
-
-
-
 
 
 
@@ -255,7 +253,7 @@ for i in range(30):
 # readdb1.appnamereader()#读取业务层的业务名称
 # readdb1.appfilter()#将业务名称分类至三个list
 # readdb1.appdatareader()#将每个业物流的输出数据存到实例化的类中的字典里面
-# eva=weirdfishes.EvaluationUnit()
+# eva=WDNoptimizer.EvaluationUnit()
 # vbr=readdb1.meandata('vbr')
 # eva.calculateMetricEvaValue(vbr)
 # trafficgen=readdb1.meandata('trafficgen')
