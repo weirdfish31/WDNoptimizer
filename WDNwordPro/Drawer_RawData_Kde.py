@@ -6,8 +6,8 @@ Created on Thu May 17 11:16:25 2018
 研究在相同设计参数的情况下，仿真的评估值的分布情况
 本程序2用来对大量重复实验中的各种Qos结果进行KDE绘图
 """
-import radiohead
-import weirdfishes
+import WDNexataReader#读取数据
+import WDNoptimizer#建模，画图，AF函数
 import pandas as pd
 
 
@@ -24,7 +24,7 @@ trafsize=[30000]
 
 flowdata=pd.DataFrame()#所有数据库的流聚合
 appdata=pd.DataFrame()#所有数据库的某种业务的聚合
-memoryset=weirdfishes.ReinforcementLearningUnit()#记忆单元，存储每次的状态
+memoryset=WDNoptimizer.ReinforcementLearningUnit()#记忆单元，存储每次的状态
 
 #dataset='test_ REQUEST-SIZE EXP 18000 _ 2000'
 #radio REQUEST-SIZE EXP 24000 _ 18000 _ RND EXP 22000
@@ -46,7 +46,7 @@ for i in range(120):
                             """
                             
                             dataset='radio REQUEST-SIZE DET '+str(sapps_i)+' _ '+str(vbrs_i)+' _ RND DET '+str(trafs_i)+' _'+str(i)
-                            readdb=radiohead.ExataDBreader()#实例化
+                            readdb=WDNexataReader.ExataDBreader()#实例化
                             readdb.opendataset(dataset,datapath)#读取特定路径下的数据库
                             readdb.appnamereader()#读取业务层的业务名称
                             readdb.appfilter()#将业务名称分类至三个list
@@ -62,7 +62,7 @@ for i in range(120):
                             superapp:   [9,10,11,12]
                             vbr,superapp,trafficgen
                             """
-                            eva=weirdfishes.EvaluationUnit()
+                            eva=WDNoptimizer.EvaluationUnit()
                             superapp=readdb.meandata('superapp')
                             eva.calculateMetricEvaValue(superapp)
                             vbr=readdb.meandata('vbr')

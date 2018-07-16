@@ -5,14 +5,14 @@ Created on Mon Jun 11 09:58:48 2018
 @author: WDN
 用来读取原始数据 画图表
 """
-import radiohead
-import weirdfishes
+import WDNexataReader#读取数据
+import WDNoptimizer#建模，画图，AF函数
 import pandas as pd
 
 
 flowdata=pd.DataFrame()#所有数据库的流聚合
 appdata=pd.DataFrame()#所有数据库的某种业务的聚合
-memoryset=weirdfishes.ReinforcementLearningUnit()#记忆单元，存储每次的状态
+memoryset=WDNoptimizer.ReinforcementLearningUnit()#记忆单元，存储每次的状态
 
 #dataset='test_ REQUEST-SIZE EXP 18000 _ 2000'
 #radio REQUEST-SIZE EXP 24000 _ 18000 _ RND EXP 22000
@@ -30,7 +30,7 @@ appdata=pd.DataFrame()#所有数据库的某种业务的聚合
 
 #dataset='radio REQUEST-SIZE DET '+str(sapps_i)+' _ '+str(vbrs_i)+' _ RND DET '+str(trafs_i)+' _'+str(i)
 dataset="radio REQUEST-SIZE DET 30000 _ 24000 _ RND DET 22000 _54"
-readdb=radiohead.ExataDBreader()#实例化
+readdb=WDNexataReader.ExataDBreader()#实例化
 readdb.opendataset(dataset,datapath)#读取特定路径下的数据库
 readdb.appnamereader()#读取业务层的业务名称
 readdb.appfilter()#将业务名称分类至三个list

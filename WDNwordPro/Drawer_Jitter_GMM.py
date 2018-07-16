@@ -7,9 +7,9 @@ GMM模型的时延抖动和丢包率之间得热力图绘制
 目前的聚类方式还是老的聚类方式，原始数据都是一次聚类
 最新：修改了聚类方式
 """
-import radiohead#读取数据
-import weirdfishes#建模，画图，AF函数
-import feedbackprocess#反馈
+import WDNexataReader#读取数据
+import WDNoptimizer#建模，画图，AF函数
+import WDNfeedback#反馈
 import pandas as pd
 import numpy as np
 
@@ -25,7 +25,7 @@ trafinterval=[30]
 trafsize=[8000,10000,12000,14000,16000,18000,20000,22000,24000,26000,28000,30000,32000,34000,36000]
 #trafsize=[22000]
 
-memoryset=weirdfishes.ReinforcementLearningUnit()#记忆单元，存储每次的状态
+memoryset=WDNoptimizer.ReinforcementLearningUnit()#记忆单元，存储每次的状态
 distriubuteculsterdata=pd.DataFrame()
 
 #dataset='test_ REQUEST-SIZE EXP 18000 _ 2000'
@@ -43,14 +43,14 @@ for sappi_i in superappinterval:
             for vbrs_i in vbrsize:
                 for trafi_i in trafinterval: 
                     for trafs_i in trafsize:
-                        gamer=weirdfishes.GMMOptimizationUnit(cluster=4)
-                        tempmemoryset=weirdfishes.ReinforcementLearningUnit()
+                        gamer=WDNoptimizer.GMMOptimizationUnit(cluster=4)
+                        tempmemoryset=WDNoptimizer.ReinforcementLearningUnit()
                         for i in range(60):
                             """
                             读取数据，对数据进行分类处理
                             """
                             dataset='radio REQUEST-SIZE DET '+str(sapps_i)+' _ '+str(vbrs_i)+' _ RND DET '+str(trafs_i)+' _'+str(i)
-                            readdb=radiohead.ExataDBreader()#实例化
+                            readdb=WDNexataReader.ExataDBreader()#实例化
                             readdb.opendataset(dataset,datapath)#读取特定路径下的数据库
                             readdb.appnamereader()#读取业务层的业务名称
                             readdb.appfilter()#将业务名称分类至三个list
@@ -66,7 +66,7 @@ for sappi_i in superappinterval:
                             superapp:   [9,10,11,12]
                             vbr,superapp,trafficgen
                             """
-                            eva=weirdfishes.EvaluationUnit()
+                            eva=WDNoptimizer.EvaluationUnit()
                             superapp=readdb.meandata('superapp')
                             eva.calculateMetricEvaValue(superapp)
                             vbr=readdb.meandata('vbr')
@@ -92,9 +92,9 @@ for sappi_i in superappinterval:
                         distriubuteculsterdata=distriubuteculsterdata.append(tempdataset)    
 
 "数据预处理===================================================================="
-import weirdfishes
+import WDNoptimizer
 priordataset=memoryset.qosmemoryunit#将原始的数据保存到内存中
-qosgmmgamer=weirdfishes.GMMOptimizationUnit(cluster=4)#实例化GMM模型
+qosgmmgamer=WDNoptimizer.GMMOptimizationUnit(cluster=4)#实例化GMM模型
 print(distriubuteculsterdata)#这个聚类结果是分别对每一组数据进行聚类之后聚合而成的数据
 print(priordataset)
 
@@ -116,11 +116,11 @@ qosgmmgamer.mulitgragher(data=distriubuteculsterdata,test=ttt,path=figpath)#多�
 simucount=1
 for i in listaaa:
     ttt=np.array(i)
-    teaser=feedbackprocess.FeedBackWorker()#实例化反馈类
+    teaser=WDNfeedback.FeedBackWorker()#实例化反馈类
     teaser.updateQuerypointworker(ttt)#更新反馈参数
     newdata=teaser.updatetrainningsetworker(path=datapath,point=ttt,count=30)
     priordataset=priordataset.append(newdata)#将新数据加入至原始训练集中
-    newgammer=weirdfishes.GMMOptimizationUnit(cluster=4)#实例化GMM模型
+    newgammer=WDNoptimizer.GMMOptimizationUnit(cluster=4)#实例化GMM模型
     newdataset=newgammer.dropNaNworker(priordataset)#去掉nan数据
     newdataset=newgammer.clusterworker(newdataset,col1='traf_messagecompletionrate',col2='sapp_jitter',count=simucount)#kmeans++聚类
     distriubuteculsterdata=distriubuteculsterdata.append(newdataset)
