@@ -135,7 +135,7 @@ qosgmmgamer.mulitgragher(data=distriubuteculsterdata,test=ttt,path=figpath)#多�
 """根据原始数据集的模型和质询点，仿真X次，读取新的数据，加入到Priordataset，绘图，并找到下一个质询点"""
 simucount=1
 "把querypoint存储到log文件中"
-for i in range(30):
+for i in range(60):
     teaser=WDNfeedback.FeedBackWorker()#实例化反馈类
     teaser.updateQuerypointworker(ttt)#更新反馈参数
     "将反馈次数和querypoint写入log文件"
@@ -144,8 +144,8 @@ for i in range(30):
 #     writeStr = "%s : {%s}\n" % (simucount, querypoint)
 #     outlogfile.write(writeStr)
 # =============================================================================
-    teaser.runTest(count=30)#仿真
-    newdata=teaser.updatetrainningsetworker(path=newdatapath,point=ttt,count=30)
+    teaser.runTest(count=10)#仿真
+    newdata=teaser.updatetrainningsetworker(path=newdatapath,point=ttt,count=10)
     priordataset=priordataset.append(newdata)#将新数据加入至原始训练集中
     newgammer=WDNoptimizer.GMMOptimizationUnit(cluster=2)#实例化GMM模型
     newdataset=newgammer.dropNaNworker(newdata)#去掉nan数据
