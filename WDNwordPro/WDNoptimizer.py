@@ -111,7 +111,7 @@ class GMMOptimizationUnit:
         
         ax = fig.add_subplot(122)  
         s = ax.scatter(self.npdata[:,1],self.npdata[:,5],self.npdata[:,6],cmap=plt.cm.viridis,c='red')
-        im=ax.imshow(self.obj['output_total_1'], interpolation='bilinear', origin='lower',  
+        im=ax.imshow(self.obj['output_total_0'], interpolation='bilinear', origin='lower',  
                        extent=(self.xmin, self.xmax-1, self.ymin, self.ymax), aspect='auto')
           
         ax.set_title('the predict mean ')  
@@ -404,10 +404,12 @@ class BayesianOptimizationUnit:
     用作进行对业务层设计参数与输出的评分之间建立概率模型，进行设计指导
     
     这个函数是针对业务层输入参数进行设计的，数据结构不是针对所有的数据
-    画图函数是三维的函数，变量连续的变量,核函数是matern函数，nu=2.5 后续做成可调整的 
+    画图函数是三维的函数，变量连续的变量,核函数是matern函数，nu=2.5（多维空间中的nu为2.5） 后续做成可调整的 
     x为superapp的包大小（0,64000）
     y是trafficgenerator的包大小（0,64000）
     z是系统综合评分value
+    目前这个类中的GPR模型只适用于对单目标（评估值）进行优化，
+    在做GMMM模型之间的多目标优化问题的时候需要用GMM模型（多簇）和GMM模型（单簇退化为高斯过程模型）进行比较
     """
     def dropNaNworker(self,data):
         testdata=data.dropna(axis=0,how='any')
@@ -426,7 +428,7 @@ class BayesianOptimizationUnit:
         self.obj={}
         self.qosname=[]
     
-    def gussianproccessfitter(self,data):
+    def gussianproccessfitter(self,data,fitx=1,fity=5,fitz=6):
         """
         输入dataframe，进行GP拟合
         output:预测的均值Mean of predictive distribution a query points
@@ -434,7 +436,7 @@ class BayesianOptimizationUnit:
         """
         self.train_data=np.array(data)
         self.reg=GaussianProcessRegressor(kernel=self.kernel,n_restarts_optimizer=10,alpha=0.1)
-        self.reg.fit(self.train_data[:,[1,5]],self.train_data[:,6])
+        self.reg.fit(self.train_data[:,[fitx,fity]],self.train_data[:,fitz])
         self.output,self.err=self.reg.predict(np.c_[self.xset.ravel(),self.yset.ravel()],return_std=True)
         self.output,self.err=self.output.reshape(self.xset.shape),self.err.reshape(self.xset.shape)
         self.sigma=np.sum(self.reg.predict(self.train_data[:,[1,5]],return_std=True)[1])
