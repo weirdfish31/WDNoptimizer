@@ -1,7 +1,0 @@
- BR BS Delay Hopcount Jitter Throughput cause
-0 1 0 1 1 0 1 BS
-1 1 1 0 1 0 1 BR
-2 1 1 0 1 0 1 Throughput
-3 0 0 1 0 1 0 Delay
-4 0 0 0 0 0 0 Jitter
-5 0 0 0 0 0 0 Hopcount
