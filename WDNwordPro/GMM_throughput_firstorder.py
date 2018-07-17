@@ -40,7 +40,7 @@ qosgmmgamer=WDNoptimizer.GMMOptimizationUnit(cluster=2)#实例化GMM模型
 figpath="./Figure/"
 datapath='G:/testData/2DGMM(16000_8000-36000)/'
 newdatapath='./OutConfigfile/'
-
+iternum=0
 
 
 "读取训练数据集================================================================"
@@ -110,11 +110,14 @@ for sappi_i in superappinterval:
                         "聚类后的数据保存到distributclusterdata中"
                         """
                         tempdataset=gamer.dropNaNworker(tempmemoryset.qosmemoryunit)
-                        tempdataset=gamer.clusterworker(tempdataset,col1='traf_throughput',col2='sapp_throughput')
+                        tempdataset=gamer.presortworker(tempdataset,col1='traf_throughput',col2='sapp_throughput')
+                        tempdataset=gamer.clusterworker(tempdataset,col1='traf_throughput',col2='sapp_throughput',count=iternum)
                         distriubuteculsterdata=distriubuteculsterdata.append(tempdataset)
+                        iternum=iternum+1
                         
 "数据预处理====目前预处理都是在读取数据时完成===================================="
 #import WDNoptimizer
+distriubuteculsterdata=distriubuteculsterdata.reset_index(drop=True)
 priordataset=memoryset.qosmemoryunit#将原始的数据保存到内存中
 print(distriubuteculsterdata)#这个聚类结果是分别对每一组数据进行聚类之后聚合而成的数据
 
@@ -149,7 +152,9 @@ for i in range(60):
     priordataset=priordataset.append(newdata)#将新数据加入至原始训练集中
     newgammer=WDNoptimizer.GMMOptimizationUnit(cluster=2)#实例化GMM模型
     newdataset=newgammer.dropNaNworker(newdata)#去掉nan数据
-    newdataset=newgammer.clusterworker(newdataset,col1='traf_throughput',col2='sapp_throughput',count=simucount)#kmeans++聚类
+    newdataset=gamer.presortworker(newdataset,col1='traf_throughput',col2='sapp_throughput')
+    iternum=iternum+1
+    newdataset=newgammer.clusterworker(newdataset,col1='traf_throughput',col2='sapp_throughput',count=iternum)#kmeans++聚类
     distriubuteculsterdata=distriubuteculsterdata.append(newdataset)
     "上面的新数据聚类完成，下面进行画图和querypoint的更新"
     newgammer.gmmbuilder(distriubuteculsterdata,fitx=1,fity=5,fitz=17)#生成traf_messagecompletionrate均值，标准差平面的预测结果，用于画图
