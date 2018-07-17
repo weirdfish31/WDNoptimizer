@@ -34,6 +34,7 @@ figpath="./Figure/"
 datapath='G:/testData/2DGMM(16000_8000-36000)/'
 newdatapath='G:/testData/GMM1/'
 #datapath='./OutConfigfile/'
+iternum=0
 
 "读取训练数据集================================================================"
 """用来读取原始数据集，得到priordataset，绘制聚类图，拟合的GMM热力图"""
@@ -88,15 +89,23 @@ for sappi_i in superappinterval:
                             memoryset.qosinserter(state=state,qos=qos)     
                             tempmemoryset.qosinserter(state=state,qos=qos)
                         tempdataset=gamer.dropNaNworker(tempmemoryset.qosmemoryunit)
-                        tempdataset=gamer.clusterworker(tempdataset,col1='traf_messagecompletionrate',col2='sapp_jitter')
-                        distriubuteculsterdata=distriubuteculsterdata.append(tempdataset)    
+                        tempdataset=gamer.presortworker(tempdataset,col1='traf_messagecompletionrate',col2='sapp_jitter')
+                        tempdataset=gamer.clusterworker(tempdataset,col1='traf_messagecompletionrate',col2='sapp_jitter',count=iternum)
+                        distriubuteculsterdata=distriubuteculsterdata.append(tempdataset)
+                        iternum=iternum+1
 
 "数据预处理===================================================================="
 import WDNoptimizer
+distriubuteculsterdata=distriubuteculsterdata.reset_index(drop=True)
 priordataset=memoryset.qosmemoryunit#将原始的数据保存到内存中
 qosgmmgamer=WDNoptimizer.GMMOptimizationUnit(cluster=4)#实例化GMM模型
 print(distriubuteculsterdata)#这个聚类结果是分别对每一组数据进行聚类之后聚合而成的数据
 print(priordataset)
+
+
+
+
+
 
 "AF函数======================================================================="
 listaaa=[[63764,94],[7,391],[36,10],[63893,177],[265,50],[67,67],[132,163],[62,239],[90,23],[29,11],
@@ -122,7 +131,9 @@ for i in listaaa:
     priordataset=priordataset.append(newdata)#将新数据加入至原始训练集中
     newgammer=WDNoptimizer.GMMOptimizationUnit(cluster=4)#实例化GMM模型
     newdataset=newgammer.dropNaNworker(priordataset)#去掉nan数据
-    newdataset=newgammer.clusterworker(newdataset,col1='traf_messagecompletionrate',col2='sapp_jitter',count=simucount)#kmeans++聚类
+    iternum=iternum+1
+    newdataset=gamer.presortworker(newdataset,col1='traf_messagecompletionrate',col2='sapp_jitter')
+    newdataset=newgammer.clusterworker(newdataset,col1='traf_messagecompletionrate',col2='sapp_jitter',count=iternum)#kmeans++聚类
     distriubuteculsterdata=distriubuteculsterdata.append(newdataset)
     "上面的新数据聚类完成，下面进行画图和querypoint的更新"
     newgammer.gmmbuilder(distriubuteculsterdata,fitx=1,fity=5,fitz=16)#生成traf_messagecompletionrate均值，标准差平面的预测结果，用于画图
