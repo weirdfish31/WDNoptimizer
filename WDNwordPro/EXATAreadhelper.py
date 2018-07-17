@@ -111,7 +111,7 @@ class readhelper:
         self.readnodePosition()
         self.datetimeFormat = '%d %b %Y %H:%M:%S'
         self.allAccess = []
-        self.numapp = 3
+        self.numapp = 2
         self.appdur = 0
         self.applist = []
         self.appAccess = []
