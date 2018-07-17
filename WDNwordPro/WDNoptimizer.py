@@ -341,7 +341,15 @@ class GMMOptimizationUnit:
         rtime = timee - times
         print('theAFmethod1 run time is : %fS' % rtime)
         return aaa
-            
+    
+    def presortworker(self,data,col1,col2):
+        """
+        用来对数据进行排序，排序后进行聚类
+        """
+        data=data.sort_values(by=[col1,col2])
+        data=data.reset_index(drop=True)
+        return data
+        
     def clusterworker(self,data,col1,col2,count=0):
         """
         SKlearn.cluster里面自带的KMeans函数，这里我们只取了数据的二维，方便画图
@@ -373,7 +381,7 @@ class GMMOptimizationUnit:
                 plt.scatter(c[i][0],c[i][1],color='gold')
             if int(lable_pred[i])==3:
                 plt.scatter(c[i][0],c[i][1],color='violet')
-#        plt.savefig('./Figure/Cluster'+str(count)+".jpg")
+        plt.savefig('./Figure/Cluster'+str(count)+".jpg")
         plt.show()
         return r
     
