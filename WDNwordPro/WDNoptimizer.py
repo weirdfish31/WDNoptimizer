@@ -146,6 +146,75 @@ class GMMOptimizationUnit:
             self.obj['sigma_'+str(i)]=np.sum(self.reg.predict(self.npdata[:,[1,5]],return_std=True)[1])
             self.obj['up_'+value+'_'+str(i)],self.obj['down_'+value+'_'+str(i)]=self.obj['output_'+value+'_'+str(i)]*(1+1.96*self.obj['err_'+value+'_'+str(i)]),self.obj['output_'+value+'_'+str(i)]*(1-1.96*self.obj['err_'+value+'_'+str(i)])
     
+    def querypredicter(self,data,querypoint,fitx=1,fity=5,fitz=9,fita=17):
+        """
+        1)引入数据对模型进行建模《两个模型superapp_throughput,trafficgenerator_throughput
+        2）对query point 进行预测
+        3）加权*
+        """
+        collist=data.columns.values.tolist()
+        value=collist[fitz]
+        self.qosname.append(value)
+        componentmodel={}
+        clusterpredictmean=[]
+        print(type(querypoint))
+        for i in range(self.n_clusters):
+            testdata=data[data['label']==i]
+            testdata=testdata.reset_index(drop=True)
+            npdata=np.array(testdata)
+            componentmodel['reg'+str(fitz)+str(i)]=GaussianProcessRegressor(kernel=self.kernel,n_restarts_optimizer=10,alpha=0.1)
+            componentmodel['reg'+str(fitz)+str(i)].fit(npdata[:,[fitx,fity]],npdata[:,fitz])
+            mean1=componentmodel['reg'+str(fitz)+str(i)].predict(querypoint)
+            componentmodel['reg'+str(fita)+str(i)]=GaussianProcessRegressor(kernel=self.kernel,n_restarts_optimizer=10,alpha=0.1)
+            componentmodel['reg'+str(fita)+str(i)].fit(npdata[:,[fitx,fity]],npdata[:,fita])
+            mean2=componentmodel['reg'+str(fita)+str(i)].predict(querypoint)
+            totalmean=mean1+mean2
+            clusterpredictmean.append(totalmean)
+        return clusterpredictmean
+            
+    def multiUCBhelper(self,data,kappa,fitx=1,fity=5,fitz=7,fita=16):
+        """
+        设计2
+        将不同聚类得到的预测结果存入dataframe，生成对100000个随机点的预测的reg模型
+        不同指标的UCB值相加
+        则根据聚类得到的权重加权得到UCB之和，得到选择的最大UCB值的query point
+        """
+        times  = time.clock() 
+        bounds=pd.DataFrame()
+        x_tries = np.random.uniform(0, 64000,size=(100000))
+        y_tries = np.random.uniform(0, 64000,size=(100000))
+        bounds['sapps']=x_tries
+        bounds['trafs']=y_tries
+        try_data = np.array(bounds)
+        componentmodel={}
+        UCBdic={}
+        for i in range(self.n_clusters):
+            testdata=data[data['label']==i]
+            testdata=testdata.reset_index(drop=True)
+            npdata=np.array(testdata)
+            componentmodel['reg'+str(fitz)+str(i)]=GaussianProcessRegressor(kernel=self.kernel,n_restarts_optimizer=10,alpha=0.1)
+            componentmodel['reg'+str(fitz)+str(i)].fit(npdata[:,[fitx,fity]],npdata[:,fitz])
+            componentmodel['reg'+str(fita)+str(i)]=GaussianProcessRegressor(kernel=self.kernel,n_restarts_optimizer=10,alpha=0.1)
+            componentmodel['reg'+str(fita)+str(i)].fit(npdata[:,[fitx,fity]],npdata[:,fita])
+            ys=self.UCBmethodhelper(try_data,gp=componentmodel['reg'+str(fitz)+str(i)],kappa=kappa)+self.UCBmethodhelper(try_data,gp=componentmodel['reg'+str(fita)+str(i)],kappa=kappa)
+            UCBdic["ucb"+str(i)]=ys
+        aaa=pd.DataFrame(UCBdic)
+        for i in range(aaa.shape[0]):
+            for j in range(self.n_clusters):
+                aaa.iloc[i,j]=aaa.iloc[i,j]*self.componentweight[str(j)]
+        aaa['total']=aaa.apply(lambda x: x.sum(), axis=1)
+        ucbarray=np.array(aaa['total'])
+        try_max=try_data[ucbarray.argmax()]
+        try_max=try_max.astype(int)#为了EXATA配置文件，把询问点改为整数型
+        max_acq=ucbarray.max()
+        print(max_acq)
+        print(try_max)
+        timee = time.clock()
+        rtime = timee - times
+        print('the multi-AF run time is : %fS' % rtime)
+        return try_max    
+        
+        
     
     def heatgragher(self,data,test,fitz=6):
         """
@@ -211,48 +280,6 @@ class GMMOptimizationUnit:
         self.samplecount=data.iloc[:,0].size
         for i in range(self.n_clusters):
             self.componentweight[str(i)]=self.r1[i]/self.samplecount
-        
-    def multiUCBhelper(self,data,kappa,fitx=1,fity=5,fitz=7,fita=16):
-        """
-        设计2
-        将不同聚类得到的预测结果存入dataframe，生成对100000个随机点的预测的reg模型
-        不同指标的UCB值相加
-        则根据聚类得到的权重加权得到UCB之和，得到选择的最大UCB值的query point
-        """
-        times  = time.clock() 
-        bounds=pd.DataFrame()
-        x_tries = np.random.uniform(0, 64000,size=(100000))
-        y_tries = np.random.uniform(0, 64000,size=(100000))
-        bounds['sapps']=x_tries
-        bounds['trafs']=y_tries
-        try_data = np.array(bounds)
-        componentmodel={}
-        UCBdic={}
-        for i in range(self.n_clusters):
-            testdata=data[data['label']==i]
-            testdata=testdata.reset_index(drop=True)
-            npdata=np.array(testdata)
-            componentmodel['reg'+str(fitz)+str(i)]=GaussianProcessRegressor(kernel=self.kernel,n_restarts_optimizer=10,alpha=0.1)
-            componentmodel['reg'+str(fitz)+str(i)].fit(npdata[:,[fitx,fity]],npdata[:,fitz])
-            componentmodel['reg'+str(fita)+str(i)]=GaussianProcessRegressor(kernel=self.kernel,n_restarts_optimizer=10,alpha=0.1)
-            componentmodel['reg'+str(fita)+str(i)].fit(npdata[:,[fitx,fity]],npdata[:,fita])
-            ys=self.UCBmethodhelper(try_data,gp=componentmodel['reg'+str(fitz)+str(i)],kappa=kappa)+self.UCBmethodhelper(try_data,gp=componentmodel['reg'+str(fita)+str(i)],kappa=kappa)
-            UCBdic["ucb"+str(i)]=ys
-        aaa=pd.DataFrame(UCBdic)
-        for i in range(aaa.shape[0]):
-            for j in range(self.n_clusters):
-                aaa.iloc[i,j]=aaa.iloc[i,j]*self.componentweight[str(j)]
-        aaa['total']=aaa.apply(lambda x: x.sum(), axis=1)
-        ucbarray=np.array(aaa['total'])
-        try_max=try_data[ucbarray.argmax()]
-        try_max=try_max.astype(int)#为了EXATA配置文件，把询问点改为整数型
-        max_acq=ucbarray.max()
-        print(max_acq)
-        print(try_max)
-        timee = time.clock()
-        rtime = timee - times
-        print('the multi-AF run time is : %fS' % rtime)
-        return try_max
     
     def UCBmethodhelper(self,x,gp,kappa):
         """
