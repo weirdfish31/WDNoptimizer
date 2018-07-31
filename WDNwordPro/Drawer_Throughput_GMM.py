@@ -136,3 +136,14 @@ for i in listaaa:
     newgammer.multiGMMbuilder(distriubuteculsterdata,fitz=9,fita=17)#生成多指标的加权平面，保存的功能还未实现，需要实现
     newgammer.mulitgragher(data=distriubuteculsterdata,test=ttt,path=figpath,count=simucount)#多指标合成的画图
     simucount=simucount+1#计数，修改文件名称
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
