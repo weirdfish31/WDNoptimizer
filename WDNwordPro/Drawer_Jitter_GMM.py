@@ -6,6 +6,7 @@ Created on Sat Mar 31 14:29:15 2018
 GMM模型的时延抖动和丢包率之间得热力图绘制
 目前的聚类方式还是老的聚类方式，原始数据都是一次聚类
 最新：修改了聚类方式
+20181101有点问题 程序跑不起来 找不到数据库中相应的业务层的表 
 """
 import WDNexataReader#读取数据
 import WDNoptimizer#建模，画图，AF函数
@@ -25,7 +26,7 @@ trafinterval=[30]
 trafsize=[8000,10000,12000,14000,16000,18000,20000,22000,24000,26000,28000,30000,32000,34000,36000]
 #trafsize=[22000]
 
-memoryset=WDNoptimizer.ReinforcementLearningUnit()#记忆单元，存储每次的状态
+memoryset=WDNoptimizer.MemoryUnit()#记忆单元，存储每次的状态
 distriubuteculsterdata=pd.DataFrame()
 
 #dataset='test_ REQUEST-SIZE EXP 18000 _ 2000'
@@ -44,8 +45,8 @@ for sappi_i in superappinterval:
             for vbrs_i in vbrsize:
                 for trafi_i in trafinterval: 
                     for trafs_i in trafsize:
-                        gamer=WDNoptimizer.GMMOptimizationUnit(cluster=4)
-                        tempmemoryset=WDNoptimizer.ReinforcementLearningUnit()
+                        gamer=WDNoptimizer.GMMmultiOptimizationUnit(cluster=4)
+                        tempmemoryset=WDNoptimizer.MemoryUnit()
                         for i in range(60):
                             """
                             读取数据，对数据进行分类处理
@@ -98,7 +99,7 @@ for sappi_i in superappinterval:
 import WDNoptimizer
 distriubuteculsterdata=distriubuteculsterdata.reset_index(drop=True)
 priordataset=memoryset.qosmemoryunit#将原始的数据保存到内存中
-qosgmmgamer=WDNoptimizer.GMMOptimizationUnit(cluster=4)#实例化GMM模型
+qosgmmgamer=WDNoptimizer.GMMmultiOptimizationUnit(cluster=4)#实例化GMM模型
 print(distriubuteculsterdata)#这个聚类结果是分别对每一组数据进行聚类之后聚合而成的数据
 print(priordataset)
 
@@ -129,7 +130,7 @@ for i in listaaa:
     teaser.updateQuerypointworker(ttt)#更新反馈参数
     newdata=teaser.updatetrainningsetworker(path=datapath,point=ttt,count=30)
     priordataset=priordataset.append(newdata)#将新数据加入至原始训练集中
-    newgammer=WDNoptimizer.GMMOptimizationUnit(cluster=4)#实例化GMM模型
+    newgammer=WDNoptimizer.GMMmultiOptimizationUnit(cluster=4)#实例化GMM模型
     newdataset=newgammer.dropNaNworker(priordataset)#去掉nan数据
     iternum=iternum+1
     newdataset=gamer.presortworker(newdataset,col1='traf_messagecompletionrate',col2='sapp_jitter')

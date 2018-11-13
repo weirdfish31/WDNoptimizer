@@ -23,7 +23,7 @@ trafinterval=[30]
 trafsize=[8000,10000,12000,14000,16000,18000,20000,22000,24000,26000,28000,30000,32000,34000,36000]
 #trafsize=[22000]
 
-memoryset=WDNoptimizer.ReinforcementLearningUnit()#记忆单元，存储每次的状态
+memoryset=WDNoptimizer.MemoryUnit()#记忆单元，存储每次的状态
 distriubuteculsterdata=pd.DataFrame()
 
 #dataset='test_ REQUEST-SIZE EXP 18000 _ 2000'
@@ -43,8 +43,8 @@ for sappi_i in superappinterval:
             for vbrs_i in vbrsize:
                 for trafi_i in trafinterval: 
                     for trafs_i in trafsize:
-                        gamer=WDNoptimizer.GMMOptimizationUnit(cluster=2)
-                        tempmemoryset=WDNoptimizer.ReinforcementLearningUnit()
+                        gamer=WDNoptimizer.GMMmultiOptimizationUnit(cluster=2)
+                        tempmemoryset=WDNoptimizer.MemoryUnit()
                         for i in range(30):
                             """
                             读取数据，对数据进行分类处理
@@ -97,7 +97,7 @@ for sappi_i in superappinterval:
 import WDNoptimizer
 distriubuteculsterdata=distriubuteculsterdata.reset_index(drop=True)
 priordataset=memoryset.qosmemoryunit#将原始的数据保存到内存中
-qosgmmgamer=WDNoptimizer.GMMOptimizationUnit(cluster=2)#实例化GMM模型
+qosgmmgamer=WDNoptimizer.GMMmultiOptimizationUnit(cluster=2)#实例化GMM模型
 print(distriubuteculsterdata)#这个聚类结果是分别对每一组数据进行聚类之后聚合而成的数据
 print(priordataset)
 "AF函数======================================================================="
@@ -106,6 +106,7 @@ listaaa=[[63670,63990],[63979,240],[24773,63990],[92,63993],[63730,32765],[34308
          [45047,35287],[44082,34484],[32056,52314],[37898,43319],[37711,44133],[36070,47304],[37326,44649],
          [37307,44596],[28670,53413],[27218,54348],[36729,43344],[34307,47951],[36263,44555],[33717,48207],
          [24941,56549],[33413,46767]]
+print(type(listaaa[1]))
 ttt=np.array([41,485])
 "画图+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 ##fitz=7 16
@@ -124,7 +125,7 @@ for i in listaaa:
     teaser.updateQuerypointworker(ttt)#更新反馈参数
     newdata=teaser.updatetrainningsetworker(path=datapath,point=ttt,count=30)
     priordataset=priordataset.append(newdata)#将新数据加入至原始训练集中
-    newgammer=WDNoptimizer.GMMOptimizationUnit(cluster=2)#实例化GMM模型
+    newgammer=WDNoptimizer.GMMmultiOptimizationUnit(cluster=2)#实例化GMM模型
     newdataset=newgammer.dropNaNworker(newdata)#去掉nan数据
     iternum=iternum+1
     newdataset=gamer.presortworker(newdataset,col1='traf_throughput',col2='sapp_throughput')
@@ -136,7 +137,8 @@ for i in listaaa:
     newgammer.multiGMMbuilder(distriubuteculsterdata,fitz=9,fita=17)#生成多指标的加权平面，保存的功能还未实现，需要实现
     newgammer.mulitgragher(data=distriubuteculsterdata,test=ttt,path=figpath,count=simucount)#多指标合成的画图
     simucount=simucount+1#计数，修改文件名称
-    
+
+
     
     
     

@@ -24,7 +24,7 @@ trafsize=[30000]
 
 flowdata=pd.DataFrame()#所有数据库的流聚合
 appdata=pd.DataFrame()#所有数据库的某种业务的聚合
-memoryset=WDNoptimizer.ReinforcementLearningUnit()#记忆单元，存储每次的状态
+memoryset=WDNoptimizer.MemoryUnit()#记忆单元，存储每次的状态
 
 #dataset='test_ REQUEST-SIZE EXP 18000 _ 2000'
 #radio REQUEST-SIZE EXP 24000 _ 18000 _ RND EXP 22000
@@ -83,13 +83,14 @@ for i in range(120):
                             print(state)
                             qos=eva.qoslist
                             print(qos)
-                            memoryset.insertmemoryunit(state=state,value=value)
+                            memoryset.valueinserter(state=state,value=value)
                             memoryset.qosinserter(state=state,qos=qos)
                             
                         
+print(memoryset.memoryunit)
 print(memoryset.qosmemoryunit)
 import seaborn as sns 
-sns.jointplot('traf_messagecompletionrate','sapp_jitter',data=memoryset.qosmemoryunit, kind='kde')        
+sns.jointplot('sapps','value',data=memoryset.memoryunit, kind='kde')        
 #==============================================================================                 
 #GMMgamer=weirdfishes.GMMOptimizationUnit()
 #data=GMMgamer.dropNaNworker(memoryset.memoryunit)                          
