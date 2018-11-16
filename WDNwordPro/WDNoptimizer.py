@@ -75,7 +75,7 @@ class GMMvalueOptimizaitonUnit:
         ax4.set_title('the predict mean output at ('+str(qp[0,0])+'  '+str(qp[0,1])+'): {0} '.format(self.reg.predict(qp)[0]))  
         ax4.set_xlabel('sapps')  
         ax4.set_ylabel('trafs')  
-        ax4.set_zlabel('value_1') 
+        ax4.set_zlabel('value_1')
         "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"       
         ax3 = fig.add_subplot(223, projection='3d')
         ax3.plot_surface(self.xset,self.yset,self.obj['output_value_1'], cmap=plt.get_cmap('rainbow'),linewidth=0, antialiased=False)
@@ -860,7 +860,7 @@ class EvaluationUnit:
         """
         #delay  x=3,y=0.5,flag=0
         delay = dataset['delay']
-        a = self.exponentNormalizer(x=3,y=0.5,flag=0,value=delay)
+        a = self.exponentNormalizer(x=0.25,y=0.5,flag=0,value=delay)
         #Jitter xmax=0.1,y=0.001,flag=0
         jitter = dataset['jitter']
         b = self.exponentNormalizer(x=0.1,y=0.001,flag=0,value=jitter)
@@ -869,10 +869,10 @@ class EvaluationUnit:
         c = self.exponentNormalizer(x=0.9,y=0.1,flag=0,value=packetoss)
         #throughput max=100000000
         throughput = dataset['throughput']
-        if throughput>100000000:
+        if throughput>15000000:
             d = 1
         else:
-            d = self.sqrtNormalizer(x=100000000,value=throughput)
+            d = self.sqrtNormalizer(x=15000000,value=throughput)
         self.normalizedata.append([a,b,c,d])
         self.qoslist=self.qoslist+[a,b,c,d]
         
