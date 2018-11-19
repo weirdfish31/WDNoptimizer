@@ -7,7 +7,7 @@ main program
 
 GMM实验，在traf包大小、superapp包大小和traffic吞吐量和superapp吞吐量之间的比较，
 两个吞吐量的联合分布，分成两簇
-迭代30次，每次仿真30次
+迭代60次，每次仿真10次
 
 """
 import WDNexataReader#读取数据
@@ -30,10 +30,10 @@ trafsize=[8000,10000,12000,14000,16000,18000,20000,22000,24000,26000,28000,30000
 
 flowdata=pd.DataFrame()#所有数据库的流聚合
 appdata=pd.DataFrame()#所有数据库的某种业务的聚合
-memoryset=WDNoptimizer.ReinforcementLearningUnit()#记忆单元，存储每次的状态
+memoryset=WDNoptimizer.MemoryUnit()#记忆单元，存储每次的状态
 distriubuteculsterdata=pd.DataFrame()#存储每次读取数据之后的分别聚类的结果
 
-qosgmmgamer=WDNoptimizer.GMMOptimizationUnit(cluster=2)#实例化GMM模型
+qosgmmgamer=WDNoptimizer.GMMmultiOptimizationUnit(cluster=2)#实例化GMM模型
 
 #dataset='test_ REQUEST-SIZE EXP 18000 _ 2000'
 #radio REQUEST-SIZE EXP 24000 _ 18000 _ RND EXP 22000
@@ -57,8 +57,8 @@ for sappi_i in superappinterval:
                         """
                         gamer:对每一次一个输入组合的全部采样点做一次聚类
                         """
-                        gamer=WDNoptimizer.GMMOptimizationUnit(cluster=2)
-                        tempmemoryset=WDNoptimizer.ReinforcementLearningUnit()
+                        gamer=WDNoptimizer.GMMmultiOptimizationUnit(cluster=2)
+                        tempmemoryset=WDNoptimizer.MemoryUnit()
                         for i in range(30):
                             """
                             读取数据，对数据进行分类处理
@@ -148,9 +148,9 @@ for i in range(60):
 #     outlogfile.write(writeStr)
 # =============================================================================
     teaser.runTest(count=10)#仿真
-    newdata=teaser.updatetrainningsetworker(path=newdatapath,point=ttt,count=10)
+    newdata=teaser.updatetrainningsetworker(path=newdatapath,point=ttt,count=10,style='qos')
     priordataset=priordataset.append(newdata)#将新数据加入至原始训练集中
-    newgammer=WDNoptimizer.GMMOptimizationUnit(cluster=2)#实例化GMM模型
+    newgammer=WDNoptimizer.GMMmultiOptimizationUnit(cluster=2)#实例化GMM模型
     newdataset=newgammer.dropNaNworker(newdata)#去掉nan数据
     newdataset=gamer.presortworker(newdataset,col1='traf_throughput',col2='sapp_throughput')
     iternum=iternum+1
