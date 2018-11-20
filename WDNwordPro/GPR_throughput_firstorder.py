@@ -5,7 +5,7 @@ Created on Thu Jul 12 17:07:52 2018
 @author: WDN\
 lastorder:对比实验，
 目前的设计，用高斯过程模型进行拟合，
-同样的迭代30次，每次仿真30次，AF函数也沿用GMM模型试验中的参数和策略
+同样的迭代60次，每次仿真3次，AF函数也沿用GMM模型试验中的参数和策略
 
 """
 import WDNexataReader#读取数据
@@ -26,8 +26,8 @@ trafinterval=[30]
 trafsize=[8000,10000,12000,14000,16000,18000,20000,22000,24000,26000,28000,30000,32000,34000,36000]
 #trafsize=[22000]
 
-memoryset=WDNoptimizer.ReinforcementLearningUnit()#记忆单元，存储每次的状态
-qosgmmgamer=WDNoptimizer.GMMOptimizationUnit(cluster=1)#实例化GMM模型
+memoryset=WDNoptimizer.MemoryUnit()#记忆单元，存储每次的状态
+qosgmmgamer=WDNoptimizer.GMMmultiOptimizationUnit(cluster=1)#实例化GMM模型
 
 #dataset='test_ REQUEST-SIZE EXP 18000 _ 2000'
 #radio REQUEST-SIZE EXP 24000 _ 18000 _ RND EXP 22000
@@ -48,8 +48,8 @@ for sappi_i in superappinterval:
             for vbrs_i in vbrsize:
                 for trafi_i in trafinterval: 
                     for trafs_i in trafsize:
-                        gamer=WDNoptimizer.GMMOptimizationUnit(cluster=1)
-                        tempmemoryset=WDNoptimizer.ReinforcementLearningUnit()
+                        gamer=WDNoptimizer.GMMmultiOptimizationUnit(cluster=1)
+                        tempmemoryset=WDNoptimizer.MemoryUnit()
                         for i in range(3):
                             """
                             读取数据，对数据进行分类处理
@@ -127,9 +127,9 @@ for i in range(60):
     writeStr = "%s : {%s}\n" % (simucount, querypoint)
     outlogfile.write(writeStr)
     teaser.runTest(count=3)#仿真
-    newdata=teaser.updatetrainningsetworker(path=newdatapath,point=ttt,count=3)
+    newdata=teaser.updatetrainningsetworker(path=newdatapath,point=ttt,count=3,style='qos')
     priordataset=priordataset.append(newdata)#将新数据加入至原始训练集中
-    newgammer=WDNoptimizer.GMMOptimizationUnit(cluster=1)#实例化GMM模型
+    newgammer=WDNoptimizer.GMMmultiOptimizationUnit(cluster=1)#实例化GMM模型
     newdataset=newgammer.dropNaNworker(newdata)#去掉nan数据
     newdataset=newgammer.clusterworker(newdataset,col1='traf_throughput',col2='sapp_throughput',count=simucount)#kmeans++聚类
     distriubuteculsterdata=distriubuteculsterdata.append(newdataset)
