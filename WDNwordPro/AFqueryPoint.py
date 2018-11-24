@@ -4,7 +4,8 @@ Created on Sat Jul 21 15:14:01 2018
 
 @author: WDN
 
-画图，GPR，GMM的query point 迭代比较
+画图，GPR，GMM的query point 迭代比较,得到两个二维的选点的动态过程图
+迭代的querypoint通过log文件保存
 """
 import pandas as pd
 import numpy as np
