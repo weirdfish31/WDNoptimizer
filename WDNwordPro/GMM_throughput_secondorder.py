@@ -3,7 +3,8 @@
 Created on Mon Jul 23 16:21:53 2018
 
 @author: WDN
-第二次试验，进行GMM的迭代试验，100次迭代之后进行AF函数的参数的变换，进行探索策略的调整
+第二次试验，进行GMM的UCB不同学习率的迭代试验，100次迭代之后进行AF函数的参数的变换，进行探索策略的调整
+目前主要是调整UCB的学习率的参数进行比较，已经做了0.0,0.1,0.3,0.5,0.7,0.8,0.9,1.0,2.0
 """
 import WDNexataReader#读取数据
 import WDNoptimizer#建模，画图，AF函数
@@ -23,13 +24,17 @@ vbrsize=[24000]
 trafinterval=[30]
 trafsize=[8000,10000,12000,14000,16000,18000,20000,22000,24000,26000,28000,30000,32000,34000,36000]
 #trafsize=[22000]
+#记录AF函数的每次选择
+listaaa=[]
+
+
 
 flowdata=pd.DataFrame()#所有数据库的流聚合
 appdata=pd.DataFrame()#所有数据库的某种业务的聚合
-memoryset=WDNoptimizer.ReinforcementLearningUnit()#记忆单元，存储每次的状态
+memoryset=WDNoptimizer.MemoryUnit()#记忆单元，存储每次的状态
 distriubuteculsterdata=pd.DataFrame()#存储每次读取数据之后的分别聚类的结果
 
-qosgmmgamer=WDNoptimizer.GMMOptimizationUnit(cluster=2)#实例化GMM模型
+qosgmmgamer=WDNoptimizer.GMMmultiOptimizationUnit(cluster=2)#实例化GMM模型
 
 #dataset='test_ REQUEST-SIZE EXP 18000 _ 2000'
 #radio REQUEST-SIZE EXP 24000 _ 18000 _ RND EXP 22000
@@ -53,8 +58,8 @@ for sappi_i in superappinterval:
                         """
                         gamer:对每一次一个输入组合的全部采样点做一次聚类
                         """
-                        gamer=WDNoptimizer.GMMOptimizationUnit(cluster=2)
-                        tempmemoryset=WDNoptimizer.ReinforcementLearningUnit()
+                        gamer=WDNoptimizer.GMMmultiOptimizationUnit(cluster=2)
+                        tempmemoryset=WDNoptimizer.MemoryUnit()
                         for i in range(20):
                             """
                             读取数据，对数据进行分类处理
@@ -78,12 +83,13 @@ for sappi_i in superappinterval:
                             vbr,superapp,trafficgen
                             """
                             eva=WDNoptimizer.EvaluationUnit()
-                            superapp=readdb.meandata('superapp')
-                            eva.calculateMetricEvaValue(superapp)
                             vbr=readdb.meandata('vbr')
                             eva.calculateMetricEvaValue(vbr)
                             trafficgen=readdb.meandata('trafficgen')
-                            eva.calculateMetricEvaValue(trafficgen)                  
+                            eva.calculateMetricEvaValue(trafficgen)
+                            superapp=readdb.meandata('superapp')
+                            eva.calculateMetricEvaValue(superapp)
+                            value=eva.evaluationvalue()
                             """
                             状态动作保存：当前状态、评估值、动作、收益(目前的动作和收益没有用暂时放这里)
                             如果是第一次仿真，动作与收益为缺省值null
@@ -94,6 +100,7 @@ for sappi_i in superappinterval:
                             state=[sappi_i,sapps_i,vbri_i,vbrs_i,trafi_i,trafs_i]
                             print(state)
                             qos=eva.qoslist
+                            print(qos)
                             """
                             "memoryset用来保存原始数据信息" 
                             "tempmemoryset用来进行读取数据是的聚类"
@@ -114,17 +121,17 @@ for sappi_i in superappinterval:
                             part0=tempdataset.loc[tempdataset['label']==0]
                             part0.loc[:,'label']=0
                             part1=tempdataset.loc[tempdataset['label']==1]
-                            part0.loc[:,'label']=1
+                            part1.loc[:,'label']=1
                             distriubuteculsterdata=distriubuteculsterdata.append(part0)
                             distriubuteculsterdata=distriubuteculsterdata.append(part1)
+#                            probOf0=len(distriubuteculsterdata[distriubuteculsterdata['label']==0])/len(distriubuteculsterdata)
                         elif a>b:
                             part0=tempdataset.loc[tempdataset['label']==0]
                             part0.loc[:,'label']=1
                             part1=tempdataset.loc[tempdataset['label']==1]
-                            part0.loc[:,'label']=0
+                            part1.loc[:,'label']=0
                             distriubuteculsterdata=distriubuteculsterdata.append(part0)
                             distriubuteculsterdata=distriubuteculsterdata.append(part1)
-#                            distriubuteculsterdata=distriubuteculsterdata.append(tempdataset)
                         iternum=iternum+1
                         
 "数据预处理====目前预处理都是在读取数据时完成===================================="
@@ -135,8 +142,10 @@ print(distriubuteculsterdata)#这个聚类结果是分别对每一组数据进�
 
 "AF函数======================================================================="
 qosgmmgamer.weightchanger(distriubuteculsterdata)#重新对权值进行更新
-ttt=qosgmmgamer.multiUCBhelper(data=distriubuteculsterdata,kappa= 0.7,fitz=9,fita=17)#多指标的AF函数
+ttt=qosgmmgamer.multiUCBhelper(data=distriubuteculsterdata,kappa= 2 ,fitz=9,fita=17)#多指标的AF函数
 #ttt=np.array([63670,63990])
+tu=ttt.tolist()
+listaaa.append(tu)
 
 "画图+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 
@@ -160,9 +169,9 @@ for i in range(100):
 #     outlogfile.write(writeStr)
 # =============================================================================
     teaser.runTest(count=20)#仿真
-    newdata=teaser.updatetrainningsetworker(path=newdatapath,point=ttt,count=20)
+    newdata=teaser.updatetrainningsetworker(path=newdatapath,point=ttt,count=20,style='qos')
     priordataset=priordataset.append(newdata)#将新数据加入至原始训练集中
-    newgammer=WDNoptimizer.GMMOptimizationUnit(cluster=2)#实例化GMM模型
+    newgammer=WDNoptimizer.GMMmultiOptimizationUnit(cluster=2)#5实例化GMM模型
     newdataset=newgammer.dropNaNworker(newdata)#去掉nan数据
     newdataset=gamer.presortworker(newdataset,col1='traf_throughput',col2='sapp_throughput')
     iternum=iternum+1
@@ -191,4 +200,17 @@ for i in range(100):
     newgammer.mulitgragher(data=distriubuteculsterdata,test=ttt,path=figpath,count=simucount)#多指标合成的画图
     simucount=simucount+1#计数，修改文件名称
     newgammer.weightchanger(distriubuteculsterdata)#重新对权值进行更新
-    ttt=newgammer.multiUCBhelper(data=distriubuteculsterdata,kappa= 0.7,fitz=9,fita=17)#AF函数
+    ttt=newgammer.multiUCBhelper(data=distriubuteculsterdata,kappa= 2,fitz=9,fita=17)#AF函数
+    tu=ttt.tolist()
+    listaaa.append(tu)
+#记录每次AF选点的参数
+with open('querypoint_log.txt','w') as f:
+    f.write('\n')
+    f.write(str(listaaa))
+
+
+
+
+
+
+
