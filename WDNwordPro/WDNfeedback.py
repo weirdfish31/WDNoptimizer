@@ -25,21 +25,21 @@ class FeedBackWorker:
     3）进行一个数量的重复仿真
     4）*读取数据库
     """
-    def __init__(self):
+    def __init__(self,superinter=20,supersize=30000,vbrinter=30,vbrsize=24000,trafinter=30,trafsize=34000):
         """
         initial function
         """
         self.figpath="./Figure/"
         self.outdatapath='./OutConfigfile/'
         
-        self.superapinterval = ' REQUEST-INTERVAL EXP 20MS '
-        self.superappsize=" REQUEST-SIZE DET 30000 "
+        self.superapinterval = ' REQUEST-INTERVAL EXP '+str(superinter)+'MS '
+        self.superappsize=" REQUEST-SIZE DET "+str(supersize)+" "
         
-        self.vbrInterval = " 30MS "
-        self.vbrsize=" 24000 "
+        self.vbrInterval = " "+str(vbrinter)+"MS "
+        self.vbrsize=" "+str(vbrsize)+" "
         
-        self.trafficgeninterval=' DET 30MS '
-        self.trafficgensize=' RND DET 34000 '
+        self.trafficgeninterval=' DET '+str(trafinter)+'MS '
+        self.trafficgensize=' RND DET '+str(trafsize)+' '
         
         self.deliveryType = ' DELIVERY-TYPE UNRELIABLE '
         self.routing ='OSPFv2'
@@ -50,7 +50,7 @@ class FeedBackWorker:
         self.acquisitioncount=1
         self.querydatasetlist=[]
     
-    def updatetrainningsetworker(self,path,point,count=60):
+    def updatetrainningsetworker(self,path,point,count=60,style='qos'):
         """
         将querypoint得到的仿真数据读取并加入到原始训练集中
         目前是固定4个参数，2个参数可变
@@ -60,31 +60,55 @@ class FeedBackWorker:
         vbrsize_i=self.vbrsize
         simname='radio'+appSize_i+"_"+vbrsize_i+"_"+trafficgensize_i
         self.querydatasetlist.append(simname)#将每次调用此函数时的数据库名字保存至list中
-        newdata=WDNoptimizer.ReinforcementLearningUnit()
+        newdata=WDNoptimizer.MemoryUnit()
         datapath=path
 #        datapath='G:/testData/GMM1/'
-        for i in range(count):
-            dataset=simname+'_'+str(i)
-            reader=WDNexataReader.ExataDBreader()
-            reader.opendataset(dataset,datapath)#读取特定路径下的数据库
-            reader.appnamereader()#读取业务层的业务名称
-            reader.appfilter()#将业务名称分类至三个list
-            reader.appdatareader()#将每个业物流的输出数据存到实例化的类中的字典里面
-            reader.inputparainsert(20,point[0],30,24000,30,point[1])
-            "================================================================="
-            eva=WDNoptimizer.EvaluationUnit()
-            superapp=reader.meandata('superapp')
-            eva.calculateMetricEvaValue(superapp)
-            vbr=reader.meandata('vbr')
-            eva.calculateMetricEvaValue(vbr)
-            trafficgen=reader.meandata('trafficgen')
-            eva.calculateMetricEvaValue(trafficgen)
-            state=[20,point[0],30,24000,30,point[1]]
-            print(state)
-            qos=eva.qoslist
-#           memoryset.insertmemoryunit(state=state,value=value)
-            newdata.qosinserter(state=state,qos=qos)
-        return newdata.qosmemoryunit
+        if style=='qos':            
+            for i in range(count):
+                dataset=simname+'_'+str(i)
+                reader=WDNexataReader.ExataDBreader()
+                reader.opendataset(dataset,datapath)#读取特定路径下的数据库
+                reader.appnamereader()#读取业务层的业务名称
+                reader.appfilter()#将业务名称分类至三个list
+                reader.appdatareader()#将每个业物流的输出数据存到实例化的类中的字典里面
+                reader.inputparainsert(20,point[0],30,24000,30,point[1])
+                "================================================================="
+                eva=WDNoptimizer.EvaluationUnit()
+                superapp=reader.meandata('superapp')
+                eva.calculateMetricEvaValue(superapp)
+                vbr=reader.meandata('vbr')
+                eva.calculateMetricEvaValue(vbr)
+                trafficgen=reader.meandata('trafficgen')
+                eva.calculateMetricEvaValue(trafficgen)
+                state=[20,point[0],30,24000,30,point[1]]
+                print(state)
+                qos=eva.qoslist
+    #           memoryset.insertmemoryunit(state=state,value=value)
+                newdata.qosinserter(state=state,qos=qos)
+            return newdata.qosmemoryunit
+        elif style=='value':
+            for i in range(count):
+                dataset=simname+'_'+str(i)
+                reader=WDNexataReader.ExataDBreader()#实例化
+                reader.opendataset(dataset,datapath)#读取特定路径下的数据库
+                reader.appnamereader()#读取业务层的业务名称
+                reader.appfilter()#将业务名称分类至三个list
+                reader.appdatareader()#将每个业物流的输出数据存到实例化的类中的字典里面
+                reader.inputparainsert(20,point[0],30,24000,30,point[1])
+                "================================================================="
+                eva=WDNoptimizer.EvaluationUnit()
+                superapp=reader.meandata('superapp')
+                eva.calculateMetricEvaValue(superapp)
+                vbr=reader.meandata('vbr')
+                eva.calculateMetricEvaValue(vbr)
+                trafficgen=reader.meandata('trafficgen')
+                eva.calculateMetricEvaValue(trafficgen)
+                state=[20,point[0],30,24000,30,point[1]]
+                print(state)
+                value=eva.evaluationvalue()
+    #           memoryset.insertmemoryunit(state=state,value=value)
+                newdata.valueinserter(state=state,value=value)
+            return newdata.memoryunit
 
     
     def updateQuerypointworker(self,point):
@@ -101,7 +125,7 @@ class FeedBackWorker:
         """
         配置仿真参数，生成配置文件，运行仿真
         """
-        outlogfile = open('./outThrd.log', 'w')
+#        outlogfile = open('./outThrd.log', 'w')
         delivery_i=self.deliveryType
         routing_i=self.routing
         rsBand_i=self.rsBand
@@ -144,10 +168,10 @@ class FeedBackWorker:
             simStr = 'EXPERIMENT-NAME ' + simName + '\n'
             simename = './OutConfigfile/sim.name'
             self.writefile(simename, simStr)
-            paraStr = 'SatBand: %s, RSBand: %s, Drop: %s, Route:%s, Interval: %s , Delivery: %s' % (satBand_i, rsBand_i, rsDrop_i, routing_i, appInterval_i, delivery_i)
-            writeStr = "%s : {%s}\n" % (simName, paraStr)
-            outlogfile.write(writeStr)
-            print(writeStr)
+#            paraStr = 'SatBand: %s, RSBand: %s, Drop: %s, Route:%s, Interval: %s , Delivery: %s' % (satBand_i, rsBand_i, rsDrop_i, routing_i, appInterval_i, delivery_i)
+#            writeStr = "%s : {%s}\n" % (simName, paraStr)
+#            outlogfile.write(writeStr)
+#            print(writeStr)
             if False:
                 continue
             try:
@@ -160,9 +184,6 @@ class FeedBackWorker:
 #                self.runOutfileStore(simName)
             except:
                 continue
-#            except Exception as e:
-#                erro = open(simName + '.erro', 'w')
-#                ferro.write(writeStr)
       
         
         
