@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Jul 12 17:07:52 2018
+Created on Mon Nov  5 15:47:07 2018
 
-@author: WDN\
-lastorder:对比实验，
-目前的设计，用高斯过程模型进行拟合，
-同样的迭代30次，每次仿真30次，AF函数也沿用GMM模型试验中的参数和策略
-
+@author: WDN
+test：进行文件修改测试
 """
 import WDNexataReader#读取数据
 import WDNoptimizer#建模，画图，AF函数
@@ -17,6 +14,7 @@ import numpy as np
 
 
 "高斯混合模型动态优化过程预处理================================================="
+"目前还是原来的先验数据，带实现LHS基于灵敏度分析的预采样"
 superappinterval=[20]
 #superappsize=[8000,10000,12000,14000,16000,18000,20000,22000,24000]
 superappsize=[16000,30000]
@@ -25,24 +23,28 @@ vbrinterval=[30]
 vbrsize=[24000]
 trafinterval=[30]
 trafsize=[8000,10000,12000,14000,16000,18000,20000,22000,24000,26000,28000,30000,32000,34000,36000]
+#trafsize=[10000]
 #trafsize=[22000]
+#记录AF函数的每次选择
+listaaa=[]
 
-flowdata=pd.DataFrame()#所有数据库的流聚合
+
 appdata=pd.DataFrame()#所有数据库的某种业务的聚合
-memoryset=WDNoptimizer.ReinforcementLearningUnit()#记忆单元，存储每次的状态
+memoryset=WDNoptimizer.MemoryUnit()#记忆单元，存储每次的状态
+#distriubuteculsterdata=pd.DataFrame()#存储每次读取数据之后的分别聚类(均值，标签)的结果
+valuegmmgamer=WDNoptimizer.GMMvalueOptimizaitonUnit(cluster=2)#实例化GMM模型
 
 #dataset='test_ REQUEST-SIZE EXP 18000 _ 2000'
 #radio REQUEST-SIZE EXP 24000 _ 18000 _ RND EXP 22000
 figpath="./Figure/"
 datapath='G:/testData/2DGMM(16000_8000-36000)/'
 newdatapath='./OutConfigfile/'
-
+iternum=0
 
 
 "读取训练数据集================================================================"
-"""用来读取原始数据集，得到priordataset，绘制聚类图，拟合的GMM热力图"""
+"""用来读取原始数据集，得到memoryset.probmemoryunit，绘制聚类图，拟合的GMM热力图"""
 
-distriubuteculsterdata=pd.DataFrame()
 outlogfile = open('./queryPoint.log', 'w')
 for sappi_i in superappinterval:
     for sapps_i in superappsize:
@@ -50,9 +52,13 @@ for sappi_i in superappinterval:
             for vbrs_i in vbrsize:
                 for trafi_i in trafinterval: 
                     for trafs_i in trafsize:
-                        gamer=WDNoptimizer.GMMOptimizationUnit(cluster=2)
-                        tempmemoryset=WDNoptimizer.ReinforcementLearningUnit()
-                        for i in range(60):
+                        """
+                        gamer:对每一次一个输入组合的全部采样点做一次聚类
+                        """
+                        gamer=WDNoptimizer.GMMvalueOptimizaitonUnit(cluster=2)#用来对一组参数中的数据聚类
+                        tempmemoryset=WDNoptimizer.MemoryUnit()
+                        state=[sappi_i,sapps_i,vbri_i,vbrs_i,trafi_i,trafs_i]
+                        for i in range(20):
                             """
                             读取数据，对数据进行分类处理
                             """
@@ -64,108 +70,177 @@ for sappi_i in superappinterval:
                             readdb.appdatareader()#将每个业物流的输出数据存到实例化的类中的字典里面
                             readdb.inputparainsert(sappi_i,sapps_i,vbri_i,vbrs_i,trafi_i,trafs_i)
                             #将每条流的业务设计参数加入类中的字典
-                            print(sapps_i,vbrs_i,trafs_i)
+#                            print(sapps_i,vbrs_i,trafs_i)
                             "======================以上步骤不可省略，下方处理可以根据需求修改"
-#                                a=readdb.flowaggregator(sappi_i,sapps_i,vbri_i,vbrs_i,trafi_i,trafs_i)
-#                                #将同一个源到目的业务数据聚合在一起输出一个dataframe，一个数据库生成一个流聚合frame
-#                                flowdata=flowdata.append(a)
-#                                b=readdb.alltypeaggregator(sappi_i,sapps_i,vbri_i,vbrs_i,trafi_i,trafs_i,'trafficgen')
-#                                将同一种业务，如VBR数据聚合在一起 输出一个dataframe，
-#                                一个数据库可以生成三个，VBR，Superapp，Trafficgen三种业务聚合frame
-#                                appdata=appdata.append(b)                         
                             """
                             评估部分，对于三种不同的业务有不同的权重:时延、抖动、丢包率、吞吐量
-                            vbr:        [1,2,3,4]
+                            vbr:        [1,2,3,4] delay,jitter,messagecompleterate,throughtput
                             trafficgen: [5,6,7,8]
                             superapp:   [9,10,11,12]
                             vbr,superapp,trafficgen
                             """
                             eva=WDNoptimizer.EvaluationUnit()
-                            superapp=readdb.meandata('superapp')
-                            eva.calculateMetricEvaValue(superapp)
                             vbr=readdb.meandata('vbr')
                             eva.calculateMetricEvaValue(vbr)
                             trafficgen=readdb.meandata('trafficgen')
                             eva.calculateMetricEvaValue(trafficgen)
-#                                value=eva.evaluationvalue()
-#                                print(value)                        
+                            superapp=readdb.meandata('superapp')
+                            eva.calculateMetricEvaValue(superapp)
+                            value=eva.evaluationvalue()
                             """
-                            状态动作保存：当前状态、评估值、动作、收益
+                            状态动作保存：当前状态、评估值、动作、收益(目前的动作和收益没有用暂时放这里)
                             如果是第一次仿真，动作与收益为缺省值null
                             记忆单元的数据包括：
                                 1）当前状态：6个输入量 三个业务的包大小，发包时间间隔
                                 2）评估值：value=eva.evaluationvalue()
-                                3）动作：6个输入量与上一次仿真中修改的变化量
-                                4）收益：动作之后的评估值的变化，遇上一次评估值之间的差
                             """
-                            state=[sappi_i,sapps_i,vbri_i,vbrs_i,trafi_i,trafs_i]
                             print(state)
-                            qos=eva.qoslist
-#                                memoryset.insertmemoryunit(state=state,value=value)
-                            memoryset.qosinserter(state=state,qos=qos)    
-                            tempmemoryset.qosinserter(state=state,qos=qos)
-                        tempdataset=gamer.dropNaNworker(tempmemoryset.qosmemoryunit)
-                        tempdataset=gamer.clusterworker(tempdataset,col1='traf_throughput',col2='sapp_throughput')
-                        distriubuteculsterdata=distriubuteculsterdata.append(tempdataset)
+                            """
+                            "memoryset用来保存原始数据信息" 
+                            "tempmemoryset用来进行读取数据是的聚类"
+                            """
+                            memoryset.valueinserter(state=state,value=value)
+                            tempmemoryset.valueinserter(state=state,value=value)
+                            print(eva.normalizedata)
+                        """
+                        "去掉nan数据"
+                        "聚类"
+                        "聚类后的数据保存到memoryset.probmemoryunit中"，最终得到每簇的均值、标签、概率
+                        """
+                        tempdataset=gamer.dropNaNworker(tempmemoryset.memoryunit)
+                        tempdataset=gamer.presortworker(tempdataset,col1='vbri',col2='value')
+                        tempdataset=gamer.clusterworker(tempdataset,col1='vbri',col2='value',count=iternum)
+                        a=np.mean(tempdataset[tempdataset['label']==0]['value'])
+                        b=np.mean(tempdataset[tempdataset['label']==1]['value'])   
+                        if a<b:
+                            part0=tempdataset.loc[tempdataset['label']==0]
+                            part0.loc[:,'label']=0
+                            part1=tempdataset.loc[tempdataset['label']==1]
+                            part1.loc[:,'label']=1
+#                            distriubuteculsterdata=distriubuteculsterdata.append(part0)
+#                            distriubuteculsterdata=distriubuteculsterdata.append(part1)
+                            """
+                            计算混合模型中第一簇的概率，目前问题中的模型分为两簇，
+                            计算一簇模型的概率自然可以得到另一簇的概率
+                            """
+                            probOf1=len(part1)/len(tempdataset)
+                            probOf0=1-probOf1
+                            value1=np.mean(part1[part1['label']==1]['value'])
+                            value0=np.mean(part0[part0['label']==0]['value'])
+                            memoryset.probinserter(state=state,value=value1,prob=probOf1,label=1)
+                            memoryset.probinserter(state=state,value=value0,prob=probOf0,label=0)
+                        elif a>b:
+                            part0=tempdataset.loc[tempdataset['label']==0]
+                            part0.loc[:,'label']=1
+                            part1=tempdataset.loc[tempdataset['label']==1]
+                            part1.loc[:,'label']=0
+#                            distriubuteculsterdata=distriubuteculsterdata.append(part0)
+#                            distriubuteculsterdata=distriubuteculsterdata.append(part1)
+                            probOf1=len(part0)/len(tempdataset)
+                            probOf0=1-probOf1
+                            value1=np.mean(part0[part0['label']==1]['value'])
+                            value0=np.mean(part1[part1['label']==0]['value'])
+                            memoryset.probinserter(state=state,value=value1,prob=probOf1,label=1)
+                            memoryset.probinserter(state=state,value=value0,prob=probOf0,label=0)                            
+                        iternum=iternum+1
                         
-"数据预处理===================================================================="
-import WDNoptimizer
-priordataset=memoryset.qosmemoryunit#将原始的数据保存到内存中
-qosgmmgamer=WDNoptimizer.GMMOptimizationUnit(cluster=2)#实例化GMM模型
-#    testdata=qosgmmgamer.dropNaNworker(memoryset.qosmemoryunit)#去掉nan数据
-#    print(testdata)
-print(distriubuteculsterdata)#这个聚类结果是分别对每一组数据进行聚类之后聚合而成的数据
-print(priordataset)
-#    testdata=qosgmmgamer.clusterworker(testdata,col1='traf_throughput',col2='sapp_throughput')#kmeans++聚类
+                        
+                        
+                        
+"数据预处理====目前预处理都是在读取数据时完成===================================="
+#import WDNoptimizer
+#distriubuteculsterdata=distriubuteculsterdata.reset_index(drop=True)
+priordataset=memoryset.memoryunit#将原始的数据保存到内存中
+print(memoryset.probmemoryunit)#这个数据是value均值、分簇概率，标签的综合数据，下面将利用这个数据进行GMM建模
+print(priordataset)#原始数据包括state，value
+#len(distriubuteculsterdata[distriubuteculsterdata['label']==0])
+"建模GMM模型==================================================================="
+valuegmmgamer.gpbuilder(memoryset.probmemoryunit,fitx=1,fity=5,fitz=6,label=0)#第一簇高斯过程模型
+valuegmmgamer.gpbuilder(memoryset.probmemoryunit,fitx=1,fity=5,fitz=7,label=0)#第一簇概率高斯过程模型
+valuegmmgamer.gpbuilder(memoryset.probmemoryunit,fitx=1,fity=5,fitz=6,label=1)#第二簇高斯过程模型
+valuegmmgamer.gpbuilder(memoryset.probmemoryunit,fitx=1,fity=5,fitz=7,label=1)#第二簇概率高斯过程模型
+#valuegmmgamer.obj['reg_prob_1']#test
+#valuegmmgamer.obj['reg_value_0']#test
+#valuegmmgamer.obj['err_value_1']#test
+"AF函数模型===================================================================="
+"""
+需要对目前的AF函数UCB进行修改
+目前有两簇的output，err，均值较大簇的prob
+目前的AF函数为valueUCBhelper
+"""
+ttt=valuegmmgamer.valueUCBhelper(memoryset.probmemoryunit,kappa=1)
+tu=ttt.tolist()
+listaaa.append(tu)
 
-"AF函数======================================================================="
-#    bbb=qosgmmgamer.acquisitionfunctionmethod2(testdata,0.6,1,5,16)#单指标的AF函数设计2
-#    ccc=qosgmmgamer.acquisitionfunctionmethod1(testdata,0.6,1,5,16)#单指标的AF函数设计1
-qosgmmgamer.weightchanger(distriubuteculsterdata)
-ttt=qosgmmgamer.multiUCBhelper(data=distriubuteculsterdata,kappa= 0.7,fitz=9,fita=17)#多指标的AF函数
-ttt=np.array([63670,63990])
-"画图+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-#    fitz=7 17
-qosgmmgamer.gmmbuilder(distriubuteculsterdata,fitx=1,fity=5,fitz=17)#生成traf_messagecompletionrate均值，标准差平面的预测结果，用于画图
-qosgmmgamer.gmmbuilder(distriubuteculsterdata,fitx=1,fity=5,fitz=9)#生成sapp_jitter均值标准差的平面的预测结果，用于画图
-qosgmmgamer.multiGMMbuilder(distriubuteculsterdata,fitz=9,fita=17)#生成多指标的加权平面，保存的功能还未实现，需要实现
-"要绘制多指标合成的曲面，必须进行上面两个步骤，生成"
-qosgmmgamer.mulitgragher(data=distriubuteculsterdata,test=ttt,path=figpath)#多指标合成的画图
-
-#    qosgmmgamer.heatgragher(testdata,ttt,fitz=7)#绘图
-#    qosgmmgamer.heatgragher(testdata,ttt,fitz=16)#绘图
+"画图+++++++++++++++++++++++++++++++++++++++++++未完成+++++++++++++++++++++++"
+"要绘制多指标合成的曲面，目前已经有模型参数，obj中提供"
+valuegmmgamer.valuegragher(data=memoryset.probmemoryunit,qp=ttt,path=figpath)#多指标合成的画图
 
 "反馈函数+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 """根据原始数据集的模型和质询点，仿真X次，读取新的数据，加入到Priordataset，绘图，并找到下一个质询点"""
 simucount=1
 "把querypoint存储到log文件中"
-
-for i in range(30):
-#        print(memoryset.qosmemoryunit)
+for i in range(25):
     teaser=WDNfeedback.FeedBackWorker()#实例化反馈类
     teaser.updateQuerypointworker(ttt)#更新反馈参数
-#        print(ttt)
-#        ttt=np.array([[41,485]])
     "将反馈次数和querypoint写入log文件"
-    querypoint=str(ttt)
-    writeStr = "%s : {%s}\n" % (simucount, querypoint)
-    outlogfile.write(writeStr)
-    teaser.runTest(count=30)#仿真
-    newdata=teaser.updatetrainningsetworker(path=newdatapath,dataset=priordataset,point=ttt,count=30)
+# =============================================================================
+#     querypoint=str(ttt)
+#     writeStr = "%s : {%s}\n" % (simucount, querypoint)
+#     outlogfile.write(writeStr)
+# =============================================================================
+    teaser.runTest(count=10)#仿真
+    newdata=teaser.updatetrainningsetworker(path=newdatapath,point=ttt,count=10,style='value')
     priordataset=priordataset.append(newdata)#将新数据加入至原始训练集中
-#        print(priordataset)
-    newgammer=WDNoptimizer.GMMOptimizationUnit(cluster=2)#实例化GMM模型
+    newgammer=WDNoptimizer.GMMvalueOptimizaitonUnit(cluster=2)#5实例化GMM模型
+    iternum=iternum+1
     newdataset=newgammer.dropNaNworker(newdata)#去掉nan数据
-    newdataset=newgammer.clusterworker(newdataset,col1='traf_throughput',col2='sapp_throughput',count=simucount)#kmeans++聚类
-    distriubuteculsterdata=distriubuteculsterdata.append(newdataset)
+    newdataset=newgammer.presortworker(newdataset,col1='vbri',col2='value')
+    newdataset=newgammer.clusterworker(newdataset,col1='vbri',col2='value',count=iternum)#kmeans++聚类
+    a=np.mean(newdataset[newdataset['label']==0]['value'])
+    b=np.mean(newdataset[newdataset['label']==1]['value'])  
+#    print(newdataset.loc[newdataset['label']==0])
+    
+    if a<b:
+        part0=newdataset.loc[newdataset['label']==0]
+        part0.loc[:,'label']=0
+        part1=newdataset.loc[newdataset['label']==1]
+        part1.loc[:,'label']=1
+        probOf1=len(part1)/len(newdataset)
+        probOf0=1-probOf1
+        value1=np.mean(part1[part1['label']==1]['value'])
+#        print(np.mean(part1[part1['label']==1]['value']))
+        value0=np.mean(part0[part0['label']==0]['value'])
+        memoryset.probinserter(state=state,value=value1,prob=probOf1,label=1)
+        memoryset.probinserter(state=state,value=value0,prob=probOf0,label=0)     
+
+    elif a>b:
+        part0=newdataset.loc[newdataset['label']==0]
+        part0.loc[:,'label']=1
+        part1=newdataset.loc[newdataset['label']==1]
+        part1.loc[:,'label']=0
+        probOf1=len(part0)/len(newdataset)
+        probOf0=1-probOf1
+        value1=np.mean(part0[part0['label']==1]['value'])
+#        print(np.mean(part1[part1['label']==1]['value']))
+        value0=np.mean(part1[part1['label']==0]['value'])
+        memoryset.probinserter(state=state,value=value1,prob=probOf1,label=1)
+        memoryset.probinserter(state=state,value=value0,prob=probOf0,label=0) 
+#    distriubuteculsterdata=distriubuteculsterdata.append(newdataset)
     "上面的新数据聚类完成，下面进行画图和querypoint的更新"
-    newgammer.gmmbuilder(distriubuteculsterdata,fitx=1,fity=5,fitz=17)#生成traf_messagecompletionrate均值，标准差平面的预测结果，用于画图
-    newgammer.gmmbuilder(distriubuteculsterdata,fitx=1,fity=5,fitz=9)#生成sapp_jitter均值标准差的平面的预测结果，用于画图
-    newgammer.multiGMMbuilder(distriubuteculsterdata,fitz=9,fita=17)#生成多指标的加权平面，保存的功能还未实现，需要实现
-    newgammer.mulitgragher(data=distriubuteculsterdata,test=ttt,path=figpath,count=simucount)#多指标合成的画图
+    newgammer.gpbuilder(memoryset.probmemoryunit,fitx=1,fity=5,fitz=6,label=0)#第一簇高斯过程模型
+    newgammer.gpbuilder(memoryset.probmemoryunit,fitx=1,fity=5,fitz=7,label=0)#第一簇概率高斯过程模型
+    newgammer.gpbuilder(memoryset.probmemoryunit,fitx=1,fity=5,fitz=6,label=1)#第二簇高斯过程模型
+    newgammer.gpbuilder(memoryset.probmemoryunit,fitx=1,fity=5,fitz=7,label=1)#第二簇概率高斯过程模型
+    ttt=newgammer.valueUCBhelper(data=memoryset.probmemoryunit,kappa= 1)#AF函数
+    tu=ttt.tolist()
+    listaaa.append(tu)
+    newgammer.valuegragher(data=memoryset.probmemoryunit,qp=ttt,path=figpath,count=simucount)#多指标合成的画图
     simucount=simucount+1#计数，修改文件名称
-    newgammer.weightchanger(distriubuteculsterdata)#重新对权值进行更新
-    ttt=newgammer.multiUCBhelper(data=distriubuteculsterdata,kappa= 0.7,fitz=9,fita=17)#AF函数
+#记录每次AF选点的参数
+with open('querypoint_log.txt','w') as f:
+    f.write('\n')
+    f.write(str(listaaa))
 
 
 
