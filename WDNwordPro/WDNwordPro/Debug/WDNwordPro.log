@@ -1,0 +1,16 @@
+﻿  WDNwordPro.cpp
+g:\wdnoptimizer\wdnwordpro\wdnwordpro\src\stkapp.hpp(38): warning C4091: “typedef ”: 没有声明变量时忽略“GroundNode”的左侧
+g:\wdnoptimizer\wdnwordpro\wdnwordpro\src\stkapp.hpp(42): warning C4091: “typedef ”: 没有声明变量时忽略“MobileNode”的左侧
+g:\wdnoptimizer\wdnwordpro\wdnwordpro\src\stkapp.hpp(59): warning C4091: “typedef ”: 没有声明变量时忽略“SatWalker”的左侧
+g:\wdnoptimizer\wdnwordpro\wdnwordpro\src\stkapp.hpp(172): warning C4101: “e”: 未引用的局部变量
+g:\wdnoptimizer\wdnwordpro\wdnwordpro\src\stkapp.hpp(230): warning C4101: “e”: 未引用的局部变量
+g:\wdnoptimizer\wdnwordpro\wdnwordpro\src\stkapp.hpp(324): warning C4101: “e”: 未引用的局部变量
+g:\wdnoptimizer\wdnwordpro\wdnwordpro\src\stkapp.hpp(343): warning C4101: “e”: 未引用的局部变量
+g:\wdnoptimizer\wdnwordpro\wdnwordpro\src\stkapp.hpp(360): warning C4101: “e”: 未引用的局部变量
+g:\wdnoptimizer\wdnwordpro\wdnwordpro\src\stkapp.hpp(395): warning C4101: “e”: 未引用的局部变量
+g:\wdnoptimizer\wdnwordpro\wdnwordpro\src\stkapp.hpp(417): warning C4101: “e”: 未引用的局部变量
+g:\wdnoptimizer\wdnwordpro\wdnwordpro\src\stkapp.hpp(503): warning C4101: “e”: 未引用的局部变量
+g:\wdnoptimizer\wdnwordpro\wdnwordpro\src\stkapp.hpp(572): warning C4101: “e”: 未引用的局部变量
+g:\wdnoptimizer\wdnwordpro\wdnwordpro\src\stkapp.hpp(750): warning C4101: “e”: 未引用的局部变量
+g:\wdnoptimizer\wdnwordpro\wdnwordpro\src\stkapp.hpp(767): warning C4101: “e”: 未引用的局部变量
+  WDNwordPro.vcxproj -> G:\WDNoptimizer\WDNwordPro\Debug\WDNwordPro.exe
