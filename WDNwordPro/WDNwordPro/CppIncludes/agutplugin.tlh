@@ -1,0 +1,180 @@
+﻿// Created by Microsoft (R) C/C++ Compiler Version 15.00.30729.01 (90eeffcf).
+//
+// c:\r_stk_v9.2.x\source\lib\release.net\tlhbuilder\agutplugin.tlh
+//
+// C++ source equivalent of Win32 type library AgUtPlugin.tlb
+// compiler-generated file created 11/23/11 at 05:29:06 - DO NOT EDIT!
+
+//
+// Cross-referenced type libraries:
+//
+//
+
+#pragma once
+#pragma pack(push, 8)
+
+#include <comdef.h>
+
+//
+// Forward references and typedefs
+//
+
+struct __declspec(uuid("8fb166b5-4115-4f18-b6b7-388fec518a86"))
+/* LIBID */ __AgUtPlugin;
+enum AgEUtTimeScale;
+enum AgEUtLogMsgType;
+enum AgEUtFrame;
+enum AgEUtSunPosType;
+enum AgEUtPluginErrorCodes;
+struct __declspec(uuid("cfd07261-aa9c-468a-a489-03831ea9bffc"))
+/* interface */ IAgUtPluginConfig;
+struct __declspec(uuid("73c70857-08e0-49a5-a1b6-c2e3d44a4075"))
+/* dual interface */ IAgUtPluginConfigVerifyResult;
+struct __declspec(uuid("30b9cdd7-a424-4780-9562-15d358e20313"))
+/* interface */ IAgUtPluginLicensing;
+struct /* coclass */ AgUtPluginConfigVerifyResult;
+struct /* coclass */ AgUtPluginSite;
+struct __declspec(uuid("f8acaaae-7d00-4914-a3c5-a6969130dac5"))
+/* dual interface */ _IAgUtPluginSite;
+struct __declspec(uuid("65f51c50-bb26-463c-9f61-ef4d3e719b53"))
+/* interface */ IAgUtPluginSite;
+
+//
+// Smart pointer typedef declarations
+//
+
+_COM_SMARTPTR_TYPEDEF(IAgUtPluginConfigVerifyResult, __uuidof(IAgUtPluginConfigVerifyResult));
+_COM_SMARTPTR_TYPEDEF(IAgUtPluginConfig, __uuidof(IAgUtPluginConfig));
+_COM_SMARTPTR_TYPEDEF(IAgUtPluginLicensing, __uuidof(IAgUtPluginLicensing));
+_COM_SMARTPTR_TYPEDEF(_IAgUtPluginSite, __uuidof(_IAgUtPluginSite));
+_COM_SMARTPTR_TYPEDEF(IAgUtPluginSite, __uuidof(IAgUtPluginSite));
+
+//
+// Type library items
+//
+
+enum AgEUtTimeScale
+{
+    eUtTimeScaleUTC = 0,
+    eUtTimeScaleTAI = 1,
+    eUtTimeScaleTDT = 2,
+    eUtTimeScaleUT1 = 3,
+    eUtTimeScaleSTKEpochSec = 4,
+    eUtTimeScaleTDB = 5,
+    eUtTimeScaleGPS = 6
+};
+
+enum __declspec(uuid("8e90cfbd-5a98-456c-829c-d3b9538e7c33"))
+AgEUtLogMsgType
+{
+    eUtLogMsgDebug = 0,
+    eUtLogMsgInfo = 1,
+    eUtLogMsgForceInfo = 2,
+    eUtLogMsgWarning = 3,
+    eUtLogMsgAlarm = 4
+};
+
+enum AgEUtFrame
+{
+    eUtFrameInertial = 0,
+    eUtFrameFixed = 1,
+    eUtFrameLVLH = 2,
+    eUtFrameNTC = 3
+};
+
+enum AgEUtSunPosType
+{
+    eUtSunPosTypeApparentToTrueCB = 0,
+    eUtSunPosTypeApparent = 1,
+    eUtSunPosTypeTrue = 2,
+    eUtSunPosTypeSRP = 3
+};
+
+enum AgEUtPluginErrorCodes
+{
+    E_PLUGIN_INTERNAL_FAILURE = -2147221503,
+    E_PLUGIN_INVALID_SQR = -2147221502,
+    E_PLUGIN_INVALID_NEGATIVE_VALUE = -2147221501,
+    E_PLUGIN_LOG_LEVEL_OUT_OF_RANGE = -2147221500
+};
+
+struct __declspec(uuid("73c70857-08e0-49a5-a1b6-c2e3d44a4075"))
+IAgUtPluginConfigVerifyResult : IDispatch
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall get_Result (
+        /*[out,retval]*/ VARIANT_BOOL * pbResult ) = 0;
+      virtual HRESULT __stdcall put_Result (
+        /*[in]*/ VARIANT_BOOL pbResult ) = 0;
+      virtual HRESULT __stdcall get_Message (
+        /*[out,retval]*/ BSTR * pbstrMessage ) = 0;
+      virtual HRESULT __stdcall put_Message (
+        /*[in]*/ BSTR pbstrMessage ) = 0;
+};
+
+struct __declspec(uuid("cfd07261-aa9c-468a-a489-03831ea9bffc"))
+IAgUtPluginConfig : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall GetPluginConfig (
+        /*[in]*/ struct IAgAttrBuilder * pAttrBuilder,
+        /*[out,retval]*/ IDispatch * * ppDispScope ) = 0;
+      virtual HRESULT __stdcall VerifyPluginConfig (
+        /*[in]*/ struct IAgUtPluginConfigVerifyResult * pPluginCfgResult ) = 0;
+};
+
+struct __declspec(uuid("30b9cdd7-a424-4780-9562-15d358e20313"))
+IAgUtPluginLicensing : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall CheckLicense (
+        /*[out,retval]*/ VARIANT_BOOL * pPluginCfgResult ) = 0;
+};
+
+struct __declspec(uuid("c0e63ac4-c6ec-4270-b707-20583a807372"))
+AgUtPluginConfigVerifyResult;
+    // [ default ] interface IAgUtPluginConfigVerifyResult
+
+struct __declspec(uuid("211f7b12-d6ea-498a-a9c0-5e01c34a026c"))
+AgUtPluginSite;
+    // [ default ] interface _IAgUtPluginSite
+    // interface IAgUtPluginSite
+
+struct __declspec(uuid("f8acaaae-7d00-4914-a3c5-a6969130dac5"))
+_IAgUtPluginSite : IDispatch
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall get_SiteName (
+        /*[out,retval]*/ BSTR * pName ) = 0;
+      virtual HRESULT __stdcall Message (
+        /*[in]*/ enum AgEUtLogMsgType MsgType,
+        /*[in]*/ BSTR Message ) = 0;
+};
+
+struct __declspec(uuid("65f51c50-bb26-463c-9f61-ef4d3e719b53"))
+IAgUtPluginSite : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall get_SiteName (
+        /*[out,retval]*/ BSTR * pName ) = 0;
+      virtual HRESULT __stdcall Message (
+        /*[in]*/ enum AgEUtLogMsgType MsgType,
+        /*[in]*/ BSTR Message ) = 0;
+};
+
+#pragma pack(pop)
