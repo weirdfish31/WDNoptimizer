@@ -1,5 +1,7 @@
 # WDNoptimizer
-![](http://m.qpic.cn/psb?/V10dYaiX2qXpCo/0KCd0cw4u2u68rWY1EbR8xBM2Jh38OZb18PU01Ht1Vw!/b/dC4BAAAAAAAA&bo=zQPzAc0D8wEDORw!&rf=viewer_4&t=5)
+
+
+![](http://m.qpic.cn/psb?/V10dYaiX2qXpCo/0SPhkx5sNaSuEeacMekY29I6MWUc74IBZKpx89se1mM!/b/dFQBAAAAAAAA&bo=2APrAQAAAAADNyM!&rf=viewer_4&t=5)
 
 **Wise Dynamic Network optimizer** ：
 
@@ -7,15 +9,17 @@
 
 
 
-
-
 TIPS： 1）需要安装 STK 9.2.3，EXATA 5.4
 
 1）STK9.2.3：提供基本的星座卫星仿真的轨道参数，可见性参数报表等，独立使用也非常便捷
 
-2）EXATA5.4：仿真优化的核心单元,能有正版的最好
+2）EXATA5.4：仿真优化的核心单元
 
-3）LHSMDU模块：为预采样的模块，提供拉丁差立方采样的基本函数，需要在本地进行安装该模块。下载地址：<https://github.com/sahilm89/lhsmdu>
+3）LHSMDU模块：为预采样的模块，提供拉丁差立方采样的基本函数，需要在本地进行安装该模块。gituhub地址：<https://github.com/sahilm89/lhsmdu>
+
+
+
+
 
 
 
@@ -34,7 +38,7 @@ WDNwordPro文件夹： 主程序文件夹，包括生成EXATA所需的连通性�
 
 
 
-testData文件夹：存放测试用仿真数据，包括先验数据（由WDNwordPro文件夹中的EXATAPDgenerator文件生成）、迭代数据（由个次试验迭代生成，这里我们放一些例子）
+TestData文件夹：存放测试用仿真数据，包括先验数据（由WDNwordPro文件夹中的EXATAPDgenerator文件生成）、迭代数据（由个次试验迭代生成，这里我们放一些例子）
 
 
 
