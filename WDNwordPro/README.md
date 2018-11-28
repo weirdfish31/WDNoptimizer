@@ -2,7 +2,7 @@
 
 **项目程序结构：**
 
-![](http://m.qpic.cn/psb?/V10dYaiX2qXpCo/NZJHb9kLDdIFVqa1WpXbdUDulctyLOgpzVPr7dfzLDI!/b/dDQBAAAAAAAA&bo=3QTjAAAAAAADFwg!&rf=viewer_4&t=5)
+![](http://m.qpic.cn/psb?/V10dYaiX2qXpCo/6hh83aSwj8hQuWW0yyGcuz.oRpxLyOCNf0imGzKxZ2g!/b/dDQBAAAAAAAA&bo=3AThAAAAAAADFws!&rf=viewer_4&t=5)
 
 ## 仿真配置部分程序：
 
@@ -18,10 +18,9 @@
 
 ## 数据处理部分程序：
 - WDNexataReader.py：数据库读取预处理模块。读取数据专用模块，所有的数据处理函数都在其中
-
 - WDNfeedback.py：反馈机制模块，将得到的query point 返回至仿真系统中，生成新数据,更新数据集，反馈所需的仿真步骤和数据预处理类在本程序中，本模块也可以进行先验数据的生成等
-
-   WDNoptimizer.py：概率建模优化函数定义模块，	多数值高斯混合模型优化类（对单数值的处理已经完成，目前实现了2个指标的模型的结合）、贝叶斯优化类（模型为高斯过程）、网络评估类（生成value，生成归一化数据）、记忆单元类（状态信息存储，value或qos的state数据Dataframe）、评估值高斯混合模型优化类，正在不断优化，最新版的模型是在高斯混合模型与高斯过程结合，建分簇进行高斯过程的拟合，得到网络的参数过程
+	 WDNoptimizer.py：概率建模优化函数定义模块，	多数值高斯混合模型优化类（对单数值的处理已经完成，目前实现了2个指标的模型的结合）、贝叶斯优化类（模型为高斯过程）、网络评估类（生成value，生成归一化数据）、记忆单元类（状态信息存储，value或qos的state数据Dataframe）、评估值高斯混合模型优化类，正在不断优化，最新版的模型是在高斯混合模型与高斯过程结合，建分簇进行高斯过程的拟合，得到网络的参数过程
+- WDNcompare.py:未完成，将模型之间的比较模块在此模块中实现
 
 ## 实验部分程序：
 
