@@ -25,7 +25,7 @@ from sklearn import mixture
 from sklearn.mixture import GMM
 from sklearn.cluster import KMeans
 import time
-
+import lhsmdu
 
 
 class GMMvalueOptimizaitonUnit:
@@ -44,7 +44,7 @@ class GMMvalueOptimizaitonUnit:
         self.obj={}
         self.qosname=[]
         
-    def valuegragher(self,data,path,qp,count=0):
+    def valuegragher_two(self,data,path,qp,count=0):
         """
         绘图，单指标的图与多指标合成的3D图
         """
@@ -52,32 +52,32 @@ class GMMvalueOptimizaitonUnit:
         qp=np.array([qp])
         self.npdata=np.array(data)
 #        fig = plt.figure()  
-        fig = plt.figure(figsize=(21,21))  
-        ax1 = fig.add_subplot(221, projection='3d')
-        ax1.plot_surface(self.xset,self.yset,self.obj['output_value_0'], cmap=plt.get_cmap('rainbow'),linewidth=0, antialiased=False)
-        ax1.plot_wireframe(self.xset,self.yset,self.obj['up_value_0'],colors='gold',linewidths=1,  
-                                rstride=10, cstride=2, antialiased=True)
-        ax1.plot_wireframe(self.xset,self.yset,self.obj['down_value_0'],colors='lightgreen',linewidths=1,  
-                                rstride=10, cstride=2, antialiased=True)
-#        ax3.scatter(npdata[:,1],npdata[:,5],npdata[:,7],c='black')  
-        ax1.set_title('the predict mean output at ('+str(qp[0,0])+'  '+str(qp[0,1])+'): {0} '.format(self.reg.predict(qp)[0]))  
-        ax1.set_xlabel('sapps')  
-        ax1.set_ylabel('trafs')  
-        ax1.set_zlabel('value_0') 
+        fig = plt.figure(figsize=(21,10))  
+#        ax1 = fig.add_subplot(221, projection='3d')
+#        ax1.plot_surface(self.xset,self.yset,self.obj['output_value_0'], cmap=plt.get_cmap('rainbow'),linewidth=0, antialiased=False)
+#        ax1.plot_wireframe(self.xset,self.yset,self.obj['up_value_0'],colors='gold',linewidths=1,  
+#                                rstride=10, cstride=2, antialiased=True)
+#        ax1.plot_wireframe(self.xset,self.yset,self.obj['down_value_0'],colors='lightgreen',linewidths=1,  
+#                                rstride=10, cstride=2, antialiased=True)
+##        ax3.scatter(npdata[:,1],npdata[:,5],npdata[:,7],c='black')  
+#        ax1.set_title('the predict mean output at ('+str(qp[0,0])+'  '+str(qp[0,1])+'): {0} '.format(self.reg.predict(qp)[0]))  
+#        ax1.set_xlabel('sapps')  
+#        ax1.set_ylabel('trafs')  
+#        ax1.set_zlabel('value_0') 
         "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"       
-        ax4 = fig.add_subplot(222, projection='3d')
-        ax4.plot_surface(self.xset,self.yset,self.obj['output_value_1'], cmap=plt.get_cmap('rainbow'),linewidth=0, antialiased=False)
-        ax4.plot_wireframe(self.xset,self.yset,self.obj['up_value_1'],colors='gold',linewidths=1,  
-                               rstride=10, cstride=2, antialiased=True)
-        ax4.plot_wireframe(self.xset,self.yset,self.obj['down_value_1'],colors='lightgreen',linewidths=1,  
-                                rstride=10, cstride=2, antialiased=True)
-#        ax3.scatter(npdata[:,1],npdata[:,5],npdata[:,7],c='black')  
-        ax4.set_title('the predict mean output at ('+str(qp[0,0])+'  '+str(qp[0,1])+'): {0} '.format(self.reg.predict(qp)[0]))  
-        ax4.set_xlabel('sapps')  
-        ax4.set_ylabel('trafs')  
-        ax4.set_zlabel('value_1')
+#        ax4 = fig.add_subplot(222, projection='3d')
+#        ax4.plot_surface(self.xset,self.yset,self.obj['output_value_1'], cmap=plt.get_cmap('rainbow'),linewidth=0, antialiased=False)
+#        ax4.plot_wireframe(self.xset,self.yset,self.obj['up_value_1'],colors='gold',linewidths=1,  
+#                               rstride=10, cstride=2, antialiased=True)
+#        ax4.plot_wireframe(self.xset,self.yset,self.obj['down_value_1'],colors='lightgreen',linewidths=1,  
+#                                rstride=10, cstride=2, antialiased=True)
+##        ax3.scatter(npdata[:,1],npdata[:,5],npdata[:,7],c='black')  
+#        ax4.set_title('the predict mean output at ('+str(qp[0,0])+'  '+str(qp[0,1])+'): {0} '.format(self.reg.predict(qp)[0]))  
+#        ax4.set_xlabel('sapps')  
+#        ax4.set_ylabel('trafs')  
+#        ax4.set_zlabel('value_1')
         "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"       
-        ax3 = fig.add_subplot(223, projection='3d')
+        ax3 = fig.add_subplot(121, projection='3d')
         ax3.plot_surface(self.xset,self.yset,self.obj['output_value_1'], cmap=plt.get_cmap('rainbow'),linewidth=0, antialiased=False)
         ax3.plot_wireframe(self.xset,self.yset,self.obj['up_value_1'],colors='gold',linewidths=1,  
                                 rstride=10, cstride=2, antialiased=True)
@@ -89,12 +89,12 @@ class GMMvalueOptimizaitonUnit:
         ax3.plot_wireframe(self.xset,self.yset,self.obj['down_value_0'],colors='lightgreen',linewidths=1,  
                                 rstride=10, cstride=2, antialiased=True)
 #        ax3.scatter(npdata[:,1],npdata[:,5],npdata[:,7],c='black')  
-        ax3.set_title('the predict mean output at ('+str(qp[0,0])+'  '+str(qp[0,1])+'): {0} '.format(self.reg.predict(qp)[0]))  
+        ax3.set_title('the predict output at ('+str(qp[0,0])+'  '+str(qp[0,1])+'): {0} '.format(self.reg.predict(qp)[0]))  
         ax3.set_xlabel('sapps')  
         ax3.set_ylabel('trafs')  
         ax3.set_zlabel('value_total') 
         "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-        ax = fig.add_subplot(224)  
+        ax = fig.add_subplot(122)  
         s = ax.scatter(self.npdata[:,1],self.npdata[:,5],self.npdata[:,6],cmap=plt.cm.viridis,c='red')
         im=ax.imshow(self.obj['output_value_1'], interpolation='bilinear', origin='lower',  
                        extent=(self.xmin, self.xmax-1, self.ymin, self.ymax), aspect='auto')
@@ -109,10 +109,49 @@ class GMMvalueOptimizaitonUnit:
         
         plt.savefig(path+'GMM_multi'+str(count)+".jpg")
         plt.show() 
+
+    def valuegragher_one(self,data,path,qp,count=0):
+        """
+        绘图，单指标的图与多指标合成的3D图
+        """
+        qp=qp.tolist()
+        qp=np.array([qp])
+        self.npdata=np.array(data)
+#        fig = plt.figure()  
+        fig = plt.figure(figsize=(21,10))  
+        ax1 = fig.add_subplot(121, projection='3d')
+        ax1.plot_surface(self.xset,self.yset,self.obj['output_value_0'], cmap=plt.get_cmap('rainbow'),linewidth=0, antialiased=False)
+        ax1.plot_wireframe(self.xset,self.yset,self.obj['up_value_0'],colors='gold',linewidths=1,  
+                                rstride=10, cstride=2, antialiased=True)
+        ax1.plot_wireframe(self.xset,self.yset,self.obj['down_value_0'],colors='lightgreen',linewidths=1,  
+                                rstride=10, cstride=2, antialiased=True)
+#        ax3.scatter(npdata[:,1],npdata[:,5],npdata[:,7],c='black')  
+        ax1.set_title('the predict output at ('+str(qp[0,0])+'  '+str(qp[0,1])+'): {0} '.format(self.reg.predict(qp)[0]))  
+        ax1.set_xlabel('sapps')  
+        ax1.set_ylabel('trafs')  
+        ax1.set_zlabel('value_0') 
+        "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"       
+        "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"       
+        "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+        ax = fig.add_subplot(122)  
+        s = ax.scatter(self.npdata[:,1],self.npdata[:,5],self.npdata[:,6],cmap=plt.cm.viridis,c='red')
+        im=ax.imshow(self.obj['output_value_0'], interpolation='bilinear', origin='lower',  
+                       extent=(self.xmin, self.xmax-1, self.ymin, self.ymax), aspect='auto')
+        
+        ax.set_title('the predict mean ')  
+        ax.hlines(qp[0,1],self.xmin, self.xmax-1)  
+        ax.vlines(qp[0,0],self.ymin, self.ymax)  
+        ax.set_xlabel('sapps')  
+        ax.set_ylabel('trafs')  
+        plt.subplots_adjust(left=0.05, top=0.95, right=0.95)
+        plt.colorbar(mappable=im,ax=ax)
+        
+        plt.savefig(path+'GPR_multi'+str(count)+".jpg")
+        plt.show() 
         
     
         
-    def valueUCBhelper(self,data,kappa,fitx=1,fity=5,fitz=6):
+    def valueUCBhelper_two(self,data,kappa,fitx=1,fity=5,fitz=6):
         """
         将不同聚类得到的预测结果存入dataframe，生成对100000个随机点的预测的reg模型
         value的UCB值相加(概率加权求和)
@@ -120,8 +159,8 @@ class GMMvalueOptimizaitonUnit:
         """
         times  = time.clock() 
         bounds=pd.DataFrame()
-        x_tries = np.random.uniform(0, 64000,size=(100000))
-        y_tries = np.random.uniform(0, 64000,size=(100000))
+        x_tries = np.random.uniform(0, 64000,size=(200000))
+        y_tries = np.random.uniform(0, 64000,size=(200000))
         bounds['sapps']=x_tries
         bounds['trafs']=y_tries
         try_data = np.array(bounds)
@@ -151,7 +190,47 @@ class GMMvalueOptimizaitonUnit:
         timee = time.clock()
         rtime = timee - times
         print('the value-AF run time is : %fS' % rtime)
+        return try_max 
+    
+    def valueUCBhelper_one(self,data,kappa,fitx=1,fity=5,fitz=6):
+        """
+        GPR的AFUCB模型
+        """
+        times  = time.clock() 
+        bounds=pd.DataFrame()
+        x_tries = np.random.uniform(0, 64000,size=(200000))
+        y_tries = np.random.uniform(0, 64000,size=(200000))
+        bounds['sapps']=x_tries
+        bounds['trafs']=y_tries
+        try_data = np.array(bounds)
+#        componentmodel={}
+#        UCBdic={}
+        collist=data.columns.values.tolist()
+        value=collist[fitz]
+        "对各簇的模型和进行predict"
+        ys0=self.UCBmethodhelper(try_data,gp=self.obj['reg_'+str(value)+'_'+str(0)],kappa=kappa)
+        prob0=self.obj['reg_prob_0'].predict(try_data,return_std=False)
+#        ys1=self.UCBmethodhelper(try_data,gp=self.obj['reg_'+str(value)+'_'+str(1)],kappa=kappa)
+#        prob1=self.obj['reg_prob_1'].predict(try_data,return_std=False)
+        "对各簇的概率与预测UCB值进行加权，这里的UCB值和概率都是nparray数据结构"
+        UCB=ys0*prob0
+#        aaa=pd.DataFrame(UCBdic)
+#        for i in range(aaa.shape[0]):
+#            for j in range(self.n_clusters):
+#                aaa.iloc[i,j]=aaa.iloc[i,j]*self.componentweight[str(j)]
+#        aaa['total']=aaa.apply(lambda x: x.sum(), axis=1)
+#        ucbarray=np.array(aaa['total'])
+        "对UCB中的最大值进行选择，在try_data中得到相应的querypoint"
+        try_max=try_data[UCB.argmax()]
+        try_max=try_max.astype(int)#为了EXATA配置文件，把询问点改为整数型
+        max_acq=UCB.max()
+        print(max_acq)
+        print(try_max)
+        timee = time.clock()
+        rtime = timee - times
+        print('the value-AF run time is : %fS' % rtime)
         return try_max  
+    
     
     def UCBmethodhelper(self,x,gp,kappa):
         """
@@ -234,7 +313,7 @@ class GMMvalueOptimizaitonUnit:
                 plt.scatter(c[i][0],c[i][1],color='gold')
             if int(lable_pred[i])==3:
                 plt.scatter(c[i][0],c[i][1],color='violet')
-        plt.savefig('./Figure/Cluster'+str(count)+".jpg")
+#        plt.savefig('./Figure/Cluster'+str(count)+".jpg")#保存聚类图像
         plt.show()
         return r
     
@@ -842,14 +921,14 @@ class EvaluationUnit:
     """
     性能评估类：
     用来对业务仿真数据进行评分
-    目前所有的评估指标权重相等：  分为三种业务：trafficgenerator，superapp，cbr 
-                                每种业务分四种指标：吞吐量、时延、时延抖动、消息完成率
+    目前所有的评估指标权重相等：  分为三种业务：vbr，superapp，trafficgenerator
+                                每种业务分四种指标：时延、时延抖动、消息完成率、吞吐量
     得到value
     """
     def __init__(self):
-        self.weight= np.array([[0.0825,0.0825,0.0825,0.0825],
-                               [0.0825,0.0825,0.0825,0.0825],
-                               [0.0825,0.0825,0.0825,0.0825]], dtype=float) 
+        self.weight= np.array([[0.0425,0.0425,0.0425,0.0425],
+                               [0.045,0.18,0.045,0.18],
+                               [0.025,0.016,0.16,0.25]], dtype=float) 
         self.normalizedata=[]#用来存储归一化结果，格式为dataframe，用来提供给计算评估值
         self.qoslist=[]#用来存储不同业务的qos指标归一化结果，格式为list直接为外部调用
     def calculateMetricEvaValue(self,dataset):
@@ -869,10 +948,10 @@ class EvaluationUnit:
         c = self.exponentNormalizer(x=0.9,y=0.1,flag=0,value=packetoss)
         #throughput max=100000000
         throughput = dataset['throughput']
-        if throughput>15000000:
+        if throughput>12000000:
             d = 1
         else:
-            d = self.sqrtNormalizer(x=15000000,value=throughput)
+            d = self.sqrtNormalizer(x=12000000,value=throughput)
         self.normalizedata.append([a,b,c,d])
         self.qoslist=self.qoslist+[a,b,c,d]
         
