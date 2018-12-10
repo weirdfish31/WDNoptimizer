@@ -2,7 +2,7 @@
 
 **项目程序结构：**
 
-![](http://m.qpic.cn/psb?/V10dYaiX2qXpCo/6hh83aSwj8hQuWW0yyGcuz.oRpxLyOCNf0imGzKxZ2g!/b/dDQBAAAAAAAA&bo=3AThAAAAAAADFws!&rf=viewer_4&t=5)
+![](http://m.qpic.cn/psb?/V10dYaiX2qXpCo/YtlrpFay2ANFDQYQO.BN51feWjTZNGYPQZUInlgKr.I!/b/dEkBAAAAAAAA&bo=3QTPAAAAAAADFyQ!&rf=viewer_4&t=5)
 
 ## 仿真配置部分程序：
 
@@ -36,13 +36,18 @@
 ## 绘图程序：
 
 - Drawer_Jitter_GMM.py：GMM混合模型绘图
-
 - Drawer_RawData_Kde.py：KDE联合分布图（二维）
-
 - Drawer_RawData_Statistic.py：原始数据统计曲线图
-
 - Drawer_Throughput_GMM.py：吞吐量的GMM混合模型图，基于最开始的混合模型
-
 - AFqueryPoint.py：querypoint的迭代序列二维绘图
 
-  
+
+
+## TIPS:
+
+- WDNwordPro项目程序运行结束会生成nodetxt，outAccess文件夹，存放仿真需要的可见性csv报表和卫星轨道txt文件
+
+
+
+
+
