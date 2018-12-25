@@ -9,7 +9,7 @@
 
 
 
-TIPS： 1）需要安装 STK 9.2.3，EXATA 5.4
+TIPS： 需要安装 STK 9.2.3，EXATA 5.4
 
 1）STK9.2.3：提供基本的星座卫星仿真的轨道参数，可见性参数报表等，独立使用也非常便捷
 
@@ -25,7 +25,7 @@ TIPS： 1）需要安装 STK 9.2.3，EXATA 5.4
 
 **组成说明：**
 
-WDNwordPro文件夹： 主程序文件夹，包括生成EXATA所需的连通性表表、各种config文件，仿真数据处理python程序等
+1）WDNwordPro文件夹： 主程序文件夹，包括生成EXATA所需的连通性表表、各种config文件，仿真数据处理python程序等
 
 - configfile文件夹： 主要存放生成EXATA配置文件所需的各种参数配置json文件，包括场景中移动节点文件夹、FTP参数json文件、地面站节点参数、链路参数json文件、移动节点名称配置文件等
 - Debug文件夹： STK生成可见性报表，生成节点坐标轨迹文件的exe程序文件夹
@@ -38,8 +38,11 @@ WDNwordPro文件夹： 主程序文件夹，包括生成EXATA所需的连通性�
 
 
 
-TestData文件夹：存放测试用仿真数据，包括先验数据（由WDNwordPro文件夹中的EXATAPDgenerator文件生成）、迭代数据（由个次试验迭代生成，这里我们放一些例子）
-- LHSprior文件夹：存放先验采样数据（实例，未包括全部数据）
+2）TestData文件夹：存放测试用仿真数据，包括先验数据（由WDNwordPro文件夹中的EXATAPDgenerator文件生成）、迭代数据（由个次试验迭代生成，这里我们放一些例子）
+- LHSprior文件夹：存放先验采样数据（未包括全部数据）
+- LHSMSE文件夹：存放测试集与训练集数据（未包括全部数据）
+- ITER_Data文件夹：存放迭代产生的数据
+- history文件夹：存放各个数据集的设计参数组合的list文件（未补完）
 
 
 
