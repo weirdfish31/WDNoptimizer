@@ -29,7 +29,7 @@ valuegmmgamer=WDNoptimizer.GMMvalueOptimizaitonUnit(cluster=2)#实例化GMM模�
 
 figpath="./Figure/"#图像的存放位置
 #datapath='G:/testData/2DGMM(16000_8000-36000)/'#先验数据的存放位置
-datapath='G:/testData/LHSprior/'#LHS先验数据的存放位置
+datapath='E:/WDNoptimizer/LHSprior/'#LHS先验数据的存放位置
 newdatapath='./OutConfigfile/'#新产生的数据的存放位置
 iternum=0#迭代的记数，在读取先验数据时记为零
 
@@ -74,6 +74,7 @@ for sappi_i in superappinterval:
                         读取数据，对数据进行分类处理
                         """
                         dataset='radio REQUEST-SIZE DET '+str(superappsize[count_i])+' _ '+str(vbrs_i)+' _ RND DET '+str(trafsize[count_i])+' _'+str(i)
+                        print(dataset)
                         readdb=WDNexataReader.ExataDBreader()#实例化
                         readdb.opendataset(dataset,datapath)#读取特定路径下的数据库
                         readdb.appnamereader()#读取业务层的业务名称
@@ -179,13 +180,15 @@ valuegmmgamer.gpbuilder(memoryset.probmemoryunit,fitx=1,fity=5,fitz=7,label=1)#�
 目前有两簇的output，err，均值较大簇的prob
 目前的AF函数为valueUCBhelper
 """
-ttt=valuegmmgamer.valueUCBhelper_two(memoryset.probmemoryunit,kappa=0.3)
+ttt=valuegmmgamer.valueUCBhelper_alpha(memoryset.probmemoryunit,kappa=5,iternum=25,count=0)
 tu=ttt.tolist()
 listaaa.append(tu)
 
 "画图+++++++++++++++++++++++++++++++++++++++++++未完成+++++++++++++++++++++++"
 "要绘制多指标合成的曲面，目前已经有模型参数，obj中提供"
 valuegmmgamer.valuegragher_two(data=memoryset.probmemoryunit,qp=ttt,path=figpath)#多指标合成的画图
+
+
 
 "反馈函数+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 """根据原始数据集的模型和质询点，仿真X次，读取新的数据，加入到Priordataset，绘图，并找到下一个质询点"""
@@ -244,7 +247,7 @@ for i in range(25):
     newgammer.gpbuilder(memoryset.probmemoryunit,fitx=1,fity=5,fitz=7,label=0)#第一簇概率高斯过程模型
     newgammer.gpbuilder(memoryset.probmemoryunit,fitx=1,fity=5,fitz=6,label=1)#第二簇高斯过程模型
     newgammer.gpbuilder(memoryset.probmemoryunit,fitx=1,fity=5,fitz=7,label=1)#第二簇概率高斯过程模型
-    ttt=newgammer.valueUCBhelper_two(data=memoryset.probmemoryunit,kappa= 0.3)#AF函数
+    ttt=valuegmmgamer.valueUCBhelper_alpha(memoryset.probmemoryunit,kappa=10,iternum=25,count=simucount)
     tu=ttt.tolist()
     listaaa.append(tu)
     newgammer.valuegragher_two(data=memoryset.probmemoryunit,qp=ttt,path=figpath,count=simucount)#多指标合成的画图
