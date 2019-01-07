@@ -27,17 +27,20 @@ memoryset=WDNoptimizer.MemoryUnit()#记忆单元，存储每次的状态
 valuegmmgamer=WDNoptimizer.GMMvalueOptimizaitonUnit(cluster=2)#实例化GMM模型
 
 figpath="./Figure/"#图像的存放位置
-#datapath='G:/testData/2DGMM(16000_8000-36000)/'#先验数据的存放位置
-#datapath='E:/WDNoptimizer/LHSMSE50000/'#LHS先验数据的存放位置
-datapath='E:/WDNoptimizer/LHSMSE24000/'#LHS先验数据的存放位置
 #datapath='E:/WDNoptimizer/LHSprior/'#LHS先验数据的存放位置
 newdatapath='./OutConfigfile/'#新产生的数据的存放位置
 iternum=0#迭代的记数，在读取先验数据时记为零
 
-"读取TXT文件中迭代的state数据==================================================="
+"选择路径与文件名，读取TXT文件中迭代的state数据=============================================="
+#datapath='G:/testData/2DGMM(16000_8000-36000)/'#先验数据的存放位置
+#datapath='E:/WDNoptimizer/LHSMSE50000/'#LHS先验数据的存放位置
+datapath='E:/WDNoptimizer/LHSMSE24000/'#LHS先验数据的存放位置
+"-----------------------------------------------------------------------------------------"
 #statefilename="./history/priorstate50000_all.txt"#存储的先验数据的state列表txt文件
-statefilename="./history/priorstate24000_all.txt"#存储的先验数据的state列表txt文件
 #statefilename="./priorstate_test.txt"#存储的先验数据的state列表txt文件
+statefilename="./history/priorstate24000_all.txt"#存储的先验数据的state列表txt文件
+
+
 with open(statefilename, 'r') as file_to_read:
   while True:
       lines = file_to_read.readline() # 整行读取数据
