@@ -28,6 +28,7 @@ class FeedBackWorker:
     def __init__(self,superinter=20,supersize=30000,vbrinter=30,vbrsize=24000,trafinter=30,trafsize=34000):
         """
         initial function
+        对各个设计参数与仿真单元的对应关系进行初始化，将数值参数转化成仿真可用的数据格式或者对应文件
         """
         self.figpath="./Figure/"
         self.outdatapath='./OutConfigfile/'
@@ -54,6 +55,7 @@ class FeedBackWorker:
         """
         将querypoint得到的仿真数据读取并加入到原始训练集中
         目前是固定4个参数，2个参数可变
+        原始数据的value或者qos数据，直接进入对应的数据DataFrame中
         """
         appSize_i=self.superappsize
         trafficgensize_i=self.trafficgensize

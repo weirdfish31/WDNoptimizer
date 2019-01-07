@@ -6,12 +6,13 @@ Created on Sat Jul 21 14:29:21 2018
 1）不同模型之间的相同AF策略的比较
 2）相同模型之间，模型预测值与仿真真实之之间的比较
 3）相同模型的不同AF1策略之间的比较
+4）模型之间得我回归指标的比较（MSE，RMSE,）
 """
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt 
 
-class WDNcompreUnit:
+class WDNcompareUnit:
     """
     数据处理
     """
@@ -28,7 +29,7 @@ class WDNcompreUnit:
     
     def querylistfilter(self,list):
         """
-        对每组的querypoint进行数据提取，得到每个店的坐标序列和均值的坐标序列
+        对每组的querypoint进行数据提取，得到每个点的坐标序列和均值的坐标序列
         """
         querypoint=pd.DataFrame(list)
         qx = np.array(querypoint[0])
@@ -86,16 +87,20 @@ class WDNcompreUnit:
             plt.savefig('./Figure/'+'querypoint'+str(i)+".jpg")
             plt.show()
         
-
-
-
-
-
     def iterresultcompare(self,querylist):
         """
         根据已知的querypointlist，读取已有的仿真数据，得到每次迭代之后模型，进而得到具体点的预测的均值
         再根据历史的仿真的数据，进行再每次迭代的情况下，仿真的真实数据与预测的数据之间的比较
         """
+        
+        
+        
+    def MSEcompare(self,querylist,count=25):
+        """
+        比较相应个数的样本得到的模型的MSE误差
+        """
+        x,y,mx,xy=self.querylistfilter(querylist)
+        
         
     
     

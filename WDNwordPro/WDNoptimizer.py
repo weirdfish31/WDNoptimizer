@@ -30,6 +30,7 @@ import lhsmdu
 
 class GMMvalueOptimizaitonUnit:
     """
+    模型计入了概率过程与格策之间的主观权重，AF函数也相应的进行了高度的可配置设计
     利用高斯混合模型对多目标的value进行建模（模型中分簇的概率并没有进行）
     包含所需的数据处理过程：去除NAN数据
     包含聚类过程：KMeans++聚类方法（目前只有Kmeans)
@@ -43,39 +44,90 @@ class GMMvalueOptimizaitonUnit:
         self.wirecolor=['mediumpurple','lightgreen','gold','maroon']
         self.obj={}
         self.qosname=[]
+
+    def valuegragher_three(self,data,path,qp,count=0,fita=6,fitb=7):
+        """
+        绘图，单指标的图与多指标合成的3D图
+        目前的画图函数，更新了三种不同颜色的热力图：评估值、概率值、综合MPP模型（目前是两个value平面替代）
+        """
+        collist=data.columns.values.tolist()
+        model1=collist[fita]
+        model2=collist[fitb]
+        
+        "============================================================"
+        qp=qp.tolist()
+        qp=np.array([qp])
+        npdata=np.array(data)
+#        fig = plt.figure()  
+        fig = plt.figure(figsize=(19,6))  
+        ax1 = fig.add_subplot(131, projection='3d')
+        ax1.plot_surface(self.xset,self.yset,self.obj['output_'+model1+'_1'], cmap=plt.get_cmap('magma'),linewidth=0, antialiased=False)
+        ax1.plot_wireframe(self.xset,self.yset,self.obj['up_'+model1+'_1'],colors='lightgreen',linewidths=1,  
+                                rstride=10, cstride=2, antialiased=True)
+        ax1.plot_wireframe(self.xset,self.yset,self.obj['down_'+model1+'_1'],colors='lightgreen',linewidths=1,  
+                                rstride=10, cstride=2, antialiased=True)
+#        ax1.scatter(npdata[:,1],npdata[:,5],npdata[:,7],c='black')  
+        ax1.set_title('The value process surface')  
+        ax1.set_xlabel('sapps')  
+        ax1.set_ylabel('trafs')  
+        ax1.set_zlabel('value_0') 
+        "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"       
+        ax4 = fig.add_subplot(132, projection='3d')
+        ax4.plot_surface(self.xset,self.yset,self.obj['output_'+model2+'_1'], cmap=plt.get_cmap('viridis'),linewidth=0, antialiased=False)
+        ax4.plot_wireframe(self.xset,self.yset,self.obj['up_'+model2+'_1'],colors='gold',linewidths=1,  
+                               rstride=10, cstride=2, antialiased=True)
+        ax4.plot_wireframe(self.xset,self.yset,self.obj['down_'+model2+'_1'],colors='gold',linewidths=1,  
+                                rstride=10, cstride=2, antialiased=True)
+#        ax4.scatter(npdata[:,1],npdata[:,5],npdata[:,7],c='black')  
+        ax4.set_title('The probability process output')  
+        ax4.set_xlabel('sapps')  
+        ax4.set_ylabel('trafs')  
+        ax4.set_zlabel('probability')
+        "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"       
+        ax3 = fig.add_subplot(133, projection='3d')
+        ax3.plot_surface(self.xset,self.yset,self.obj['output_value_1'], cmap=plt.get_cmap('rainbow'),linewidth=0, antialiased=False)
+        ax3.plot_wireframe(self.xset,self.yset,self.obj['up_value_1'],colors='thistle',linewidths=1,  
+                                rstride=10, cstride=2, antialiased=True)
+        ax3.plot_wireframe(self.xset,self.yset,self.obj['down_value_1'],colors='pink',linewidths=1,  
+                                rstride=10, cstride=2, antialiased=True)
+        ax3.plot_surface(self.xset,self.yset,self.obj['output_value_0'], cmap=plt.get_cmap('jet'),linewidth=0, antialiased=False)
+        ax3.plot_wireframe(self.xset,self.yset,self.obj['up_value_0'],colors='thistle',linewidths=1,  
+                                rstride=10, cstride=2, antialiased=True)
+        ax3.plot_wireframe(self.xset,self.yset,self.obj['down_value_0'],colors='pink',linewidths=1,  
+                                rstride=10, cstride=2, antialiased=True)
+        ax3.scatter(npdata[:,1],npdata[:,5],npdata[:,7],c='black')  
+        ax3.set_title('the predict output at ('+str(qp[0,0])+'  '+str(qp[0,1])+'): {0} '.format(self.reg.predict(qp)[0]))  
+        ax3.set_xlabel('sapps')  
+        ax3.set_ylabel('trafs')  
+        ax3.set_zlabel('value_total') 
+        "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+# =============================================================================
+#         ax = fig.add_subplot(122)  
+#         s = ax.scatter(npdata[:,1],npdata[:,5],npdata[:,6],cmap=plt.cm.viridis,c='red')
+#         im=ax.imshow(self.obj['output_value_1'], interpolation='bilinear', origin='lower',  
+#                        extent=(self.xmin, self.xmax-1, self.ymin, self.ymax), aspect='auto')
+#         
+#         ax.set_title('the predict mean ')  
+#         ax.hlines(qp[0,1],self.xmin, self.xmax-1)  
+#         ax.vlines(qp[0,0],self.ymin, self.ymax)  
+#         ax.set_xlabel('sapps')  
+#         ax.set_ylabel('trafs') 
+#         plt.colorbar(mappable=im,ax=ax)
+# =============================================================================
+        "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+        plt.subplots_adjust(left=0.03, top=0.97, right=0.97)
+        plt.savefig(path+'MPP_multi'+str(count)+".jpg")
+        plt.show() 
         
     def valuegragher_two(self,data,path,qp,count=0):
         """
         绘图，单指标的图与多指标合成的3D图
+        迭代过程的绘图，双层热力图与平面query point 采样图
         """
         qp=qp.tolist()
         qp=np.array([qp])
-        self.npdata=np.array(data)
-#        fig = plt.figure()  
+        npdata=np.array(data)
         fig = plt.figure(figsize=(21,10))  
-#        ax1 = fig.add_subplot(221, projection='3d')
-#        ax1.plot_surface(self.xset,self.yset,self.obj['output_value_0'], cmap=plt.get_cmap('rainbow'),linewidth=0, antialiased=False)
-#        ax1.plot_wireframe(self.xset,self.yset,self.obj['up_value_0'],colors='gold',linewidths=1,  
-#                                rstride=10, cstride=2, antialiased=True)
-#        ax1.plot_wireframe(self.xset,self.yset,self.obj['down_value_0'],colors='lightgreen',linewidths=1,  
-#                                rstride=10, cstride=2, antialiased=True)
-##        ax3.scatter(npdata[:,1],npdata[:,5],npdata[:,7],c='black')  
-#        ax1.set_title('the predict mean output at ('+str(qp[0,0])+'  '+str(qp[0,1])+'): {0} '.format(self.reg.predict(qp)[0]))  
-#        ax1.set_xlabel('sapps')  
-#        ax1.set_ylabel('trafs')  
-#        ax1.set_zlabel('value_0') 
-        "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"       
-#        ax4 = fig.add_subplot(222, projection='3d')
-#        ax4.plot_surface(self.xset,self.yset,self.obj['output_value_1'], cmap=plt.get_cmap('rainbow'),linewidth=0, antialiased=False)
-#        ax4.plot_wireframe(self.xset,self.yset,self.obj['up_value_1'],colors='gold',linewidths=1,  
-#                               rstride=10, cstride=2, antialiased=True)
-#        ax4.plot_wireframe(self.xset,self.yset,self.obj['down_value_1'],colors='lightgreen',linewidths=1,  
-#                                rstride=10, cstride=2, antialiased=True)
-##        ax3.scatter(npdata[:,1],npdata[:,5],npdata[:,7],c='black')  
-#        ax4.set_title('the predict mean output at ('+str(qp[0,0])+'  '+str(qp[0,1])+'): {0} '.format(self.reg.predict(qp)[0]))  
-#        ax4.set_xlabel('sapps')  
-#        ax4.set_ylabel('trafs')  
-#        ax4.set_zlabel('value_1')
         "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"       
         ax3 = fig.add_subplot(121, projection='3d')
         ax3.plot_surface(self.xset,self.yset,self.obj['output_value_1'], cmap=plt.get_cmap('rainbow'),linewidth=0, antialiased=False)
@@ -88,14 +140,14 @@ class GMMvalueOptimizaitonUnit:
                                 rstride=10, cstride=2, antialiased=True)
         ax3.plot_wireframe(self.xset,self.yset,self.obj['down_value_0'],colors='lightgreen',linewidths=1,  
                                 rstride=10, cstride=2, antialiased=True)
-#        ax3.scatter(npdata[:,1],npdata[:,5],npdata[:,7],c='black')  
+        ax3.scatter(npdata[:,1],npdata[:,5],npdata[:,7],c='black')  
         ax3.set_title('the predict output at ('+str(qp[0,0])+'  '+str(qp[0,1])+'): {0} '.format(self.reg.predict(qp)[0]))  
         ax3.set_xlabel('sapps')  
         ax3.set_ylabel('trafs')  
         ax3.set_zlabel('value_total') 
         "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
         ax = fig.add_subplot(122)  
-        s = ax.scatter(self.npdata[:,1],self.npdata[:,5],self.npdata[:,6],cmap=plt.cm.viridis,c='red')
+        s = ax.scatter(npdata[:,1],npdata[:,5],npdata[:,6],cmap=plt.cm.viridis,c='red')
         im=ax.imshow(self.obj['output_value_1'], interpolation='bilinear', origin='lower',  
                        extent=(self.xmin, self.xmax-1, self.ymin, self.ymax), aspect='auto')
         
@@ -113,10 +165,11 @@ class GMMvalueOptimizaitonUnit:
     def valuegragher_one(self,data,path,qp,count=0):
         """
         绘图，单指标的图与多指标合成的3D图
+        目前没用
         """
         qp=qp.tolist()
         qp=np.array([qp])
-        self.npdata=np.array(data)
+        npdata=np.array(data)
 #        fig = plt.figure()  
         fig = plt.figure(figsize=(21,10))  
         ax1 = fig.add_subplot(121, projection='3d')
@@ -125,19 +178,16 @@ class GMMvalueOptimizaitonUnit:
                                 rstride=10, cstride=2, antialiased=True)
         ax1.plot_wireframe(self.xset,self.yset,self.obj['down_value_0'],colors='lightgreen',linewidths=1,  
                                 rstride=10, cstride=2, antialiased=True)
-#        ax3.scatter(npdata[:,1],npdata[:,5],npdata[:,7],c='black')  
+        ax3.scatter(npdata[:,1],npdata[:,5],npdata[:,7],c='black')  
         ax1.set_title('the predict output at ('+str(qp[0,0])+'  '+str(qp[0,1])+'): {0} '.format(self.reg.predict(qp)[0]))  
         ax1.set_xlabel('sapps')  
         ax1.set_ylabel('trafs')  
         ax1.set_zlabel('value_0') 
         "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"       
-        "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"       
-        "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
         ax = fig.add_subplot(122)  
         s = ax.scatter(self.npdata[:,1],self.npdata[:,5],self.npdata[:,6],cmap=plt.cm.viridis,c='red')
         im=ax.imshow(self.obj['output_value_0'], interpolation='bilinear', origin='lower',  
                        extent=(self.xmin, self.xmax-1, self.ymin, self.ymax), aspect='auto')
-        
         ax.set_title('the predict mean ')  
         ax.hlines(qp[0,1],self.xmin, self.xmax-1)  
         ax.vlines(qp[0,0],self.ymin, self.ymax)  
@@ -145,17 +195,60 @@ class GMMvalueOptimizaitonUnit:
         ax.set_ylabel('trafs')  
         plt.subplots_adjust(left=0.05, top=0.95, right=0.95)
         plt.colorbar(mappable=im,ax=ax)
-        
         plt.savefig(path+'GPR_multi'+str(count)+".jpg")
         plt.show() 
         
-    
+    def UCBmethodhelper_alpha(self,x,gp,kappa,iternum,count):
+        """
+        upper confidence bound 方法
+        根据随机过程的方差和均值进行选择，不会陷入局部最优
+        这种做法比较的是置信区间内的最大值，尽管看起来简单，但是实际效果却意外的好
+        """
+        mean,std=gp.predict(x,return_std=True)
+        steplength=kappa/iternum
+        return mean + (kappa-count*steplength)*std
         
-    def valueUCBhelper_two(self,data,kappa,fitx=1,fity=5,fitz=6):
+    
+    def valueUCBhelper_alpha(self,data,kappa,iternum,count,proportion=1,fitx=1,fity=5,fitz=6):
         """
         将不同聚类得到的预测结果存入dataframe，生成对100000个随机点的预测的reg模型
         value的UCB值相加(概率加权求和)
         则根据聚类得到的权重加权得到UCB之和，得到选择的最大UCB值的query point
+        1）在alpha版本中af函数加入了proportion参数，进行两个分粗的重要性的主观评价，更加针对PNTRC系统中的特定QoS性能
+        2）提供了最简单的策略自适应的过程，kappa值随着迭代的进行变化（递减）
+        3）提供了可调整的相应平面选择参数（）
+        在目前的版本中要是出现了抽样的数值为0的情况，仿真会中断
+        """
+        times  = time.clock() 
+        bounds=pd.DataFrame()
+        x_tries = np.random.uniform(0, 64000,size=(200000))
+        y_tries = np.random.uniform(0, 64000,size=(200000))
+        bounds['sapps']=x_tries
+        bounds['trafs']=y_tries
+        try_data = np.array(bounds)
+        collist=data.columns.values.tolist()
+        value=collist[fitz]
+        "对各簇的模型和进行predict"
+        ys0=self.UCBmethodhelper_alpha(try_data,gp=self.obj['reg_'+str(value)+'_'+str(0)],kappa=kappa,iternum=iternum,count=count)
+        prob0=self.obj['reg_prob_0'].predict(try_data,return_std=False)
+        ys1=self.UCBmethodhelper_alpha(try_data,gp=self.obj['reg_'+str(value)+'_'+str(1)],kappa=kappa,iternum=iternum,count=count)
+        prob1=self.obj['reg_prob_1'].predict(try_data,return_std=False)
+        "对各簇的概率与预测UCB值进行加权，这里的UCB值和概率都是nparray数据结构"
+        UCB=ys0*prob0+proportion*ys1*prob1
+        "对UCB中的最大值进行选择，在try_data中得到相应的querypoint"
+        try_max=try_data[UCB.argmax()]
+        try_max=try_max.astype(int)#为了EXATA配置文件，把询问点改为整数型
+        max_acq=UCB.max()
+        print(max_acq)
+        print(try_max)
+        timee = time.clock()
+        rtime = timee - times
+        print('the value-AF run time is : %fS' % rtime)
+        return try_max 
+        
+    def valueUCBhelper_two(self,data,kappa,fitx=1,fity=5,fitz=6):
+        """
+        GMM的GMM-UCB模型,固定的策略
         """
         times  = time.clock() 
         bounds=pd.DataFrame()
@@ -194,7 +287,7 @@ class GMMvalueOptimizaitonUnit:
     
     def valueUCBhelper_one(self,data,kappa,fitx=1,fity=5,fitz=6):
         """
-        GPR的AFUCB模型
+        GPR的GP-UCB模型
         """
         times  = time.clock() 
         bounds=pd.DataFrame()
@@ -231,7 +324,6 @@ class GMMvalueOptimizaitonUnit:
         print('the value-AF run time is : %fS' % rtime)
         return try_max  
     
-    
     def UCBmethodhelper(self,x,gp,kappa):
         """
         upper confidence bound 方法
@@ -243,12 +335,12 @@ class GMMvalueOptimizaitonUnit:
         
     def gpbuilder(self,data,fitx=1,fity=5,fitz=6,label=1):
         """
-        根据聚类的结果，对用以标签下的数据进行GP回归，得到均值标准差
+        根据聚类的结果，对用以标签下的数据进行GP回归，得到均值标准差和响应平面。在这里我们用的是3维的过程
+        高斯过程的拟合，将GP的相应平面存入实体的obj字典
         """
         collist=data.columns.values.tolist()
         value=collist[fitz]
         self.qosname.append(value)
-#        for i in range(self.n_clusters):
         testdata=data[data['label']==label]
         testdata=testdata.reset_index(drop=True)
         self.npdata=np.array(testdata)
@@ -320,6 +412,7 @@ class GMMvalueOptimizaitonUnit:
     def EMworker(self,data):
         """
         SKLearn里面自带的EM函数，这里我们只取了数据的二维，方便画图
+        目前未完成
         """
         value=np.array(data['value'])
         value1=value.reshape((-1,1))
@@ -342,9 +435,10 @@ class GMMvalueOptimizaitonUnit:
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 class GMMmultiOptimizationUnit:
     """
+    模型和AF函数有改变：模型进行了GMM的变换，概率为常数
     利用高斯混合模型对多目标的value进行建模（模型中分簇的概率并没有进行）
-    包含所需的数据处理过程：去除NAN数据
-    包含聚类过程：KMeans++聚类方法（目前只有Kmeans)
+    针对的是特定的两个QoS性能上进行建模，是多目标优化的问题的迭代解决方案，目前展示未使用
+    目前在GMM_throughput_secondorder.py实验中用到此类
     """
     def __init__(self,cluster=2):
         self.xmin,self.xmax=0,64000
@@ -361,7 +455,6 @@ class GMMmultiOptimizationUnit:
         testdata=data[data.label==i]
         testdata=testdata.reset_index(drop=True)
         return testdata
-        
     def dropNaNworker(self,data):
         testdata=data.dropna(axis=0,how='any')
         testdata=testdata.reset_index(drop=True)
@@ -372,7 +465,7 @@ class GMMmultiOptimizationUnit:
         its important
         根据历史选择的Qos指标得到的GMM模型，综合合成一个总体的分布，
         从原来的直接对数据进行权重分配编程对预测后的模型之间的权重分配
-        temp editon 固定的两个指标的合成加权
+        固定的两个指标的合成加权,目前在GMM_throughput_secondorder.py实验中用到
         """
         collist=data.columns.values.tolist()
         value1=collist[fitz]
@@ -381,34 +474,15 @@ class GMMmultiOptimizationUnit:
             self.obj['output_total_'+str(i)]=self.obj['output_'+value1+'_'+str(i)]+self.obj['output_'+value2+'_'+str(i)]
             self.obj['err_total_'+str(i)]=self.obj['err_'+value1+'_'+str(i)]+self.obj['err_'+value2+'_'+str(i)]
             self.obj['up_total_'+str(i)],self.obj['down_total_'+str(i)]=self.obj['output_total_'+str(i)]*(1+1.96*self.obj['err_total_'+str(i)]),self.obj['output_total_'+str(i)]*(1-1.96*self.obj['err_total_'+str(i)])
-       
-#    def multiGMMbuilder(self,data,):
-#        """ 
-#        its important
-#        根据历史选择的Qos指标得到的GMM模型，综合合成一个总体的分布，
-#        从原来的直接对数据进行权重分配编程对预测后的模型之间的权重分配
-#        """
-#        for i in range(self.n_clusters):
-#            self.obj['output_total_'+str(i)]=np.empty((128,128))
-#            self.obj['err_total_'+str(i)]=np.empty((128,128))
-#            for j in self.qosname:
-#                self.obj['output_total_'+str(i)]=self.obj['output_total_'+str(i)]+self.obj['output_'+j+'_'+str(i)]
-#                self.obj['err_total_'+str(i)]=self.obj['err_total_'+str(i)]+self.obj['err_'+j+'_'+str(i)]
-#                self.obj['up_total_'+str(i)],self.obj['down_total_'+str(i)]=self.obj['output_total_'+str(i)]*(1+1.96*self.obj['err_total_'+str(i)]),self.obj['output_total_'+str(i)]*(1-1.96*self.obj['err_total_'+str(i)])
-#  
-
-
+    
     def mulitgragher(self,data,path,test,count=0):
         """
         绘图，单指标的图与多指标合成的3D图
         """
         test=test.tolist()
         test=np.array([test])
-        self.npdata=np.array(data)
-#        fig = plt.figure()  
-        fig = plt.figure(figsize=(21,10))  
-
-            
+        npdata=np.array(data)
+        fig = plt.figure(figsize=(21,10))     
         ax3 = fig.add_subplot(121, projection='3d')
         for i in range(self.n_clusters):
             ax3.plot_surface(self.xset,self.yset,self.obj['output_total_'+str(i)], cmap=plt.get_cmap('rainbow'),linewidth=0, antialiased=False)
@@ -421,17 +495,13 @@ class GMMmultiOptimizationUnit:
         ax3.set_xlabel('sapps')  
         ax3.set_ylabel('trafs')  
         ax3.set_zlabel('value') 
-        
         ax = fig.add_subplot(122)  
-        s = ax.scatter(self.npdata[:,1],self.npdata[:,5],self.npdata[:,6],cmap=plt.cm.viridis,c='red')
+        s = ax.scatter(npdata[:,1],npdata[:,5],npdata[:,6],cmap=plt.cm.viridis,c='red')
         im=ax.imshow(self.obj['output_total_0'], interpolation='bilinear', origin='lower',  
-                       extent=(self.xmin, self.xmax-1, self.ymin, self.ymax), aspect='auto')
-          
+                       extent=(self.xmin, self.xmax-1, self.ymin, self.ymax), aspect='auto')         
         ax.set_title('the predict mean ')  
         ax.hlines(test[0,1],self.xmin, self.xmax-1)  
         ax.vlines(test[0,0],self.ymin, self.ymax)  
-#        ax.text(test[0,0],test[0,1],'{0}'.format(self.reg.predict(test)[0]),ha='left',
-#                va='bottom',color='k',size=15,rotation=0)  
         ax.set_xlabel('sapps')  
         ax.set_ylabel('trafs')  
         plt.subplots_adjust(left=0.05, top=0.95, right=0.95)
@@ -464,6 +534,7 @@ class GMMmultiOptimizationUnit:
         1)引入数据对模型进行建模《两个模型superapp_throughput,trafficgenerator_throughput
         2）对query point 进行预测
         3）加权*
+        目前在画图程序Drawer_compare_predit_simulate_0.py中使用
         """
         collist=data.columns.values.tolist()
         value=collist[fitz]
@@ -525,8 +596,6 @@ class GMMmultiOptimizationUnit:
         rtime = timee - times
         print('the multi-AF run time is : %fS' % rtime)
         return try_max    
-        
-        
     
     def heatgragher(self,data,test,fitz=6):
         """
@@ -545,13 +614,6 @@ class GMMmultiOptimizationUnit:
                                     rstride=10, cstride=2, antialiased=True)
             ax1.plot_wireframe(self.xset,self.yset,self.obj['down_'+value+'_'+str(i)],colors=self.wirecolor[i],linewidths=1,  
                                     rstride=10, cstride=2, antialiased=True)
-# =============================================================================
-#             self.obj['surf'+str(i)]=ax1.plot_surface(self.xset,self.yset,self.obj['output_'+value+'_'+str(i)], cmap=plt.get_cmap('rainbow'),linewidth=0, antialiased=False)
-#             self.obj['surf_u'+str(i)]=ax1.plot_wireframe(self.xset,self.yset,self.obj['up_'+value+'_'+str(i)],colors=self.wirecolor[i],linewidths=1,  
-#                                     rstride=10, cstride=2, antialiased=True)
-#             self.obj['surf_d'+str(i)]=ax1.plot_wireframe(self.xset,self.yset,self.obj['down_'+value+'_'+str(i)],colors=self.wirecolor[i],linewidths=1,  
-#                                     rstride=10, cstride=2, antialiased=True)
-# =============================================================================
         ax1.scatter(npdata[:,1],npdata[:,5],npdata[:,6],c='black')  
         ax1.set_title('the predict mean output at ('+str(test[0,0])+'  '+str(test[0,1])+'): {0} '.format(self.reg.predict(test)[0]))  
         ax1.set_xlabel('sapps')  
@@ -578,6 +640,7 @@ class GMMmultiOptimizationUnit:
     def weightchanger(self,data):
         """
         对于已经进行聚类之后的数据，需要加入这个功能对每个簇的模型的权重进行修改
+        这里的各簇的概率是一样的，概率为一常数
         """
         value=np.array(data['vbrs'])
         value1=value.reshape((-1,1))
@@ -625,13 +688,11 @@ class GMMmultiOptimizationUnit:
             componentmodel['reg'+str(i)].fit(npdata[:,[fitx,fity]],npdata[:,fitz])
             ys=self.UCBmethodhelper(try_data,gp=componentmodel['reg'+str(i)],kappa=kappa)
             UCBdic["ucb"+str(i)]=ys
-#            yyy=np.hstack(yyy,ys)
         aaa=pd.DataFrame(UCBdic)
         for i in range(aaa.shape[0]):
             for j in range(self.n_clusters):
                 aaa.iloc[i,j]=aaa.iloc[i,j]*self.componentweight[str(j)]
         aaa['total']=aaa.apply(lambda x: x.sum(), axis=1)
-#        print(aaa)
         ucbarray=np.array(aaa['total'])
         try_max=try_data[ucbarray.argmax()]
         try_max=try_max.astype(int)#为了EXATA配置文件，把询问点改为整数型
@@ -666,8 +727,6 @@ class GMMmultiOptimizationUnit:
             reg=GaussianProcessRegressor(kernel=self.kernel,n_restarts_optimizer=10,alpha=0.1)
             reg.fit(npdata[:,[fitx,fity]],npdata[:,fitz])
             ys=self.UCBmethodhelper(try_data,gp=reg,kappa=kappa)
-#            print(ys)
-#            print(np.shape(ys))
             try_max=try_data[ys.argmax()]
             try_max=try_max.astype(int)#为了EXATA配置文件，把询问点改为整数型
             max_acq=ys.max()
@@ -691,7 +750,8 @@ class GMMmultiOptimizationUnit:
         
     def clusterworker(self,data,col1,col2,count=0):
         """
-        SKlearn.cluster里面自带的KMeans函数，这里我们只取了数据的二维，方便画图
+        SKlearn自带的KMeans函数，这里我们只取了数据的二维，方便画图
+        KMEANs聚类方式
         """
         value=np.array(data[col1])
         value1=value.reshape((-1,1))
@@ -720,17 +780,18 @@ class GMMmultiOptimizationUnit:
                 plt.scatter(c[i][0],c[i][1],color='gold')
             if int(lable_pred[i])==3:
                 plt.scatter(c[i][0],c[i][1],color='violet')
-        plt.savefig('./Figure/Cluster'+str(count)+".jpg")
+#        plt.savefig('./Figure/Cluster_Kmeans_'+str(count)+".jpg")
         plt.show()
         return r
     
-    def EMworker(self,data):
+    def EMworker(self,data,col1='value',col2='trafs',count=0):
         """
         SKLearn里面自带的EM函数，这里我们只取了数据的二维，方便画图
+        EM聚类标签方式,未完成，目前没用到EM
         """
-        value=np.array(data['value'])
+        value=np.array(data[col1])
         value1=value.reshape((-1,1))
-        trafs=np.array(data['trafs'])
+        trafs=np.array(data[col2])
         trafs1=trafs.reshape((-1,1))
         c=np.hstack((trafs1,value1))
         c=c[:,::-1]
@@ -743,13 +804,14 @@ class GMMmultiOptimizationUnit:
         print(probs[:5].round(3))
         size = 50 * probs.max(1) ** 2  # 由圆点面积反应概率值的差异
         plt.scatter(c[:, 0], c[:, 1], c=labels, cmap='viridis', s=size)
+#        plt.savefig('./Figure/Cluster_EM_'+str(count)+".jpg")
+        plt.show()
 
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 class BayesianOptimizationUnit:
     """
-    贝叶斯优化类：
+    贝叶斯优化类：最原初的BO类，使用的是GP过程
     用作进行对业务层设计参数与输出的评分之间建立概率模型，进行设计指导
-    
     这个函数是针对业务层输入参数进行设计的，数据结构不是针对所有的数据
     画图函数是三维的函数，变量连续的变量,核函数是matern函数，nu=2.5（多维空间中的nu为2.5） 后续做成可调整的 
     x为superapp的包大小（0,64000）
@@ -793,6 +855,7 @@ class BayesianOptimizationUnit:
     def heatpointer(self,test):
         """
         绘制热力图和预测的下一个点，坐标是自适应的
+        最原初得的GP版本的绘图，对于输出的控制需要进行修改
         """
         fig = plt.figure(figsize=(21,10))  
         ax1 = fig.add_subplot(121, projection='3d')  
@@ -858,6 +921,7 @@ class BayesianOptimizationUnit:
         1）先随机选取100000点进行估计，得到UCB值最大的坐标
         2）再选取250个点进行拟牛顿法与1）中得到的最大值进行比较
         3）得到下一个仿真的点向量
+        这个af函数是最原初得的UCBmethod版本，用到了拟牛顿法，直接将最简单的GP过程进行搜索，目前的实验中用来进行比较试验
         """
         bounds=pd.DataFrame()
         x_tries = np.random.uniform(0, 64000,size=(100000))
@@ -894,7 +958,7 @@ class BayesianOptimizationUnit:
         print(test)
         return test
         
-    def insertnewworker(self,test,dataframe,path='./OutConfigfile/',vbrs_i=18000):
+    def insertnewworker(self,test,dataframe,path='./OutConfigfile/',vbrs_i=24000):
         """
         将acquisitionFunction选取的点仿真后得到的数据库读取出来，加入到先验数据中
         """
@@ -921,9 +985,10 @@ class EvaluationUnit:
     """
     性能评估类：
     用来对业务仿真数据进行评分
-    目前所有的评估指标权重相等：  分为三种业务：vbr，superapp，trafficgenerator
-                                每种业务分四种指标：时延、时延抖动、消息完成率、吞吐量
-    得到value
+    目前所有的评估指标权重相等：  分为三种业务：其他业务流vbr，视频流superapp，图像流trafficgenerator
+                                每种业务分四种指标：时延delay、时延抖动jitter、消息完成率messagecompleterate（mcr）、吞吐量throughput
+                                构建4*3的评估权重矩阵self.weight
+    得到最终的每次仿真的评估值value
     """
     def __init__(self):
         self.weight= np.array([[0.0425,0.0425,0.0425,0.0425],
@@ -934,8 +999,7 @@ class EvaluationUnit:
     def calculateMetricEvaValue(self,dataset):
         """
         归一化处理：对于四种不同的指标，进行不同的归一化处理
-        before the evaluation proccess must modify the raw data
-        这里的归一化处理很重要，在不同良港之间的qos指标之间如何要比较的话需要对
+        这里的归一化处理很重要，在不同量纲之间与不同QoS指标之间如何要比较，需要在最初进行主观判定
         """
         #delay  x=3,y=0.5,flag=0
         delay = dataset['delay']
@@ -998,7 +1062,7 @@ class EvaluationUnit:
 class MemoryUnit:
     """
     记忆单元类：
-    现实现了state数据的存储功能包括value，label，state，各种业务流的qos性能均值
+    现实现了state数据的存储功能包括probability，value，label，state，各种业务流的qos性能均值
     目前暂时是用来存储输入的设计指标，评估分数，设计差值（动作），增益（与上一次仿真使用的设计指标和分数）
     """
     def __init__(self):
@@ -1010,22 +1074,14 @@ class MemoryUnit:
         self.count=0
         self.qosmemoryunit=pd.DataFrame()
         self.probmemoryunit=pd.DataFrame()
-#        self.n_actions
-#        self.n_states
-#        self.lr#学习速率
-#        self.gamma
-#        self.epsilon_max
-#        self.replace_target_iter
-#        self.memory_size
-#        self.batch_size=batch_size       
-#        self.epsilon_increment = e_greedy_increment
-#        self.epsilon = 0 if e_greedy_increment is not None else self.epsilon_max
+
         
     def probinserter(self,state,value,prob,label):
         """
-        添加新的state在记忆单元
+        添加状态、均值、概率、标签在记忆单元
         目前的业务设计参数有6种，随着以后的进行应该会增加
         添加状态（state），评估均值（value），各簇概率（prob），标签（label）
+        保存在probmemoryunit中
         """
         aa=pd.DataFrame()
         aa['sappi']=[state[0]]
@@ -1045,7 +1101,8 @@ class MemoryUnit:
         
     def qosinserter(self,state,qos):
         """
-        添加state和qos指标的归一化值（state6个设计指标,qos12个指标）
+        添加状态、QoS指标的归一化值（state6个设计指标,qos12个指标）
+        保存在qosmemoryunit中
         """
         aa=pd.DataFrame()
         aa['sappi']=[state[0]]
@@ -1076,10 +1133,8 @@ class MemoryUnit:
         
     def valueinserter(self,state,value):
         """
-        添加新的state在记忆单元
-        目前的业务设计参数有6种，随着以后的进行应该会增加
-        append the new dataframe from the simulaiton
-        目前不需要action gain参数 暂时注释掉
+        添加状态与评估值在记忆单元
+        保存在memoryunit中
         """
         aa=pd.DataFrame()
         aa['sappi']=[state[0]]
@@ -1089,25 +1144,7 @@ class MemoryUnit:
         aa['trafi']=[state[4]]
         aa['trafs']=[state[5]]
         aa['value']=[value]
-# =============================================================================
-#         if len(self.memoryunit)==0:
-#             action=[0,0,0,0,0,0]
-#             aa['sappi_a']=[action[0]]
-#             aa['sapps_a']=[action[1]]
-#             aa['vbri_a']=[action[2]]
-#             aa['vbrs_a']=[action[3]]
-#             aa['trafi_a']=[action[4]]
-#             aa['trafs_a']=[action[5]]
-#             aa['gain']=[0]
-#         else:
-#             aa['sappi_a']=[state[0]-self.memoryunit['sappi'][len(self.memoryunit['sappi'])-1]]
-#             aa['sapps_a']=[state[1]-self.memoryunit['sapps'][len(self.memoryunit['sapps'])-1]]
-#             aa['vbri_a']=[state[2]-self.memoryunit['vbri'][len(self.memoryunit['vbri'])-1]]
-#             aa['vbrs_a']=[state[3]-self.memoryunit['vbrs'][len(self.memoryunit['vbrs'])-1]]
-#             aa['trafi_a']=[state[4]-self.memoryunit['trafi'][len(self.memoryunit['trafi'])-1]]
-#             aa['trafs_a']=[state[5]-self.memoryunit['trafs'][len(self.memoryunit['trafs'])-1]]
-#             aa['gain']=[value-self.memoryunit['value'][len(self.memoryunit['value'])-1]]
-# =============================================================================
+
         self.memoryunit=self.memoryunit.append(aa)
         self.memoryunit=self.memoryunit.reset_index(drop=True)
         self.count=self.count+1
