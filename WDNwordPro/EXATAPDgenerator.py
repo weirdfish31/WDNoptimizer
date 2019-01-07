@@ -165,8 +165,6 @@ outdatapath='./OutConfigfile/'
 
 
 def runTest():
-#    i = 0
-    outlogfile = open('./outThrd.log', 'w')
     for appInterval_i in superapinterval:
         for appSize_i in superappsize:
             for delivery_i in deliveryType:
@@ -180,7 +178,6 @@ def runTest():
                                             for trafficgeninterval_i in trafficgeninterval:
                                                 for trafficgensize_i in trafficgensize:
                                                     for i in range(60):                                                        
-#                                                        i = i +24
                                                         linkconfig = jsonread('./configfile/linkConfig.json')
                                                         linkconfig['Sat'][0] = satBand_i
                                                         linkconfig['Sat'][1] = satDrop_i
@@ -211,7 +208,6 @@ def runTest():
                                                         writefile(simename, simStr)
                                                         paraStr = 'SatBand: %s, RSBand: %s, Drop: %s, Route:%s, Interval: %s , Delivery: %s' % (satBand_i, rsBand_i, rsDrop_i, routing_i, appInterval_i, delivery_i)
                                                         writeStr = "%s : {%s}\n" % (simName, paraStr)
-                                                        outlogfile.write(writeStr)
                                                         print(writeStr)
                                                         if False:
                                                             continue
@@ -222,12 +218,8 @@ def runTest():
                                                             """
                                                             暂时注释
                                                             """
-#                                                                runOutfileStore(simName)
                                                         except:
                                                             continue
-#                                                        except Exception as e:
-#                                                            ferro = open(simName + '.erro', 'w')
-#                                                            ferro.write(writeStr)
 
 
 
