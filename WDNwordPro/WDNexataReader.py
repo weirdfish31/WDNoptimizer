@@ -377,7 +377,7 @@ class ExataDBreader:
             plt.subplot(717)
             plt.plot(self.apphopcount[app],'-', color=c,linewidth = '1')
             plt.title(app+' hopcount',fontsize=15)
-            plt.savefig(path+app+".jpg")
+#            plt.savefig(path+app+".jpg")
         
     def appdatareader(self):
         """

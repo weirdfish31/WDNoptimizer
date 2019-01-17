@@ -7,7 +7,7 @@ Created on Wed Apr 11 14:55:46 2018
 Bayesian Optimization Units
 Evaluation Units
 ReinforcementLearning Units
-主要针对单数值优化的类
+主要针对连续数值优化的类
 """
 #评估，增强学习记忆单元所需
 import math
@@ -17,7 +17,8 @@ import pandas as pd
 #贝叶斯优化所需：
 import matplotlib.pyplot as plt  
 from sklearn.gaussian_process import GaussianProcessRegressor  
-from sklearn.gaussian_process.kernels import RBF,Matern, ConstantKernel as C  
+from sklearn.gaussian_process.kernels import RBF,Matern, ConstantKernel as C 
+from sklearn.ensemble import RandomForestRegressor 
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
 import scipy
@@ -48,13 +49,13 @@ class GMMvalueOptimizaitonUnit:
     def valuegragher_three(self,data,path,qp,count=0,fita=6,fitb=7):
         """
         绘图，单指标的图与多指标合成的3D图
-        目前的画图函数，更新了三种不同颜色的热力图：评估值、概率值、综合MPP模型（目前是两个value平面替代）
+        目前的画图函数，更新了三种不同颜色的热力图：评估值、概率值、综合HPP模型（目前是两个value平面替代）
         """
         collist=data.columns.values.tolist()
         model1=collist[fita]
         model2=collist[fitb]
         
-        "============================================================"
+        "======================================================================"
         qp=qp.tolist()
         qp=np.array([qp])
         npdata=np.array(data)
@@ -116,7 +117,7 @@ class GMMvalueOptimizaitonUnit:
 # =============================================================================
         "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
         plt.subplots_adjust(left=0.03, top=0.97, right=0.97)
-        plt.savefig(path+'MPP_multi'+str(count)+".jpg")
+        plt.savefig(path+'HPP_i60_multi'+str(count)+".jpg")
         plt.show() 
         
     def valuegragher_two(self,data,path,qp,count=0):
@@ -218,6 +219,7 @@ class GMMvalueOptimizaitonUnit:
         2）提供了最简单的策略自适应的过程，kappa值随着迭代的进行变化（递减）
         3）提供了可调整的相应平面选择参数（）
         在目前的版本中要是出现了抽样的数值为0的情况，仿真会中断
+        而且目前只有两簇的情况，没有进行更多簇的考虑
         """
         times  = time.clock() 
         bounds=pd.DataFrame()
@@ -350,6 +352,24 @@ class GMMvalueOptimizaitonUnit:
         self.obj['output_'+value+'_'+str(label)],self.obj['err_'+value+'_'+str(label)]=self.obj['output_'+value+'_'+str(label)].reshape(self.xset.shape),self.obj['err_'+value+'_'+str(label)].reshape(self.xset.shape)
 #        self.obj['sigma_'+str(label)]=np.sum(self.reg.predict(self.npdata[:,[1,5]],return_std=True)[1])
         self.obj['up_'+value+'_'+str(label)],self.obj['down_'+value+'_'+str(label)]=self.obj['output_'+value+'_'+str(label)]*(1+1.96*self.obj['err_'+value+'_'+str(label)]),self.obj['output_'+value+'_'+str(label)]*(1-1.96*self.obj['err_'+value+'_'+str(label)])
+    
+    def rfbuilder(self,data,fitx=1,fity=5,fitz=6,label=1):
+        '''
+        根据数据进行随机森林回归
+        '''
+        collist=data.columns.values.tolist()
+        value=collist[fitz]
+        self.qosname.append(value)
+        testdata=data[data['label']==label]
+        testdata=testdata.reset_index(drop=True)
+        self.npdata=np.array(testdata)
+        self.reg=RandomForestRegressor(n_estimators=10,n_jobs=1)
+        self.obj['reg_'+value+'_'+str(label)]=self.reg.fit(self.npdata[:,[fitx,fity]],self.npdata[:,fitz])
+        self.obj['output_'+value+'_'+str(label)]=self.obj['reg_'+value+'_'+str(label)].predict(np.c_[self.xset.ravel(),self.yset.ravel()])
+        self.obj['output_'+value+'_'+str(label)]=self.obj['output_'+value+'_'+str(label)].reshape(self.xset.shape)
+#        self.obj['sigma_'+str(label)]=np.sum(self.reg.predict(self.npdata[:,[1,5]],return_std=True)[1])
+              
+        
     
     def componentselecter(self,data,i):
         """

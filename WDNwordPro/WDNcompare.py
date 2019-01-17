@@ -11,6 +11,7 @@ Created on Sat Jul 21 14:29:21 2018
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt 
+import WDNoptimizer
 
 class WDNcompareUnit:
     """
@@ -94,12 +95,13 @@ class WDNcompareUnit:
         """
         
         
+
         
-    def MSEcompare(self,querylist,count=25):
-        """
-        比较相应个数的样本得到的模型的MSE误差
-        """
-        x,y,mx,xy=self.querylistfilter(querylist)
+
+        
+        
+    
+
         
         
     
