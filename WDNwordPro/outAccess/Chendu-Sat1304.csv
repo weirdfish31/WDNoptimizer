@@ -1,0 +1,18 @@
+                                                                            15 Oct 2018 11:39:41
+Facility-Chendu-To-Satellite-Sat1304:  Access Summary Report
+
+
+Chendu-To-Sat1304
+-----------------
+                  Access       Start Time (UTCG)           Stop Time (UTCG)       Duration (sec)
+                  ------    -----------------------    -----------------------    --------------
+                       1    2 Nov 2013 13:58:11.308    2 Nov 2013 14:08:24.905           613.597
+                       2    3 Nov 2013 01:47:56.669    3 Nov 2013 01:53:32.980           336.312
+                       3    3 Nov 2013 03:32:46.215    3 Nov 2013 03:42:00.298           554.083
+
+Global Statistics
+-----------------
+Min Duration           2    3 Nov 2013 01:47:56.669    3 Nov 2013 01:53:32.980           336.312
+Max Duration           1    2 Nov 2013 13:58:11.308    2 Nov 2013 14:08:24.905           613.597
+Mean Duration                                                                            501.331
+Total Duration                                                                          1503.992
