@@ -57,11 +57,13 @@ TIPS： 需要安装 STK 9.2.3，EXATA 5.4
 
 
 
+Contact：
+- E-Mail：weirdfish31@whu.edu.cn
+- QQ:179177098
 
 
 
 
-联系方式：weirdfish31@whu.edu.cn
 
 
 
