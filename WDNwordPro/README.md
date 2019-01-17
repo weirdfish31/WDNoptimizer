@@ -20,11 +20,17 @@
 - WDNTagDataHandler.py：对已生成的数据库进行读取并进行分簇标记等一些列的操作函数类
 
 ## Experimnet：
+- value_HPP_0.py
+- value_GPR_0.py
 
 
 
 
 ## Result：
+- Drawer_Value_MPP.py
+- Drawer_Value_Kde_alpha.py
+- Drawer_RawData_alpha.py
+- LOL.py
 
 
 
@@ -33,7 +39,7 @@
 ## TIPS:
 
 - WDNwordPro项目程序运行结束会生成nodetxt，outAccess文件夹，存放仿真需要的可见性csv报表和卫星轨道txt文件
-
+- nodetxt\outAccess文件夹内存有已压缩的全部报表文件和轨道文件
 
 
 
