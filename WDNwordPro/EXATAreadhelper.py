@@ -111,16 +111,16 @@ class readhelper:
         self.readnodePosition()
         self.datetimeFormat = '%d %b %Y %H:%M:%S'
         self.allAccess = []
-        self.numapp = 2
+        self.numapp = 2#具体的发起业务的用户数，实际业务数为numapp*4
         self.appdur = 0
         self.applist = []
         self.appAccess = []
-        self.GtoSatBand = 30000000
-        self.SatToSatBand = 100000000
+        self.GtoSatBand = 30000000#星地链路带宽
+        self.SatToSatBand = 100000000#星间链路带宽
         self.GtoSatList = []
         self.GToSatTop = []
         self.IPandFault = []
-        self.simdur = 10000
+        self.simdur = 10000#仿真持续时间
         self.link = json.loads(open('./configfile/linkConfig.json').read())
         self.routing = 'OSPFv2'
         self.modeltype = {'Sat':'WIRELESS LINK', 'RS':'WIRELESS LINK','Ground':'WIRELESS LINK','Aircraft':'WIRELESS LINK'}
