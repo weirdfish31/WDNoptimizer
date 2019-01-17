@@ -12,8 +12,12 @@ import pandas as pd
 import numpy as np
 import WDNfeedback
 import WDNoptimizer
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_squared_error
 import matplotlib.pyplot as plt 
 import seaborn as sns
+from mpl_toolkits.axes_grid1.inset_locator import zoomed_inset_axes
+from mpl_toolkits.axes_grid1.inset_locator import mark_inset
 
 pd.set_option('display.max_rows',None)
 
@@ -509,26 +513,138 @@ class TaggedDataHandler:
     
     
     
-    def MSEprinter(self,MPP,GPR):
+    def ComparePrinter(self,MPP,GPR,RF,style='MSE'):
         """
         MSE参数的不同模型的比较画图
         """
         sns.set_style("whitegrid")
         plt.figure('Line fig',figsize=(20,6))
         plt.xlabel('Iteration Times')
-        plt.ylabel('MSE')
-        plt.title('MSE ',fontsize='xx-large')
+        plt.ylabel(style)
+        plt.title(style,fontsize='xx-large')
+        plt.scatter(x=range(len(MPP)),y=MPP,marker='*',c='r')
+        plt.scatter(x=range(len(GPR)),y=GPR,marker='o',c='black')
+        plt.scatter(x=range(len(RF)),y=RF,marker='o',c='blue')
+        plt.plot(MPP,color='r', linewidth=2, alpha=0.6,label='HPP')
+        plt.plot(GPR,color='black', linewidth=2, alpha=0.6,label='GPR')
+        plt.plot(RF,color='blue', linewidth=2, alpha=0.6,label='RF')
+        plt.legend(fontsize='x-large')
+            
+    def ValueComparePrinter(self,MPP,GPR,RF,sim,style='predict-simulated'):
+        """
+        MSE参数的不同模型的比较画图
+        """
+        sns.set_style("whitegrid")
+        plt.figure('Line fig',figsize=(20,6))
+        plt.xlabel('Iteration Times')
+        plt.ylabel('predict-simulated')
+        plt.title('value ',fontsize='xx-large')
         
         plt.scatter(x=range(len(MPP)),y=MPP,marker='*',c='r')
-        plt.scatter(x=range(len(GPR)),y=GPR,marker='o',c='b')
-        plt.plot(MPP,color='r', linewidth=2, alpha=0.6,label='MPP')
+        plt.scatter(x=range(len(GPR)),y=GPR,marker='.',c='black')
+        plt.scatter(x=range(len(RF)),y=RF,marker='o',c='blue')
+        plt.plot(MPP,color='r', linewidth=2, alpha=0.6,label='HPP')
         plt.plot(GPR,color='black', linewidth=2, alpha=0.6,label='GPR')
+        plt.plot(RF,color='blue', linewidth=2, alpha=0.6,label='RF')
+        plt.plot(sim,color='green', linewidth=2, alpha=0.6,label='simulate')
         plt.legend(fontsize='x-large')
+
+        
+    def ZoominPrinter(self,mpp,gpr,rfr,style='R-Squared'):
+        """
+        进行zoomin的绘图
+        """
+        sns.set_style("whitegrid")
+        fig,ax = plt.subplots(figsize=[20, 6])
+        x=range(len(gpr))
+        if style=='R-Squared':
+            ax.scatter(x,mpp,marker='*',c='r')
+            ax.scatter(x,gpr,marker='.',c='black')
+            ax.scatter(x,rfr,marker='o',c='blue')
+            ax.plot(x,rfr,color='blue', linewidth=2, alpha=0.6,label='RF')
+            ax.plot(x,gpr,color='black', linewidth=2, alpha=0.6,label='GPR')
+            ax.plot(x,mpp,color='r', linewidth=2, alpha=0.6,label='HPP')
+            ax.legend(fontsize='x-large')
+            plt.ylabel('R-squared',fontsize='large')
+            plt.xlabel('Iteration Times',fontsize='large')
+            plt.title('R-squared',fontsize='xx-large')
+            
+            axins=zoomed_inset_axes(ax, 5, loc=5)  # zoom = 6
+            axins.plot(x,gpr,color='black', linewidth=2, alpha=0.6)
+            axins.plot(x,rfr,color='blue', linewidth=2, alpha=0.6)
+            axins.plot(x,mpp,color='r', linewidth=2, alpha=0.6)
+            axins.scatter(x,mpp,marker='*',c='r')
+            axins.scatter(x,gpr,marker='.',c='black')
+            axins.scatter(x,rfr,marker='o',c='blue')
+            
+            # sub region of the original image
+            x1, x2, y1, y2 = 50,55,-0.5,1.5
+            axins.set_xlim(x1, x2)
+            axins.set_ylim(y1, y2)
+            # fix the number of ticks on the inset axes
+            axins.yaxis.get_major_locator().set_params(nbins=5)
+            axins.xaxis.get_major_locator().set_params(nbins=5)
+            
+            plt.xticks(visible=True)
+            plt.yticks(visible=True)
+            plt.legend(fontsize='x-large')
+            # draw a bbox of the region of the inset axes in the parent axes and
+            # connecting lines between the bbox and the inset axes area
+            mark_inset(ax, axins, loc1=2, loc2=4, fc="none", ec="0.5")
+            
+            plt.draw()
+            plt.show()
+            
+        elif style=='MSE':
+            ax.scatter(x,mpp,marker='*',c='r')
+            ax.scatter(x,gpr,marker='.',c='black')
+            ax.scatter(x,rfr,marker='o',c='blue')
+            ax.plot(x,rfr,color='blue', linewidth=2, alpha=0.6,label='RF')
+            ax.plot(x,gpr,color='black', linewidth=2, alpha=0.6,label='GPR')
+            ax.plot(x,mpp,color='r', linewidth=2, alpha=0.6,label='HPP')
+            ax.legend(fontsize='x-large')
+            plt.ylabel('MSE',fontsize='large')
+            plt.xlabel('Iteration Times',fontsize='large')
+            plt.title('MSE',fontsize='xx-large')
+            
+            axins=zoomed_inset_axes(ax, 5, loc=5)  # zoom = 6
+            axins.plot(x,gpr,color='black', linewidth=2, alpha=0.6)
+            axins.plot(x,rfr,color='blue', linewidth=2, alpha=0.6)
+            axins.plot(x,mpp,color='r', linewidth=2, alpha=0.6)
+            axins.scatter(x,mpp,marker='*',c='r')
+            axins.scatter(x,gpr,marker='.',c='black')
+            axins.scatter(x,rfr,marker='o',c='blue')
+            
+            # sub region of the original image
+            x1, x2, y1, y2 = 50,55,0,0.03
+            axins.set_xlim(x1, x2)
+            axins.set_ylim(y1, y2)
+            # fix the number of ticks on the inset axes
+            axins.yaxis.get_major_locator().set_params(nbins=5)
+            axins.xaxis.get_major_locator().set_params(nbins=5)
+            
+            plt.xticks(visible=True)
+            plt.yticks(visible=True)
+            plt.legend(fontsize='x-large')
+            # draw a bbox of the region of the inset axes in the parent axes and
+            # connecting lines between the bbox and the inset axes area
+            mark_inset(ax, axins, loc1=2, loc2=4, fc="none", ec="0.5")
+            
+            plt.draw()
+            plt.show()
+
+        
+
+        
+        
+        
+        
 
 class ModelCompareHandler:
     """
     针对处理过后的数据，重新进行建模与MSE比较绘图
     针对的是MPP模型，GPR模型
+    目前正在进行RF（随机森林模型的制作）
     """
     def __init__(self):
         """
@@ -552,6 +668,30 @@ class ModelCompareHandler:
         self.GPR=WDNoptimizer.GMMvalueOptimizaitonUnit(cluster=1)#实例化MPP模型
         self.GPR.gpbuilder(data,fitx=1,fity=5,fitz=6,label=1)#第二簇高斯过程模型
         self.GPR.gpbuilder(data,fitx=1,fity=5,fitz=6,label=0)#第一簇高斯过程模型
+    def RFmodelRebuilder(self,data):
+        """
+        基于数据进行RF回归模型的重建
+        """
+        self.RFR=WDNoptimizer.GMMvalueOptimizaitonUnit(cluster=1)#实例化RF模型
+        self.RFR.rfbuilder(data,fitx=1,fity=5,fitz=6,label=0)#第一簇随机森林模型
+        self.RFR.rfbuilder(data,fitx=1,fity=5,fitz=6,label=1)#第二簇随机森林模型
+    
+    def RFpredicter(self,testdata):
+        """
+        基于此类中的基于标签过后的数据重新生成的RF模型，输入测试数据，进行评估值，概率的预测
+        """
+        bounds=pd.DataFrame()
+        bounds['sapps']=testdata['sapps'][testdata['label']==1]
+        bounds['trafs']=testdata['trafs'][testdata['label']==1]
+        try_data = np.array(bounds)
+        mean0=self.RFR.obj['reg_value_0'].predict(try_data)
+        mean1=self.RFR.obj['reg_value_1'].predict(try_data)
+        dd={'mean0':mean0,
+            'mean1':mean1}
+        data=pd.DataFrame(dd)
+        return data
+        
+        
         
     def MPPpredicter(self,testdata):
         """
@@ -576,7 +716,7 @@ class ModelCompareHandler:
         
     def GPRpredicter(self,testdata):
         """
-        基于此类中的基于标签过后的数据重新生成的MPP模型，输入测试数据，进行评估值，概率的预测
+        基于此类中的基于标签过后的数据重新生成模型，输入测试数据，进行评估值，概率的预测
         1)必须先对GPR模型重新进行建模
         2)这里对两簇的数据都进行预测
         """
@@ -588,49 +728,74 @@ class ModelCompareHandler:
         mean1,std1=self.GPR.obj['reg_value_1'].predict(try_data,return_std=True)
 #        mean=(mean0+mean1)/2
 #        std=(std0+std1)/2
-        dd={'mean':mean0,
+        dd={'mean':mean0,#这里mean为第一簇的均值
             'std':std0}
         data=pd.DataFrame(dd)
         return data
                 
 
-
     def MPPMSE(self,testdata,predictdata):
         """
         MPP模型的均的MSE误差
         """
-        a=testdata['value'][testdata['label']==1].reset_index(drop=True)
-        b=predictdata['mean1'].reset_index(drop=True)
-        c=testdata['value'][testdata['label']==0].reset_index(drop=True)
-        d=predictdata['mean0'].reset_index(drop=True)
-        MPPMSE1=(a-b)*(a-b)
-        w=MPPMSE1.sum()
-        print(w)
-        MPPMSE0=(c-d)*(c-d)
-        q=MPPMSE0.sum()
-        print(q)
-        MPPMSE=(w+q)/len(testdata)
-        print(MPPMSE)
-        return MPPMSE
+        aaa=mean_squared_error(testdata['value'][testdata['label']==1],predictdata['mean1'])+mean_squared_error(testdata['value'][testdata['label']==0],predictdata['mean0'])
+        aaa=aaa/2
+        return aaa
+#        a=testdata['value'][testdata['label']==1].reset_index(drop=True)
+#        b=predictdata['mean1'].reset_index(drop=True)
+#        c=testdata['value'][testdata['label']==0].reset_index(drop=True)
+#        d=predictdata['mean0'].reset_index(drop=True)
+#        MPPMSE1=(a-b)*(a-b)
+#        w=MPPMSE1.sum()
+#        print(w)
+#        MPPMSE0=(c-d)*(c-d)
+#        q=MPPMSE0.sum()
+#        print(q)
+#        MPPMSE=(w+q)/len(testdata)
+#        print(MPPMSE)
+#        return MPPMSE
     
     def GPRMSE(self,testdata,predictdata):
         """
-        MPP模型的均的MSE误差
+        GPR模型的均的MSE误差
         """
-        a=testdata['value'][testdata['label']==1].reset_index(drop=True)
-        b=predictdata['mean'].reset_index(drop=True)
-        c=testdata['value'][testdata['label']==0].reset_index(drop=True)
-        d=predictdata['mean'].reset_index(drop=True)
-        MPPMSE1=(a-b)*(a-b)
-        w=MPPMSE1.sum()
-        print(w)
-        MPPMSE0=(c-d)*(c-d)
-        q=MPPMSE0.sum()
-        print(q)
-        MPPMSE=(w+q)/len(testdata)
-        print(MPPMSE)
-        return MPPMSE
+        aaa=mean_squared_error(testdata['value'][testdata['label']==1],predictdata['mean'])+mean_squared_error(testdata['value'][testdata['label']==0],predictdata['mean'])
+        aaa=aaa/2
+        return aaa
+#        a=testdata['value'][testdata['label']==1].reset_index(drop=True)
+#        b=predictdata['mean'].reset_index(drop=True)
+#        c=testdata['value'][testdata['label']==0].reset_index(drop=True)
+#        d=predictdata['mean'].reset_index(drop=True)
+#        GPRMSE1=(a-b)*(a-b)
+#        w=GPRMSE1.sum()
+#        print(w)
+#        GPRMSE0=(c-d)*(c-d)
+#        q=GPRMSE0.sum()
+#        print(q)
+#        GPRMSE=(w+q)/len(testdata)
+#        print(GPRMSE)
+#        return GPRMSE
     
+    def RFMSE(self,testdata,predictdata):
+        """
+        RF模型的均的MSE误差,这里也与GPR一样用mean0进行计算
+        """
+        aaa=mean_squared_error(testdata['value'][testdata['label']==1],predictdata['mean0'])+mean_squared_error(testdata['value'][testdata['label']==0],predictdata['mean0'])
+        aaa=aaa/2
+        return aaa
+#        a=testdata['value'][testdata['label']==1].reset_index(drop=True)
+#        b=predictdata['mean0'].reset_index(drop=True)
+#        c=testdata['value'][testdata['label']==0].reset_index(drop=True)
+#        d=predictdata['mean1'].reset_index(drop=True)
+#        RFMSE1=(a-b)*(a-b)
+#        w=RFMSE1.sum()
+#        print(w)
+#        RFMSE0=(c-b)*(c-b)
+#        q=RFMSE0.sum()
+#        print(q)
+#        RFMSE=(w+q)/len(testdata)
+#        print(RFMSE)
+#        return RFMSE
 
         
     def iterpredicthandler(self,priordata):
