@@ -1,3 +1,9 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Jan 17 08:59:27 2019
+
+@author: WDN
+"""
 import time
 import EXATAreadhelper
 # starttime = datetime.datetime.strptime('3 Nov 2013 04:00:00', '%d %b %Y %H:%M:%S')
