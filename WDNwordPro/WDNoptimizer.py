@@ -179,14 +179,14 @@ class GMMvalueOptimizaitonUnit:
                                 rstride=10, cstride=2, antialiased=True)
         ax1.plot_wireframe(self.xset,self.yset,self.obj['down_value_0'],colors='lightgreen',linewidths=1,  
                                 rstride=10, cstride=2, antialiased=True)
-        ax3.scatter(npdata[:,1],npdata[:,5],npdata[:,7],c='black')  
+        ax1.scatter(npdata[:,1],npdata[:,5],npdata[:,7],c='black')  
         ax1.set_title('the predict output at ('+str(qp[0,0])+'  '+str(qp[0,1])+'): {0} '.format(self.reg.predict(qp)[0]))  
         ax1.set_xlabel('sapps')  
         ax1.set_ylabel('trafs')  
         ax1.set_zlabel('value_0') 
         "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"       
         ax = fig.add_subplot(122)  
-        s = ax.scatter(self.npdata[:,1],self.npdata[:,5],self.npdata[:,6],cmap=plt.cm.viridis,c='red')
+        s = ax.scatter(npdata[:,1],npdata[:,5],npdata[:,6],cmap=plt.cm.viridis,c='red')
         im=ax.imshow(self.obj['output_value_0'], interpolation='bilinear', origin='lower',  
                        extent=(self.xmin, self.xmax-1, self.ymin, self.ymax), aspect='auto')
         ax.set_title('the predict mean ')  
@@ -287,9 +287,9 @@ class GMMvalueOptimizaitonUnit:
         print('the value-AF run time is : %fS' % rtime)
         return try_max 
     
-    def valueUCBhelper_one(self,data,kappa,fitx=1,fity=5,fitz=6):
+    def valueUCBhelper_one(self,data,kappa,iternum,count,proportion=1,fitx=1,fity=5,fitz=6):
         """
-        GPR的GP-UCB模型
+        GPR的GP-UCB模型,修改了AF函数，加入了收敛因子
         """
         times  = time.clock() 
         bounds=pd.DataFrame()
@@ -303,7 +303,8 @@ class GMMvalueOptimizaitonUnit:
         collist=data.columns.values.tolist()
         value=collist[fitz]
         "对各簇的模型和进行predict"
-        ys0=self.UCBmethodhelper(try_data,gp=self.obj['reg_'+str(value)+'_'+str(0)],kappa=kappa)
+        ys0=self.UCBmethodhelper_alpha(try_data,gp=self.obj['reg_'+str(value)+'_'+str(0)],kappa=kappa,iternum=iternum,count=count)
+#        ys0=self.UCBmethodhelper(try_data,gp=self.obj['reg_'+str(value)+'_'+str(0)],kappa=kappa)
         prob0=self.obj['reg_prob_0'].predict(try_data,return_std=False)
 #        ys1=self.UCBmethodhelper(try_data,gp=self.obj['reg_'+str(value)+'_'+str(1)],kappa=kappa)
 #        prob1=self.obj['reg_prob_1'].predict(try_data,return_std=False)
