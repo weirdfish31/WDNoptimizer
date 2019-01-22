@@ -38,7 +38,7 @@ valuegmmgamer=WDNoptimizer.GMMvalueOptimizaitonUnit(cluster=2)#实例化GMM模�
 #dataset='test_ REQUEST-SIZE EXP 18000 _ 2000'
 #radio REQUEST-SIZE EXP 24000 _ 18000 _ RND EXP 22000
 figpath="./Figure/"
-datapath='G:/testData/2DGMM(16000_8000-36000)/'
+datapath='D:/WDNoptimizer/2DGMM(16000_8000-36000)/'
 newdatapath='./OutConfigfile/'
 iternum=0
 
@@ -46,7 +46,7 @@ iternum=0
 "读取训练数据集================================================================"
 """用来读取原始数据集，得到memoryset.probmemoryunit，绘制聚类图，拟合的GMM热力图"""
 
-outlogfile = open('./queryPoint.log', 'w')
+#outlogfile = open('./queryPoint.log', 'w')
 for sappi_i in superappinterval:
     for sapps_i in superappsize:
         for vbri_i in vbrinterval:
@@ -155,6 +155,7 @@ priordataset=memoryset.memoryunit#将原始的数据保存到内存中
 print(memoryset.probmemoryunit)#这个数据是value均值、分簇概率，标签的综合数据，下面将利用这个数据进行GMM建模
 print(priordataset)#原始数据包括state，value
 #len(distriubuteculsterdata[distriubuteculsterdata['label']==0])
+    
 "建模GMM模型==================================================================="
 valuegmmgamer.gpbuilder(memoryset.probmemoryunit,fitx=1,fity=5,fitz=6,label=0)#第一簇高斯过程模型
 valuegmmgamer.gpbuilder(memoryset.probmemoryunit,fitx=1,fity=5,fitz=7,label=0)#第一簇概率高斯过程模型
