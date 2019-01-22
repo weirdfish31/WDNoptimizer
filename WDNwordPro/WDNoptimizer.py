@@ -23,10 +23,8 @@ from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
 import scipy
 from sklearn import mixture
-from sklearn.mixture import GMM
 from sklearn.cluster import KMeans
 import time
-import lhsmdu
 
 
 class GMMvalueOptimizaitonUnit:
@@ -441,7 +439,7 @@ class GMMvalueOptimizaitonUnit:
         trafs1=trafs.reshape((-1,1))
         c=np.hstack((trafs1,value1))
         c=c[:,::-1]
-        gmm = GMM(n_components=2,n_iter=1000).fit(c)
+        gmm = mixture.GaussianMixture(n_components=2,n_iter=1000).fit(c)
         print(gmm)
         labels = gmm.predict(c)
         print(labels)
@@ -816,7 +814,7 @@ class GMMmultiOptimizationUnit:
         trafs1=trafs.reshape((-1,1))
         c=np.hstack((trafs1,value1))
         c=c[:,::-1]
-        gmm = GMM(n_components=2,n_iter=1000).fit(c)
+        gmm = mixture.GaussianMixture(n_components=2,n_iter=1000).fit(c)
         print(gmm)
         labels = gmm.predict(c)
         print(labels)
