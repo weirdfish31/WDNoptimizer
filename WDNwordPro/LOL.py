@@ -19,9 +19,9 @@ from sklearn.metrics import mean_squared_error
 vbr=24000
 #vbr=50000
 "-----------------------------------------------------------------------------------------"
-#datapath='E:/WDNoptimizer/LHSprior/'#LHS先验数据的存放位置
-datapath='E:/WDNoptimizer/LHSMSE50000/'#LHS先验数据的存放位置
-#datapath='E:/WDNoptimizer/LHSMSE24000/'#LHS先验数据的存放位置
+#datapath='D:/WDNoptimizer/LHSprior/'#LHS先验数据的存放位置
+datapath='D:/WDNoptimizer/LHSMSE50000/'#LHS先验数据的存放位置
+#datapath='D:/WDNoptimizer/LHSMSE24000/'#LHS先验数据的存放位置
 "-----------------------------------------------------------------------------------------"
 #statefilename="./history/priorstate_test.txt"#存储的先验数据的state列表txt文件
 #statefilename="./history/priorstate50000_all.txt"#存储的先验数据的state列表txt文件
@@ -32,25 +32,29 @@ statefilename="./history/priorstate24000_all.txt"#存储的先验数据的state�
 taggedDatafilename='./LabelData/LHS24000.txt'
 "-----------------------------------------------------------------------------------------"
 traindatafilename='./LabelData/LHSprior_test.txt'
-#iterdatafilename='./LabelData/ITER_MPP24000_k5_i30_t10_p1_test.txt'
-iterdatafilename='./LabelData/ITER_MPP24000_k5_i60_t10_p1_test.txt'
+iterdatafilename='./LabelData/ITER_MPP24000_k5_i30_t10_p1_test.txt'
+#iterdatafilename='./LabelData/ITER_MPP24000_k5_i60_t10_p1_test.txt'
+#iterdatafilename='./LabelData/HPP24000_k5_i60_t10_test.txt'
+griddatafilename='./LabelData/2DGMM(16000_8000-36000)_test.txt'
 #iterdatafilename='./LabelData/ITER_GMM24000_i60_t10_test.txt'
 readtestfilename='./LabelData/LHS24000_test.txt'
 #readtestfilename='./LabelData/24000testset.txt'
 '-----------------------------------------------------------------------------------------'
 
-#newdatapath='E:/WDNoptimizer/GMM_i60_t10/'#新产生的数据的存放位置
-#newdatapath='E:/WDNoptimizer/GPR_i25_t10/'
-#newdatapath='E:/WDNoptimizer/iter_09/'
-newdatapath='E:/WDNoptimizer/iter_00/'
-#newdatapath='E:/WDNoptimizer/MPP_k5_i30_t10_p1/'
-#newdatapath='E:/WDNoptimizer/MPP_k5_i60_t10_p1/'
+#newdatapath='D:/WDNoptimizer/GMM_i60_t10/'#新产生的数据的存放位置
+#newdatapath='D:/WDNoptimizer/GPR_i25_t10/'
+#newdatapath='D:/WDNoptimizer/iter_09/'
+#newdatapath='D:/WDNoptimizer/iter_00/'
+#newdatapath='D:/WDNoptimizer/HPP_k5_i60_t10_p1/'
+newdatapath='D:/WDNoptimizer/MPP_k5_i30_t10_p1/'
+#newdatapath='D:/WDNoptimizer/MPP_k5_i60_t10_p1/'
 
 #savedataname='./LabelData/ITER_GMM24000_i60_t10.txt'
 #savedataname='./LabelData/ITER_MPP24000_k5_i30_t10_p1.txt'
 #savedataname='./LabelData/ITER_GPR24000_i25_t10.txt'
 #savedataname='./LabelData/ITER_iter0_9.txt'
-savedataname='./LabelData/ITER_iter0_0.txt'
+#savedataname='./LabelData/ITER_iter0_0.txt'
+savedataname='./LabelData/ITER_HPP24000_k5_i60_t10_p1.txt'
 #savedataname='./LabelData/ITER_MPP24000_k5_i60_t10_p1.txt'
 
 
@@ -131,19 +135,32 @@ listMPP_k5_i60_t10_p1=[[62504, 168], [62419, 302], [62429, 187], [62577, 231], [
                        [62403, 229], [9119, 7702], [9101, 7765], [62498, 278], [19730, 48152], [19693, 48142], [19745, 48171],
                        [19770, 48191], [19792, 48144], [19777, 48112], [19702, 48160]]
 
+HPP_k5_i60_t10_p1=[[63978, 63978], [63950, 63909], [63976, 63867], [63887, 63920], [63927, 63765], [63942, 63848],
+                   [63807, 63792], [63984, 63524], [63956, 63983], [63831, 63879], [63986, 63543], [63916, 63960],
+                   [63969, 63836], [63961, 63847], [63961, 63953], [63976, 63865], [63983, 63915], [63954, 63960], 
+                   [63859, 63848], [63982, 63904], [63953, 63814], [63980, 63949], [63862, 63976], [63877, 63809], 
+                   [63913, 63831], [63873, 63958], [63897, 63889], [63917, 63874], [63927, 63919], [63991, 63733], 
+                   [63917, 63950], [63974, 63666], [63953, 63814], [63888, 63947], [63954, 63714], [63974, 63943], 
+                   [84, 63916], [70, 63953], [75, 63905], [617, 63978], [174, 63851], [409, 63938], [46, 63868], 
+                   [150, 63960], [152, 63955], [157, 63994], [58, 63907], [97, 63957], [63961, 40113], [37179, 33577], 
+                   [33370, 30402], [31792, 28680], [30867, 27753], [30309, 27407], [29834, 27168], [29431, 27008], [29137, 26881],
+                   [28904, 26864], [28669, 26957], [28476, 26951]]
+
 teaser=WDNTagDataHandler.TaggedDataHandler()#实例化
 
 
 '读取原始数据进行分类标签保存（先验数据，迭代数据）'
 #teaser.PriorDataTagWriter(vbrs=vbr,count=20,path=datapath,filename=statefilename,savefilename=taggedDatafilename)#先验数据的处理
-#teaser.IterDataTagWriter(vbrs=vbr,count_i=20,path=newdatapath,QPlist=iter0_0,savefilename=savedataname)#迭代数据的处理
-
+#teaser.IterDataTagWriter(vbrs=vbr,count_i=10,path=newdatapath,QPlist=HPP_k5_i60_t10_p1,savefilename=savedataname)#迭代数据的处理
+#teaser.GridDataTagWriter()#主观栅格数据的处理
 
 'MSE========================================================================================='
 traindata=teaser.LabelDataReader(filename=traindatafilename)#训练数据读取
 testdata=teaser.LabelDataReader(filename=readtestfilename)#测试数据的读取
 iterdata=teaser.LabelDataReader(filename=iterdatafilename)#迭代数据的读取
+griddat=teaser.LabelDataReader(filename=griddatafilename)#栅格数据的读取
 traindata=traindata.append(iterdata).reset_index(drop=True)#迭代数据加入先验数据
+print(traindata)
 MPPMSE=[]
 GPRMSE=[]
 RFMSE=[]
@@ -260,7 +277,7 @@ for i in range(int(len(iterdata)/2)):
     rfoutput=RFdata['mean0'][i]
     rfpredictlist.append(rfoutput)
     '仿真的数据'
-    simuoutput=iterdata['value'][2*i]*iterdata['prob'][2*i]+iterdata['value'][2*i+1]*iterdata['value'][2*i+1]
+    simuoutput=iterdata['value'][2*i]*iterdata['prob'][2*i]+iterdata['value'][2*i+1]*iterdata['prob'][2*i+1]
     simulationlist.append(simuoutput)
 
 
@@ -281,6 +298,142 @@ teaser.ValueComparePrinter(mpppredictlist,gprpredictlist,rfpredictlist,simulatio
 #plt.plot(rfpredictlist,color='blue', linewidth=2, alpha=0.6,label='RF')
 #plt.plot(simulationlist,color='green', linewidth=2, alpha=0.6,label='simulate')
 #plt.legend(fontsize='x-large')
+
+'仿真值与预测值的对比===分簇绘图======================='
+'读数据'
+traindata=teaser.LabelDataReader(filename=traindatafilename)#训练数据读取
+testdata=teaser.LabelDataReader(filename=readtestfilename)#测试数据的读取
+iterdata=teaser.LabelDataReader(filename=iterdatafilename)#迭代数据的读取
+mpppredictlist0=[]
+mpppredictlist1=[]
+gprpredictlist=[]
+rfpredictlist=[]
+simulationlist0=[]
+simulationlist1=[]
+'基于迭代数据进行迭代建模，得到下一个点的预测值'
+for i in range(int(len(iterdata)/2)):
+    trainset=traindata.append(iterdata[0:(i*2)]).reset_index(drop=True)
+    print(trainset)
+    gamer=WDNTagDataHandler.ModelCompareHandler()
+    '建模'
+    gamer.MPPmodelRebuilder(trainset)
+    gamer.GPRmodelRebuiler(trainset)
+    gamer.RFmodelRebuilder(trainset)
+    '预测'
+    MPPdata=gamer.MPPpredicter(testdata)
+    GPRdata=gamer.GPRpredicter(testdata)
+    RFdata=gamer.RFpredicter(testdata)
+    '这里的比较有待商榷额，因为是不同模型，目前是这种方式进行value的比较'
+#    mppoutput0=MPPdata['mean0'][i]*MPPdata['prob0'][i]+MPPdata['mean1'][i]*MPPdata['prob1'][i]
+
+    mpppredictlist0.append(MPPdata['mean0'][i])
+    mpppredictlist1.append(MPPdata['mean1'][i])
+    gproutput=GPRdata['mean'][i]
+    gprpredictlist.append(gproutput)
+    rfoutput=RFdata['mean0'][i]
+    rfpredictlist.append(rfoutput)
+    '仿真的数据'
+#    simuoutput=iterdata['value'][2*i]*iterdata['prob'][2*i]+iterdata['value'][2*i+1]*iterdata['value'][2*i+1]
+    simulationlist0.append(iterdata['value'][2*i])
+    simulationlist1.append(iterdata['value'][2*i+1])
+
+"绘图"
+
+sns.set_style("whitegrid")
+plt.figure('Line fig',figsize=(20,6))
+plt.xlabel('Iteration Times')
+plt.ylabel('predict-simulated')
+plt.title('value ',fontsize='xx-large')
+
+plt.scatter(x=range(len(gprpredictlist)),y=gprpredictlist,marker='.',c='black')
+plt.scatter(x=range(len(rfpredictlist)),y=rfpredictlist,marker='o',c='blue')
+
+
+plt.plot(mpppredictlist0,color='r', linewidth=2, alpha=0.6,label='MPP0')
+plt.plot(mpppredictlist1,color='r', linewidth=2, alpha=0.6,label='MPP1')
+plt.plot(gprpredictlist,color='black', linewidth=2, alpha=0.6,label='GPR')
+plt.plot(rfpredictlist,color='blue', linewidth=2, alpha=0.6,label='RF')
+plt.plot(simulationlist0,color='green', linewidth=2, alpha=0.6,label='simulate0')
+plt.plot(simulationlist1,color='green', linewidth=2, alpha=0.6,label='simulate1')
+plt.legend(fontsize='x-large')
+
+
+
+
+
+'不同先验数据采样方式得到的不同的模型结果'
+testdata=teaser.LabelDataReader(filename=readtestfilename)#测试数据的读取
+traindata=teaser.LabelDataReader(filename=traindatafilename)#训练数据读取
+griddata=teaser.LabelDataReader(filename=griddatafilename)#栅格数据的读取
+MPPMSE_LHS=[]
+MPPMSE_RG=[]
+
+"循环迭代的数据，对每次迭代的模型进行MSE的计算"
+"这里的MSE计算根据模型的不同分别进行，MPP模型中的各簇与仿真值对应的各簇进行计算，GPR中直接进行计算"
+for i in range(int(len(traindata)/2)):
+    trainsetLHS=traindata[0:(2*(i+1))]
+    trainsetRG=griddata[0:(2*(i+1))]
+    gamerlhs=WDNTagDataHandler.ModelCompareHandler()
+    gamerrg=WDNTagDataHandler.ModelCompareHandler()
+    '建模'
+    gamerrg.MPPmodelRebuilder(trainsetRG)
+    gamerlhs.MPPmodelRebuilder(trainsetLHS)
+
+    '预测'
+    MPPdatarg=gamerrg.MPPpredicter(testdata)
+    MPPdatalhs=gamerlhs.MPPpredicter(testdata)
+    'MSE'
+    MPPMSElhs=gamerlhs.MPPMSE(testdata,MPPdatalhs)
+    MPPMSErg=gamerrg.MPPMSE(testdata,MPPdatarg)
+
+    MPPMSE_LHS.append(MPPMSElhs)
+    MPPMSE_RG.append(MPPMSErg)
+
+"绘图"
+print(MPPMSE_LHS)
+print(MPPMSE_RG)
+
+sns.set_style("whitegrid")
+plt.figure('Line fig',figsize=(20,6))
+plt.xlabel('Data Count')
+plt.ylabel('MSE')
+plt.title('value ',fontsize='xx-large')
+
+plt.scatter(x=range(len(MPPMSE_LHS)),y=MPPMSE_LHS,marker='.',c='black')
+plt.scatter(x=range(len(MPPMSE_RG)),y=MPPMSE_RG,marker='o',c='blue')
+
+plt.plot(MPPMSE_LHS,color='r', linewidth=2, alpha=0.6,label='HPP_LHS')
+plt.plot(MPPMSE_RG,color='b', linewidth=2, alpha=0.6,label='HPP_RANDOMGRID')
+plt.legend(fontsize='x-large')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
