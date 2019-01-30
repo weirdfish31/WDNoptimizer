@@ -368,8 +368,7 @@ class GMMvalueOptimizaitonUnit:
         self.obj['output_'+value+'_'+str(label)]=self.obj['output_'+value+'_'+str(label)].reshape(self.xset.shape)
 #        self.obj['sigma_'+str(label)]=np.sum(self.reg.predict(self.npdata[:,[1,5]],return_std=True)[1])
               
-        
-    
+           
     def componentselecter(self,data,i):
         """
         选择相应的簇类
