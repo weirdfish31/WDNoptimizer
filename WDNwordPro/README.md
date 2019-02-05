@@ -20,17 +20,11 @@
 - WDNTagDataHandler.py：对已生成的数据库进行读取并进行分簇标记等一些列的操作函数类
 
 ## Experimnet：
-- value_HPP_0.py
-- value_GPR_0.py
-- ETC.
-
+- ETC.in the OLD_
 
 
 ## Result：
-- Drawer_Value_MPP.py
-- Drawer_Value_Kde_alpha.py
-- Drawer_RawData_alpha.py
-- LOL.py
+- ETC.in the OLD_
 
 
 
