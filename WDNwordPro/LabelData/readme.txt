@@ -1,1 +1,1 @@
-tips£ºsaving the labeled mixtured data combined with applicationlayer parameters
+tips£º saving the labeled data combined with application layer parameters
