@@ -5,11 +5,12 @@
 
 **Wide Dynamic Network optimizer** ：
 
-此项目主要是用于对EXATA中的卫星通信网络场景进行快速配置与仿真，针对仿真数据进行统计分析，建立设计参数与性能指标之间的贝叶斯概率模型，通过迭代对设计进行优化。
+This project is mainly used to quickly configure and simulate the next generation space information network system scenarios in EXATA. According to the statistical analysis of simulation data, the hybrid probability process model between multi-design parameters and performance indicators is established, and the network design is optimizing by bayesian method's iteration.
 
 
 
-TIPS： 需要安装 STK 9.2.3，EXATA 5.4
+
+TIPS： STK 9.2.3，EXATA 5.4 needed
 
 1）STK9.2.3：提供基本的星座卫星仿真的轨道参数，可见性参数报表等，独立使用也非常便捷
 
