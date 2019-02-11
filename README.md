@@ -5,18 +5,21 @@
 
 **Wide Dynamic Network optimizer** ：
 
-  This project is mainly used to quickly configure and simulate the next generation space information network system scenarios in EXATA. According to the statistical analysis of simulation data, the hybrid probability process model between multi-design parameters and performance indicators is established, and the network design is optimizing by bayesian method's iteration.
++This project is mainly used to quickly configure and simulate the next generation space information network system scenarios in EXATA. According to the statistical analysis of simulation data, the hybrid probability process model between multi-design parameters and performance indicators is established, and the network design is optimizing by bayesian method's iteration.
+  
+**Background：**
++As a strategic support for global multi-service demand in the future, the next generation space information network (SIN) has many design difficulties and uncertainties. Combined with the construction requirements and the need for representation of design elements with the expression of next generation SIN system QoS performance, sometimes we could simulate the scenario and obtain the evaluation but we don’t know how to optimization the network’s design. based on the Posterior probability method, Aiming at the space-time characteristics of Space information network, using the specific network simulation platform, we proposed A novel method which represent the distribution layer-design elements’ compound uncertainty within based on hybrid probability process (HPP) model and the few shots iteration strategy of SIN. Bayesian method is used to fit the posterior surrogate model with high dimension design elements of the system and the QoS evaluation index. Compared with the origin surrogate model and the general Bayesian optimization method, better fitting results are obtained, which will guarantee the quantization of next generation space information network system’s design factors.
 
 
 
 
 TIPS： STK 9.2.3，EXATA 5.4 needed
 
-1）STK9.2.3：提供基本的星座卫星仿真的轨道参数，可见性参数报表等，独立使用也非常便捷
+1）STK9.2.3：It provides basic orbit parameters and visibility parameter reports for constellation satellite simulation. 
 
-2）EXATA5.4：仿真优化的核心单元
+2）EXATA5.4：Core unit of simulation optimization
 
-3）LHSMDU模块：为预采样的模块，提供拉丁差立方采样的基本函数，需要在本地进行安装该模块。gituhub地址：<https://github.com/sahilm89/lhsmdu>
+3）LHSMDU：To provide the basic function of Latin hypercube sampling for pre-sampling module, it is necessary to install the module locally.gituhub：<https://github.com/sahilm89/lhsmdu>
 
 
 
