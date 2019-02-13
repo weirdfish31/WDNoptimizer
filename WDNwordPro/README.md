@@ -8,7 +8,7 @@
 
 - WDNwordPro.sln：Create a new STK scenario and create a c++ project solution entry for visibility access reports. The specific main program is in the WDNWordPro folder.
 - EXATAreadhelper.py：Various functions and classes, generator config for EXATA scenario files
-- EXATAconfighandle.py：生成EXAT所需的各种config文件
+- EXATAconfighandle.py：Generate various configuration files for EXATA
 - EXATAPDgenerator.py：循环配置参数EXATA启动仿真输出数据
 - EXATALHSgenerator.py:对参数空间进行LHS采样，得到先验数据
 
