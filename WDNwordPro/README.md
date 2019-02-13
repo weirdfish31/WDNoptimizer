@@ -6,8 +6,8 @@
 
 ## Configuration：
 
-- WDNwordPro.sln：新建STK场景，生成可见性报表的c++项目解决方案入口，具体的主程序在WDNwordPro文件夹中
-- EXATAreadhelper.py：生成EXATA场景文件的config所需要的各种函数、类
+- WDNwordPro.sln：Create a new STK scenario and create a c++ project solution entry for visibility access reports. The specific main program is in the WDNWordPro folder.
+- EXATAreadhelper.py：Various functions and classes, generator config for EXATA scenario files
 - EXATAconfighandle.py：生成EXAT所需的各种config文件
 - EXATAPDgenerator.py：循环配置参数EXATA启动仿真输出数据
 - EXATALHSgenerator.py:对参数空间进行LHS采样，得到先验数据
