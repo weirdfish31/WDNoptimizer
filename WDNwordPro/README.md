@@ -17,7 +17,7 @@
 - WDNfeedback.py：Feedback mechanism module, which returns the query point to the simulation system, generates new data, updates data sets, the simulation steps and data preprocessing classes needed for feedback. In this program, the module can also generate prior data, etc.
 - WDNoptimizer.py：概率建模优化函数定义模块，	多数值高斯混合模型优化类（对单数值的处理已经完成，目前实现了2个指标的模型的结合）、贝叶斯优化类（模型为高斯过程）、网络评估类（生成value，生成归一化数据）、记忆单元类（状态信息存储，value或qos的state数据Dataframe）、评估值高斯混合模型优化类，正在不断优化，最新版的模型是在高斯混合模型与高斯过程结合，建分簇进行高斯过程的拟合，得到网络的参数过程
 - WDNcompare.py:The comparison module between models is implemented in this module
-- WDNTagDataHandler.py：对已生成的数据库进行读取并进行分簇标记等一些列的操作函数类
+- WDNTagDataHandler.py：Operating function classes that read and cluster the generated database 
 
 ## Experimnet：
 - ETC.in the OLD_
