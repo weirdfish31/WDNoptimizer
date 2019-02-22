@@ -40,7 +40,7 @@ TIPS： STK 9.2.3，EXATA 5.4 needed
 - WDNwordPro：在STK中生成对应卫星场景的主程序，提供相应的网络仿真拓扑
 - Figure：存放输出的图片
 - OutStorefile：存放每一次仿真得到的参数配置信息文件备份
-- history：存放各个数据集的设计参数组合的list文件，先验数据的集合（未补完）
+- history：存放各个数据集的设计参数组合的list文件，先验数据的集合
 - OLD_：Store old experiments or drawing programs
 - LabelData：Store evaluation clustering to complete data eigenvalues so that no re-clustering is needed during iteration. 
 - QP：history Query Point listfile
