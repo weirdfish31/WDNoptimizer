@@ -50,6 +50,77 @@ class FeedBackWorker:
         self.rsDrop = '0.0015'
         self.acquisitioncount=1
         self.querydatasetlist=[]
+        
+    def updatetrainningsetworker_state(self,path,point,count=60,style='qos'):
+        """
+        将querypoint得到的仿真数据读取并加入到原始训练集中
+        目前是固定4个参数，2个参数可变
+        原始数据的value或者qos数据，直接进入对应的数据DataFrame中
+        """
+        
+        appInterval_i=self.superapinterval
+        appSize_i=self.superappsize
+        vbrInterval_i=self.vbrInterval
+        vbrsize_i=self.vbrsize
+        trafficgeninterval_i=self.trafficgeninterval
+        trafficgensize_i=self.trafficgensize
+        
+        simname = 'radio'+appInterval_i+"_"+appSize_i+"_"+vbrInterval_i+"_"+vbrsize_i+"_"+trafficgeninterval_i+"_"+trafficgensize_i
+
+        self.querydatasetlist.append(simname)#将每次调用此函数时的数据库名字保存至list中
+        newdata=WDNoptimizer.MemoryUnit()
+        datapath=path
+#        datapath='G:/testData/GMM1/'
+        if style=='qos':            
+            for i in range(count):
+                dataset=simname+'_'+str(i)
+                reader=WDNexataReader.ExataDBreader()
+                reader.opendataset(dataset,datapath)#读取特定路径下的数据库
+                reader.appnamereader()#读取业务层的业务名称
+                reader.appfilter()#将业务名称分类至三个list
+                reader.appdatareader()#将每个业物流的输出数据存到实例化的类中的字典里面
+                reader.inputparainsert(appInterval_i,appSize_i,vbrInterval_i,vbrsize_i,trafficgeninterval_i,trafficgensize_i)
+                "================================================================="
+                eva=WDNoptimizer.EvaluationUnit()
+                superapp=reader.meandata('superapp')
+                eva.calculateMetricEvaValue(superapp)
+                vbr=reader.meandata('vbr')
+                eva.calculateMetricEvaValue(vbr)
+                trafficgen=reader.meandata('trafficgen')
+                eva.calculateMetricEvaValue(trafficgen)
+                state=[appInterval_i,appSize_i,vbrInterval_i,vbrsize_i,trafficgeninterval_i,trafficgensize_i]
+                print(state)
+                qos=eva.qoslist
+    #           memoryset.insertmemoryunit(state=state,value=value)
+                newdata.qosinserter(state=state,qos=qos)
+            return newdata.qosmemoryunit
+        elif style=='value':
+            for i in range(count):
+                dataset=simname+'_'+str(i)
+                reader=WDNexataReader.ExataDBreader()#实例化
+                reader.opendataset(dataset,datapath)#读取特定路径下的数据库
+                reader.appnamereader()#读取业务层的业务名称
+                reader.appfilter()#将业务名称分类至三个list
+                reader.appdatareader()#将每个业物流的输出数据存到实例化的类中的字典里面
+                reader.inputparainsert(appInterval_i,appSize_i,vbrInterval_i,vbrsize_i,trafficgeninterval_i,trafficgensize_i)
+                "================================================================="
+                eva=WDNoptimizer.EvaluationUnit()
+                superapp=reader.meandata('superapp')
+                eva.calculateMetricEvaValue(superapp)
+                vbr=reader.meandata('vbr')
+                eva.calculateMetricEvaValue(vbr)
+                trafficgen=reader.meandata('trafficgen')
+                eva.calculateMetricEvaValue(trafficgen)
+                state=[appInterval_i,appSize_i,vbrInterval_i,vbrsize_i,trafficgeninterval_i,trafficgensize_i]
+                print(state)
+                value=eva.evaluationvalue()
+    #           memoryset.insertmemoryunit(state=state,value=value)
+                newdata.valueinserter(state=state,value=value)
+            return newdata.memoryunit
+        
+        
+        
+        
     
     def updatetrainningsetworker(self,path,point,count=60,style='qos'):
         """
@@ -122,6 +193,73 @@ class FeedBackWorker:
         self.superappsize=" REQUEST-SIZE DET "+str(point[0])+" "
         self.trafficgensize=' RND DET '+str(point[1])+' '
     
+    def runTest_state(self,count=60):
+        """
+        配置仿真参数，生成配置文件，运行仿真
+        """
+#        outlogfile = open('./outThrd.log', 'w')
+        delivery_i=self.deliveryType
+        routing_i=self.routing
+        rsBand_i=self.rsBand
+        satBand_i=self.satBand
+        rsDrop_i=self.rsDrop
+        satDrop_i=self.satDrop
+        appInterval_i=self.superapinterval
+        appSize_i=self.superappsize
+        vbrInterval_i=self.vbrInterval
+        vbrsize_i=self.vbrsize
+        trafficgeninterval_i=self.trafficgeninterval
+        trafficgensize_i=self.trafficgensize
+        self.acquisitioncount=self.acquisitioncount+1
+        for i in range(count):
+            linkconfig = self.jsonread('./configfile/linkConfig.json')
+            linkconfig['Sat'][0] = satBand_i
+            linkconfig['Sat'][1] = satDrop_i
+            linkconfig['RS'][0] = rsBand_i
+            linkconfig['RS'][1] = rsDrop_i
+            linkconfig['Ground'][0] = rsBand_i
+            linkconfig['Ground'][1] = rsDrop_i
+            linkconfig['ROUTING'] = routing_i
+            appconfig = self.jsonread('./configfile/SuperappConfig.json')
+            vbrconfig = self.jsonread('./configfile/VBRConfig.json')
+            trafconfig = self.jsonread('./configfile/TrafficGenConfig.json')
+            vbrconfig["MEAN-INTERVAL"]= vbrInterval_i
+            vbrconfig["ITEM-SIZE"]=vbrsize_i
+            trafconfig["PACKET-INTERVAL"]=trafficgeninterval_i
+            trafconfig["PACKET-SIZE"]=trafficgensize_i
+            appconfig['REQUEST-INTERVAL'] = appInterval_i
+            appconfig['REQUEST-SIZE'] = appSize_i
+            appconfig['DELIVERY-TYPE'] = delivery_i
+            # write the parameter to file
+            self.jsonwrite(linkconfig, './configfile/linkConfig.json')
+            self.jsonwrite(appconfig, './configfile/SuperappConfig.json')
+            self.jsonwrite(vbrconfig, './configfile/VBRConfig.json')
+            self.jsonwrite(trafconfig, './configfile/TrafficGenConfig.json')
+            # run the simulation and store the simulation out file
+            simName = 'radio'+appInterval_i+"_"+appSize_i+"_"+vbrInterval_i+"_"+vbrsize_i+"_"+trafficgeninterval_i+"_"+trafficgensize_i+'_'+str(i)
+            simStr = 'EXPERIMENT-NAME ' + simName + '\n'
+            simename = './OutConfigfile/sim.name'
+            self.writefile(simename, simStr)
+#            paraStr = 'SatBand: %s, RSBand: %s, Drop: %s, Route:%s, Interval: %s , Delivery: %s' % (satBand_i, rsBand_i, rsDrop_i, routing_i, appInterval_i, delivery_i)
+#            writeStr = "%s : {%s}\n" % (simName, paraStr)
+#            outlogfile.write(writeStr)
+#            print(writeStr)
+            if False:
+                continue
+            try:
+#                self.runWDNwordPro()
+                self.runbuildconfigfile()
+                self.runexata()
+                """
+                暂时注释
+                """
+#                self.runOutfileStore(simName)
+            except:
+                continue
+
+
+
+
     
     def runTest(self,count=60):
         """
