@@ -32,6 +32,8 @@ class FeedBackWorker:
         """
         self.figpath="./Figure/"
         self.outdatapath='./OutConfigfile/'
+        self.simulationname= 'radio'+str(superinter)+"_"+str(supersize)+"_"+str(vbrinter)+"_"+str(vbrsize)+"_"+str(trafinter)+"_"+str(trafsize)
+        
         
         self.superapinterval = ' REQUEST-INTERVAL EXP '+str(superinter)+'MS '
         self.superappsize=" REQUEST-SIZE DET "+str(supersize)+" "
@@ -45,13 +47,14 @@ class FeedBackWorker:
         self.deliveryType = ' DELIVERY-TYPE UNRELIABLE '
         self.routing ='OSPFv2'
         self.satBand = '1G'
-        self.satDrop = '0.0006'
-        self.rsBand = '0.03G'
-        self.rsDrop = '0.0015'
+        self.satDrop = '0.001'
+        self.rsBand = '0.5G'
+        self.rsDrop = '0.005'
+        self.groundBand = '0.03G'
+        self.groundDrop= '0.03'
         self.acquisitioncount=1
         self.querydatasetlist=[]
-        
-    def updatetrainningsetworker_state(self,path,point,count=60,style='qos'):
+    def updatetrainningsetworker_state(self,path,count=60,style='qos'):
         """
         将querypoint得到的仿真数据读取并加入到原始训练集中
         目前是固定4个参数，2个参数可变
@@ -117,10 +120,6 @@ class FeedBackWorker:
     #           memoryset.insertmemoryunit(state=state,value=value)
                 newdata.valueinserter(state=state,value=value)
             return newdata.memoryunit
-        
-        
-        
-        
     
     def updatetrainningsetworker(self,path,point,count=60,style='qos'):
         """
@@ -192,7 +191,8 @@ class FeedBackWorker:
         #ttt[0][0]=sapps,ttt[0][1]=trafs
         self.superappsize=" REQUEST-SIZE DET "+str(point[0])+" "
         self.trafficgensize=' RND DET '+str(point[1])+' '
-    
+        
+        
     def runTest_state(self,count=60):
         """
         配置仿真参数，生成配置文件，运行仿真
@@ -217,8 +217,8 @@ class FeedBackWorker:
             linkconfig['Sat'][1] = satDrop_i
             linkconfig['RS'][0] = rsBand_i
             linkconfig['RS'][1] = rsDrop_i
-            linkconfig['Ground'][0] = rsBand_i
-            linkconfig['Ground'][1] = rsDrop_i
+            linkconfig['Ground'][0] = self.groundBand
+            linkconfig['Ground'][1] = self.groundDrop
             linkconfig['ROUTING'] = routing_i
             appconfig = self.jsonread('./configfile/SuperappConfig.json')
             vbrconfig = self.jsonread('./configfile/VBRConfig.json')
@@ -236,7 +236,7 @@ class FeedBackWorker:
             self.jsonwrite(vbrconfig, './configfile/VBRConfig.json')
             self.jsonwrite(trafconfig, './configfile/TrafficGenConfig.json')
             # run the simulation and store the simulation out file
-            simName = 'radio'+appInterval_i+"_"+appSize_i+"_"+vbrInterval_i+"_"+vbrsize_i+"_"+trafficgeninterval_i+"_"+trafficgensize_i+'_'+str(i)
+            simName = self.simulationname+'_'+str(i)
             simStr = 'EXPERIMENT-NAME ' + simName + '\n'
             simename = './OutConfigfile/sim.name'
             self.writefile(simename, simStr)
@@ -256,10 +256,6 @@ class FeedBackWorker:
 #                self.runOutfileStore(simName)
             except:
                 continue
-
-
-
-
     
     def runTest(self,count=60):
         """
@@ -285,8 +281,8 @@ class FeedBackWorker:
             linkconfig['Sat'][1] = satDrop_i
             linkconfig['RS'][0] = rsBand_i
             linkconfig['RS'][1] = rsDrop_i
-            linkconfig['Ground'][0] = rsBand_i
-            linkconfig['Ground'][1] = rsDrop_i
+            linkconfig['Ground'][0] = self.groundBand
+            linkconfig['Ground'][1] = self.groundDrop
             linkconfig['ROUTING'] = routing_i
             appconfig = self.jsonread('./configfile/SuperappConfig.json')
             vbrconfig = self.jsonread('./configfile/VBRConfig.json')
