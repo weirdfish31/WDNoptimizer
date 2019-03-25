@@ -376,8 +376,11 @@ class GMMvalueOptimizaitonUnit:
         testdata=testdata.reset_index(drop=True)
         self.npdata=np.array(testdata)
         self.reg=GaussianProcessRegressor(kernel=self.kernel,n_restarts_optimizer=10,alpha=0.1)
-        self.obj['reg_'+value+'_'+str(label)]=self.reg.fit(self.npdata[:,0:fitz],self.npdata[:,fitz])
-
+        if fitz==6:
+            self.obj['reg_'+value+'_'+str(label)]=self.reg.fit(self.npdata[:,0:fitz],self.npdata[:,fitz])
+        elif fitz==7:
+            self.obj['reg_'+value+'_'+str(label)]=self.reg.fit(self.npdata[:,0:fitz-1],self.npdata[:,fitz])
+        
     def valueUCBhelper_state(self,data,kappa,iternum,count,proportion=1,fitz=6):
         """
         将不同聚类得到的预测结果存入dataframe，生成对100000个随机点的预测的reg模型
@@ -393,12 +396,25 @@ class GMMvalueOptimizaitonUnit:
         times  = time.clock() 
         bounds=pd.DataFrame()
         superappsize = np.random.uniform(0, 64000,size=(200000))
+        superappsize = [ math.ceil(x) for x in superappsize ]
+        superappsize = [ x+1 for x in superappsize ]
         trafsize = np.random.uniform(0, 64000,size=(200000))
-        superappinterval=np.random.uniform(0, 200,size=(200000))#superapp视频业务，需要的时延抖动小，吞吐量大
-        vbrinterval=np.random.uniform(0, 200,size=(200000))#vbr其他义务
+        trafsize = [ math.ceil(x) for x in trafsize ]
+        trafsize = [ x+1 for x in trafsize ]        
+        superappinterval=np.random.uniform(0, 100,size=(200000))#superapp视频业务，需要的时延抖动小，吞吐量大
+        superappinterval = [ math.ceil(x) for x in superappinterval ]
+        superappinterval = [ x+1 for x in superappinterval ]
+        vbrinterval=np.random.uniform(0, 100,size=(200000))
+        vbrinterval = [ math.ceil(x) for x in vbrinterval ]
+        vbrinterval = [ x+1 for x in vbrinterval ]        #vbr其他义务
         vbrsize=np.random.uniform(0, 64000,size=(200000))
-        trafinterval=np.random.uniform(0, 200,size=(200000))#trafficgenerator图像流，需要的丢包率小，吞吐量大
-
+        vbrsize = [ math.ceil(x) for x in vbrsize ]
+        vbrsize = [ x+1 for x in vbrsize ]        
+        trafinterval=np.random.uniform(0, 100,size=(200000))#trafficgenerator图像流，需要的丢包率小，吞吐量大
+        trafinterval = [ math.ceil(x) for x in trafinterval ]
+        trafinterval = [ x+1 for x in trafinterval ]
+        
+        
         bounds['superappinterval']=superappinterval
         bounds['superappsize']=superappsize
         bounds['vbrinterval']=vbrinterval
@@ -418,20 +434,22 @@ class GMMvalueOptimizaitonUnit:
         UCB=ys0*prob0+proportion*ys1*prob1
         "对UCB中的最大值进行选择，在try_data中得到相应的querypoint"
         try_max=try_data[UCB.argmax()]
-        try_max=try_max.astype(int)#为了EXATA配置文件，把询问点改为整数型
-        if try_max[0]==0:
-            try_max[0]=try_max[0]+1
-        if try_max[1]==0:
-            try_max[1]=try_max[1]+1
-        if try_max[2]==0:
-            try_max[2]=try_max[2]+1
-        if try_max[3]==0:
-            try_max[3]=try_max[3]+1            
-        if try_max[4]==0:
-            try_max[4]=try_max[4]+1            
-        if try_max[5]==0:
-            try_max[5]=try_max[5]+1               
-            
+# =============================================================================
+#         try_max=try_max.astype(int)#为了EXATA配置文件，把询问点改为整数型
+#         if try_max[0]==0:
+#             try_max[0]=try_max[0]+1
+#         if try_max[1]==0:
+#             try_max[1]=try_max[1]+1
+#         if try_max[2]==0:
+#             try_max[2]=try_max[2]+1
+#         if try_max[3]==0:
+#             try_max[3]=try_max[3]+1            
+#         if try_max[4]==0:
+#             try_max[4]=try_max[4]+1            
+#         if try_max[5]==0:
+#             try_max[5]=try_max[5]+1               
+#             
+# =============================================================================
         max_acq=UCB.max()
         print(max_acq)
         print(try_max)
