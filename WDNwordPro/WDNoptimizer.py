@@ -207,7 +207,10 @@ class GMMvalueOptimizaitonUnit:
         """
         mean,std=gp.predict(x,return_std=True)
         steplength=kappa/iternum
-        return mean + (kappa-count*steplength)*std
+        a=kappa-count*steplength
+        if a<0:
+            a=0.1
+        return mean + a*std
         
     
     def valueUCBhelper_alpha(self,data,kappa,iternum,count,proportion=1,fitx=1,fity=5,fitz=6):
@@ -379,8 +382,8 @@ class GMMvalueOptimizaitonUnit:
         if fitz==6:
             self.obj['reg_'+value+'_'+str(label)]=self.reg.fit(self.npdata[:,0:fitz],self.npdata[:,fitz])
         elif fitz==7:
-            self.obj['reg_'+value+'_'+str(label)]=self.reg.fit(self.npdata[:,0:fitz-1],self.npdata[:,fitz])
-        
+            self.obj['reg_'+value+'_'+str(label)]=self.reg.fit(self.npdata[:,0:fitz-1],self.npdata[:,fitz])      
+
     def valueUCBhelper_state(self,data,kappa,iternum,count,proportion=1,fitz=6):
         """
         将不同聚类得到的预测结果存入dataframe，生成对100000个随机点的预测的reg模型
@@ -414,7 +417,7 @@ class GMMvalueOptimizaitonUnit:
         trafinterval = [ math.ceil(x) for x in trafinterval ]
         trafinterval = [ x+1 for x in trafinterval ]
         
-        
+      
         bounds['superappinterval']=superappinterval
         bounds['superappsize']=superappsize
         bounds['vbrinterval']=vbrinterval
@@ -434,22 +437,20 @@ class GMMvalueOptimizaitonUnit:
         UCB=ys0*prob0+proportion*ys1*prob1
         "对UCB中的最大值进行选择，在try_data中得到相应的querypoint"
         try_max=try_data[UCB.argmax()]
-# =============================================================================
-#         try_max=try_max.astype(int)#为了EXATA配置文件，把询问点改为整数型
-#         if try_max[0]==0:
-#             try_max[0]=try_max[0]+1
-#         if try_max[1]==0:
-#             try_max[1]=try_max[1]+1
-#         if try_max[2]==0:
-#             try_max[2]=try_max[2]+1
-#         if try_max[3]==0:
-#             try_max[3]=try_max[3]+1            
-#         if try_max[4]==0:
-#             try_max[4]=try_max[4]+1            
-#         if try_max[5]==0:
-#             try_max[5]=try_max[5]+1               
-#             
-# =============================================================================
+        try_max=try_max.astype(int)#为了EXATA配置文件，把询问点改为整数型
+        if try_max[0]==0:
+            try_max[0]=try_max[0]+1
+        if try_max[1]==0:
+            try_max[1]=try_max[1]+1
+        if try_max[2]==0:
+            try_max[2]=try_max[2]+1
+        if try_max[3]==0:
+            try_max[3]=try_max[3]+1            
+        if try_max[4]==0:
+            try_max[4]=try_max[4]+1            
+        if try_max[5]==0:
+            try_max[5]=try_max[5]+1               
+            
         max_acq=UCB.max()
         print(max_acq)
         print(try_max)
@@ -457,6 +458,83 @@ class GMMvalueOptimizaitonUnit:
         rtime = timee - times
         print('the value-AF run time is : %fS' % rtime)
         return try_max 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     def rfbuilder(self,data,fitx=1,fity=5,fitz=6,label=1):
         '''
@@ -469,17 +547,25 @@ class GMMvalueOptimizaitonUnit:
         testdata=testdata.reset_index(drop=True)
         self.npdata=np.array(testdata)
         self.reg=RandomForestRegressor(n_estimators=10,n_jobs=1)
-        self.obj['reg_'+value+'_'+str(label)]=self.reg.fit(self.npdata[:,[fitx,fity]],self.npdata[:,fitz])
-        self.obj['output_'+value+'_'+str(label)]=self.obj['reg_'+value+'_'+str(label)].predict(np.c_[self.xset.ravel(),self.yset.ravel()])
-        self.obj['output_'+value+'_'+str(label)]=self.obj['output_'+value+'_'+str(label)].reshape(self.xset.shape)
-#        self.obj['sigma_'+str(label)]=np.sum(self.reg.predict(self.npdata[:,[1,5]],return_std=True)[1])
-              
-        
-    
-
-
-
-
+        self.obj['rfreg_'+value+'_'+str(label)]=self.reg.fit(self.npdata[:,[fitx,fity]],self.npdata[:,fitz])
+        self.obj['rfoutput_'+value+'_'+str(label)]=self.obj['rfreg_'+value+'_'+str(label)].predict(np.c_[self.xset.ravel(),self.yset.ravel()])
+        self.obj['rfoutput_'+value+'_'+str(label)]=self.obj['rfoutput_'+value+'_'+str(label)].reshape(self.xset.shape)
+#        self.obj['sigma_'+str(label)]=np.sum(self.reg.predict(self.npdata[:,[1,5]],return_std=True)[1])              
+    def rfbuilder_state(self,data,fitz=6,label=1):
+        '''
+        根据数据进行随机森林回归
+        '''
+        collist=data.columns.values.tolist()
+        value=collist[fitz]
+        self.qosname.append(value)
+        testdata=data[data['label']==label]
+        testdata=testdata.reset_index(drop=True)
+        self.npdata=np.array(testdata)
+        self.reg=RandomForestRegressor(n_estimators=10,n_jobs=1)
+        if fitz==6:
+            self.obj['reg_'+value+'_'+str(label)]=self.reg.fit(self.npdata[:,0:fitz],self.npdata[:,fitz])
+        elif fitz==7:
+            self.obj['reg_'+value+'_'+str(label)]=self.reg.fit(self.npdata[:,0:fitz-1],self.npdata[:,fitz])   
 
 
 
@@ -552,7 +638,7 @@ class GMMvalueOptimizaitonUnit:
         trafs1=trafs.reshape((-1,1))
         c=np.hstack((trafs1,value1))
         c=c[:,::-1]
-        gmm = GMM(n_components=2,n_iter=1000).fit(c)
+        gmm = mixture.GaussianMixture(n_components=2,n_iter=1000).fit(c)
         print(gmm)
         labels = gmm.predict(c)
         print(labels)
@@ -927,7 +1013,7 @@ class GMMmultiOptimizationUnit:
         trafs1=trafs.reshape((-1,1))
         c=np.hstack((trafs1,value1))
         c=c[:,::-1]
-        gmm = GMM(n_components=2,n_iter=1000).fit(c)
+        gmm = mixture.GaussianMixture(n_components=2,n_iter=1000).fit(c)
         print(gmm)
         labels = gmm.predict(c)
         print(labels)
