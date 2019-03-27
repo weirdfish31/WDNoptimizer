@@ -771,7 +771,52 @@ class TaggedDataHandler:
         print('mission completed ! ! !')    
         return data
     
-    
+    def RawDataReader(self,filename="./LabelData/LHS24000_test.txt"):
+        """
+        读取TXT文件中迭代的标签数据特征值
+        """
+        z=[]#序号
+        superappinterval=[]#superapp视频业务，需要的时延抖动小，吞吐量大
+        superappsize=[]
+        vbrinterval=[]#vbr其他义务
+        vbrsize=[]
+        trafinterval=[]#trafficgenerator图像流，需要的丢包率小，吞吐量大
+        trafsize=[]
+        value=[]
+        '---------------------------------------------------------------------------'
+        labeldatafilename=filename#存储的先验数据的state列表txt文件
+        with open(labeldatafilename, 'r') as file_to_read:
+            
+            while True:
+                
+                lines = file_to_read.readline() # 整行读取数据
+                if not lines:
+                    "这里还有点数据格式上的问题，目前是这样处理，需要对生成的state文件进行处理"
+                    break
+                    pass
+                
+                z,si_tmp,ss_tmp,vi_tmp,vs_tmp,ti_tmp,ts_tmp,v_tmp = [float(i) for i in lines.split()] # 将整行数据分割处理，如果分割符是空格，括号里就不用传入参数，如果是逗号， 则传入‘，'字符。
+                superappinterval.append(si_tmp)  # 添加新读取的数据
+                superappsize.append(ss_tmp)
+                vbrinterval.append(vi_tmp)
+                vbrsize.append(vs_tmp)
+                trafinterval.append(ti_tmp)
+                trafsize.append(ts_tmp) 
+                value.append(v_tmp)
+                pass
+            pass
+        '存入字典，得到DataFrame，方便进行后续操作,ps：字典转dataframe方便许多'
+        dd={'sappi':superappinterval,
+            'sapps':superappsize,
+            'vbri':vbrinterval,
+            'vbrs':vbrsize,
+            'trafi':trafinterval,
+            'trafs':trafsize,
+            'value':value,}
+        data=pd.DataFrame(dd)
+        print(data)
+        print('mission completed ! ! !')    
+        return data    
     
     def ComparePrinter(self,MPP,GPR,RF,style='MSE'):
         """
@@ -955,8 +1000,8 @@ class ModelCompareHandler:
         基于数据进行RF回归模型的重建
         """
         self.RFR=WDNoptimizer.GMMvalueOptimizaitonUnit(cluster=1)#实例化RF模型
-        self.RFR.rfbuilder(data,fitx=1,fity=5,fitz=6,label=0)#第一簇随机森林模型
-        self.RFR.rfbuilder(data,fitx=1,fity=5,fitz=6,label=1)#第二簇随机森林模型
+        self.RFR.rfbuilder_state(data,fitz=6,label=0)#第一簇随机森林模型
+        self.RFR.rfbuilder_state(data,fitz=6,label=1)#第二簇随机森林模型
     
     def RFpredicter(self,testdata):
         """
@@ -1102,7 +1147,7 @@ class ModelCompareHandler:
         """
         GPR模型的均的MSE误差
         """
-        aaa=mean_squared_error(testdata['value'][testdata['label']==1],predictdata['mean'])+mean_squared_error(testdata['value'][testdata['label']==0],predictdata['mean'])
+        aaa=mean_squared_error(testdata['value'][testdata['label']==1]*testdata['prob'][testdata['label']==1],predictdata['mean'])+mean_squared_error(testdata['value'][testdata['label']==0]*testdata['prob'][testdata['label']==0],predictdata['mean'])
         aaa=aaa/2
         return aaa
 #        a=testdata['value'][testdata['label']==1].reset_index(drop=True)
@@ -1124,7 +1169,7 @@ class ModelCompareHandler:
         RF模型的均的MSE误差,这里也与GPR一样用mean0进行计算
         """
         aaa=mean_squared_error(testdata['value'][testdata['label']==1],predictdata['mean0'])+mean_squared_error(testdata['value'][testdata['label']==0],predictdata['mean0'])
-        aaa=aaa/2
+        aaa=aaa
         return aaa
 #        a=testdata['value'][testdata['label']==1].reset_index(drop=True)
 #        b=predictdata['mean0'].reset_index(drop=True)
