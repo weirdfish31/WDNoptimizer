@@ -398,10 +398,10 @@ class GMMvalueOptimizaitonUnit:
         """
         times  = time.clock() 
         bounds=pd.DataFrame()
-        superappsize = np.random.uniform(0, 64000,size=(200000))
+        superappsize = np.random.uniform(16, 64000,size=(200000))
         superappsize = [ math.ceil(x) for x in superappsize ]
         superappsize = [ x+1 for x in superappsize ]
-        trafsize = np.random.uniform(0, 64000,size=(200000))
+        trafsize = np.random.uniform(16, 64000,size=(200000))
         trafsize = [ math.ceil(x) for x in trafsize ]
         trafsize = [ x+1 for x in trafsize ]        
         superappinterval=np.random.uniform(0, 100,size=(200000))#superapp视频业务，需要的时延抖动小，吞吐量大
@@ -410,7 +410,7 @@ class GMMvalueOptimizaitonUnit:
         vbrinterval=np.random.uniform(0, 100,size=(200000))
         vbrinterval = [ math.ceil(x) for x in vbrinterval ]
         vbrinterval = [ x+1 for x in vbrinterval ]        #vbr其他义务
-        vbrsize=np.random.uniform(0, 64000,size=(200000))
+        vbrsize=np.random.uniform(16, 64000,size=(200000))
         vbrsize = [ math.ceil(x) for x in vbrsize ]
         vbrsize = [ x+1 for x in vbrsize ]        
         trafinterval=np.random.uniform(0, 100,size=(200000))#trafficgenerator图像流，需要的丢包率小，吞吐量大
@@ -547,9 +547,9 @@ class GMMvalueOptimizaitonUnit:
         testdata=testdata.reset_index(drop=True)
         self.npdata=np.array(testdata)
         self.reg=RandomForestRegressor(n_estimators=10,n_jobs=1)
-        self.obj['rfreg_'+value+'_'+str(label)]=self.reg.fit(self.npdata[:,[fitx,fity]],self.npdata[:,fitz])
-        self.obj['rfoutput_'+value+'_'+str(label)]=self.obj['rfreg_'+value+'_'+str(label)].predict(np.c_[self.xset.ravel(),self.yset.ravel()])
-        self.obj['rfoutput_'+value+'_'+str(label)]=self.obj['rfoutput_'+value+'_'+str(label)].reshape(self.xset.shape)
+        self.obj['reg_'+value+'_'+str(label)]=self.reg.fit(self.npdata[:,[fitx,fity]],self.npdata[:,fitz])
+        self.obj['output_'+value+'_'+str(label)]=self.obj['reg_'+value+'_'+str(label)].predict(np.c_[self.xset.ravel(),self.yset.ravel()])
+        self.obj['output_'+value+'_'+str(label)]=self.obj['output_'+value+'_'+str(label)].reshape(self.xset.shape)
 #        self.obj['sigma_'+str(label)]=np.sum(self.reg.predict(self.npdata[:,[1,5]],return_std=True)[1])              
     def rfbuilder_state(self,data,fitz=6,label=1):
         '''
@@ -561,7 +561,7 @@ class GMMvalueOptimizaitonUnit:
         testdata=data[data['label']==label]
         testdata=testdata.reset_index(drop=True)
         self.npdata=np.array(testdata)
-        self.reg=RandomForestRegressor(n_estimators=10,n_jobs=1)
+        self.reg=RandomForestRegressor(n_estimators=4,n_jobs=1)
         if fitz==6:
             self.obj['reg_'+value+'_'+str(label)]=self.reg.fit(self.npdata[:,0:fitz],self.npdata[:,fitz])
         elif fitz==7:
