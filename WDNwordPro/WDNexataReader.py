@@ -57,10 +57,12 @@ class ExataDBreader:
         """
         读取DB文件中所有的业务名称
         read all the name of app
+        其中VBR命名中问题，有些VBR的业务名称有可能会变成VBR client
         """
         cursor=self.c.execute("SELECT ApplicationName  from APPLICATION_Summary")
         for row in cursor:
             self.appname.add(row[0])
+        
         print(self.appname)
     
     def appfilter(self):
@@ -478,85 +480,91 @@ class ExataDBreader:
     def meandata(self,apptype):
         """
         对特定业务类型，进行取平均值操作，并返回
+        20190405修改，对没用参与评估的指标进行了删减
         """
         times = time.clock()
         appaggregator=pd.DataFrame()
-        totalreceived = []
-        totalsent = []
-        offeredload = []
+#        totalreceived = []
+#        totalsent = []
+#        offeredload = []
         throughput = []
-        perreceived=[]
-        persent=[]
+#        perreceived=[]
+#        persent=[]
         messagecompletionrate = []
         delay =[]
         jitter=[]
-        hopcount=[]
+#        hopcount=[]
         if apptype=='superapp':
             for app in self.superappname:
-                totalreceived=totalreceived+self.appreceived[app].copy()
-                totalsent=totalsent+self.appsent[app].copy()
-                offeredload=offeredload+self.appofferedload[app].copy()
+#                totalreceived=totalreceived+self.appreceived[app].copy()
+#                totalsent=totalsent+self.appsent[app].copy()
+#                offeredload=offeredload+self.appofferedload[app].copy()
                 throughput=throughput+self.appthroughput[app].copy()
-                perreceived=perreceived+self.appperreceived[app].copy()
-                persent=persent+self.apppersent[app].copy()
+#                perreceived=perreceived+self.appperreceived[app].copy()
+#                persent=persent+self.apppersent[app].copy()
                 messagecompletionrate=messagecompletionrate+self.appmessagecompletionrate[app].copy()
                 delay=delay+self.appdelay[app].copy()
                 jitter=jitter+self.appjitter[app].copy()
-                hopcount=hopcount+self.apphopcount[app].copy()
-            appaggregator['received']=totalreceived
-            appaggregator['sent']=totalsent
-            appaggregator['perreceived']=perreceived
-            appaggregator['persent']=persent
-            appaggregator['offeredload']=offeredload
+#                hopcount=hopcount+self.apphopcount[app].copy()
+#            appaggregator['received']=totalreceived
+#            appaggregator['sent']=totalsent
+#            appaggregator['perreceived']=perreceived
+#            appaggregator['persent']=persent
+#            appaggregator['offeredload']=offeredload
             appaggregator['throughput']=throughput
             appaggregator['messagecompletionrate']=messagecompletionrate
             appaggregator['delay']=delay
             appaggregator['jitter']=jitter
-            appaggregator['hopcount']=hopcount
+#            appaggregator['hopcount']=hopcount
         elif apptype=='vbr':
-            for app in self.vbrname:
-                totalreceived=totalreceived+self.appreceived[app].copy()
-                totalsent=totalsent+self.appsent[app].copy()
-                offeredload=offeredload+self.appofferedload[app].copy()
+            c = [i for i in self.appname]
+            vbr=[]
+            for i in c:
+                if 'VBR' in i:
+                    vbr.append(str(i))
+            for app in vbr:
+#                totalreceived=totalreceived+self.appreceived[app].copy()
+#                totalsent=totalsent+self.appsent[app].copy()
+#                offeredload=offeredload+self.appofferedload[app].copy()
                 throughput=throughput+self.appthroughput[app].copy()
-                perreceived=perreceived+self.appperreceived[app].copy()
-                persent=persent+self.apppersent[app].copy()
+#                perreceived=perreceived+self.appperreceived[app].copy()
+#                persent=persent+self.apppersent[app].copy()
                 messagecompletionrate=messagecompletionrate+self.appmessagecompletionrate[app].copy()
                 delay=delay+self.appdelay[app].copy()
                 jitter=jitter+self.appjitter[app].copy()
-                hopcount=hopcount+self.apphopcount[app].copy()
-            appaggregator['received']=totalreceived
-            appaggregator['sent']=totalsent
-            appaggregator['perreceived']=perreceived
-            appaggregator['persent']=persent
-            appaggregator['offeredload']=offeredload
+#                hopcount=hopcount+self.apphopcount[app].copy()
+#            appaggregator['received']=totalreceived
+#            appaggregator['sent']=totalsent
+#            appaggregator['perreceived']=perreceived
+#            appaggregator['persent']=persent
+#            appaggregator['offeredload']=offeredload
             appaggregator['throughput']=throughput
             appaggregator['messagecompletionrate']=messagecompletionrate
             appaggregator['delay']=delay
             appaggregator['jitter']=jitter
-            appaggregator['hopcount']=hopcount
+#            appaggregator['hopcount']=hopcount
         elif apptype=='trafficgen':
             for app in self.trafficgenname:
-                totalreceived=totalreceived+self.appreceived[app].copy()
-                totalsent=totalsent+self.appsent[app].copy()
-                offeredload=offeredload+self.appofferedload[app].copy()
+#                totalreceived=totalreceived+self.appreceived[app].copy()
+#                totalsent=totalsent+self.appsent[app].copy()
+#                offeredload=offeredload+self.appofferedload[app].copy()
                 throughput=throughput+self.appthroughput[app].copy()
-                perreceived=perreceived+self.appperreceived[app].copy()
-                persent=persent+self.apppersent[app].copy()
+#                perreceived=perreceived+self.appperreceived[app].copy()
+#                persent=persent+self.apppersent[app].copy()
                 messagecompletionrate=messagecompletionrate+self.appmessagecompletionrate[app].copy()
                 delay=delay+self.appdelay[app].copy()
                 jitter=jitter+self.appjitter[app].copy()
-                hopcount=hopcount+self.apphopcount[app].copy()
-            appaggregator['received']=totalreceived
-            appaggregator['sent']=totalsent
-            appaggregator['perreceived']=perreceived
-            appaggregator['persent']=persent
-            appaggregator['offeredload']=offeredload
+#                hopcount=hopcount+self.apphopcount[app].copy()
+#            appaggregator['received']=totalreceived
+#            appaggregator['sent']=totalsent
+#            appaggregator['perreceived']=perreceived
+#            appaggregator['persent']=persent
+#            appaggregator['offeredload']=offeredload
             appaggregator['throughput']=throughput
             appaggregator['messagecompletionrate']=messagecompletionrate
             appaggregator['delay']=delay
             appaggregator['jitter']=jitter
-            appaggregator['hopcount']=hopcount            
+#            appaggregator['hopcount']=hopcount            
         return appaggregator.mean()
         timee = time.clock()
         rtime = timee - times

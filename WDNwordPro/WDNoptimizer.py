@@ -297,6 +297,81 @@ class GMMvalueOptimizaitonUnit:
         rtime = timee - times
         print('the value-AF run time is : %fS' % rtime)
         return try_max 
+
+    def valueUCBhelper_GPR_state(self,data,kappa,iternum,count,proportion=1,fitz=6):
+        times  = time.clock() 
+        bounds=pd.DataFrame()
+        superappsize = np.random.uniform(16, 64000,size=(200000))
+        superappsize = [ math.ceil(x) for x in superappsize ]
+        superappsize = [ x+1 for x in superappsize ]
+        trafsize = np.random.uniform(16, 64000,size=(200000))
+        trafsize = [ math.ceil(x) for x in trafsize ]
+        trafsize = [ x+1 for x in trafsize ]        
+        superappinterval=np.random.uniform(0, 100,size=(200000))#superapp视频业务，需要的时延抖动小，吞吐量大
+        superappinterval = [ math.ceil(x) for x in superappinterval ]
+        superappinterval = [ x+1 for x in superappinterval ]
+        vbrinterval=np.random.uniform(0, 100,size=(200000))
+        vbrinterval = [ math.ceil(x) for x in vbrinterval ]
+        vbrinterval = [ x+1 for x in vbrinterval ]        #vbr其他义务
+        vbrsize=np.random.uniform(16, 64000,size=(200000))
+        vbrsize = [ math.ceil(x) for x in vbrsize ]
+        vbrsize = [ x+1 for x in vbrsize ]        
+        trafinterval=np.random.uniform(0, 100,size=(200000))#trafficgenerator图像流，需要的丢包率小，吞吐量大
+        trafinterval = [ math.ceil(x) for x in trafinterval ]
+        trafinterval = [ x+1 for x in trafinterval ]
+            
+        bounds['superappinterval']=superappinterval
+        bounds['superappsize']=superappsize
+        bounds['vbrinterval']=vbrinterval
+        bounds['vbrsize']=vbrsize
+        bounds['trafinterval']=trafinterval
+        bounds['trafsize']=trafsize
+        
+        try_data = np.array(bounds)
+        collist=data.columns.values.tolist()
+        value=collist[fitz]
+        
+        
+        "对各簇的模型和进行predict"
+        ys0=self.UCBmethodhelper_alpha(try_data,gp=self.obj['reg_'+str(value)+'_'+str(0)],kappa=kappa,iternum=iternum,count=count)
+#        ys0=self.UCBmethodhelper(try_data,gp=self.obj['reg_'+str(value)+'_'+str(0)],kappa=kappa)
+        prob0=self.obj['reg_prob_0'].predict(try_data,return_std=False)
+#        ys1=self.UCBmethodhelper(try_data,gp=self.obj['reg_'+str(value)+'_'+str(1)],kappa=kappa)
+#        prob1=self.obj['reg_prob_1'].predict(try_data,return_std=False)
+        "对各簇的概率与预测UCB值进行加权，这里的UCB值和概率都是nparray数据结构"
+        UCB=ys0*prob0
+#        aaa=pd.DataFrame(UCBdic)
+#        for i in range(aaa.shape[0]):
+#            for j in range(self.n_clusters):
+#                aaa.iloc[i,j]=aaa.iloc[i,j]*self.componentweight[str(j)]
+#        aaa['total']=aaa.apply(lambda x: x.sum(), axis=1)
+#        ucbarray=np.array(aaa['total'])
+        "对UCB中的最大值进行选择，在try_data中得到相应的querypoint"
+        try_max=try_data[UCB.argmax()]
+        try_max=try_max.astype(int)#为了EXATA配置文件，把询问点改为整数型
+        if try_max[0]==0:
+            try_max[0]=try_max[0]+1
+        if try_max[1]==0:
+            try_max[1]=try_max[1]+1
+        if try_max[2]==0:
+            try_max[2]=try_max[2]+1
+        if try_max[3]==0:
+            try_max[3]=try_max[3]+1            
+        if try_max[4]==0:
+            try_max[4]=try_max[4]+1            
+        if try_max[5]==0:
+            try_max[5]=try_max[5]+1               
+            
+        max_acq=UCB.max()
+        print(max_acq)
+        print(try_max)
+        timee = time.clock()
+        rtime = timee - times
+        print('the value-AF run time is : %fS' % rtime)
+        return try_max 
+
+        
+        
     
     def valueUCBhelper_GPR(self,data,kappa,iternum,count,proportion=1,fitx=1,fity=5,fitz=6):
         """
@@ -384,7 +459,7 @@ class GMMvalueOptimizaitonUnit:
         elif fitz==7:
             self.obj['reg_'+value+'_'+str(label)]=self.reg.fit(self.npdata[:,0:fitz-1],self.npdata[:,fitz])      
 
-    def valueUCBhelper_state(self,data,kappa,iternum,count,proportion=1,fitz=6):
+    def valueUCBhelper_HPP_state(self,data,kappa,iternum,count,proportion=1,fitz=6):
         """
         将不同聚类得到的预测结果存入dataframe，生成对100000个随机点的预测的reg模型
         value的UCB值相加(概率加权求和)
@@ -547,9 +622,9 @@ class GMMvalueOptimizaitonUnit:
         testdata=testdata.reset_index(drop=True)
         self.npdata=np.array(testdata)
         self.reg=RandomForestRegressor(n_estimators=10,n_jobs=1)
-        self.obj['reg_'+value+'_'+str(label)]=self.reg.fit(self.npdata[:,[fitx,fity]],self.npdata[:,fitz])
-        self.obj['output_'+value+'_'+str(label)]=self.obj['reg_'+value+'_'+str(label)].predict(np.c_[self.xset.ravel(),self.yset.ravel()])
-        self.obj['output_'+value+'_'+str(label)]=self.obj['output_'+value+'_'+str(label)].reshape(self.xset.shape)
+        self.obj['rfreg_'+value+'_'+str(label)]=self.reg.fit(self.npdata[:,[fitx,fity]],self.npdata[:,fitz])
+        self.obj['rfoutput_'+value+'_'+str(label)]=self.obj['rfreg_'+value+'_'+str(label)].predict(np.c_[self.xset.ravel(),self.yset.ravel()])
+        self.obj['rfoutput_'+value+'_'+str(label)]=self.obj['rfoutput_'+value+'_'+str(label)].reshape(self.xset.shape)
 #        self.obj['sigma_'+str(label)]=np.sum(self.reg.predict(self.npdata[:,[1,5]],return_std=True)[1])              
     def rfbuilder_state(self,data,fitz=6,label=1):
         '''
@@ -561,7 +636,7 @@ class GMMvalueOptimizaitonUnit:
         testdata=data[data['label']==label]
         testdata=testdata.reset_index(drop=True)
         self.npdata=np.array(testdata)
-        self.reg=RandomForestRegressor(n_estimators=4,n_jobs=1)
+        self.reg=RandomForestRegressor(n_estimators=10,n_jobs=1)
         if fitz==6:
             self.obj['reg_'+value+'_'+str(label)]=self.reg.fit(self.npdata[:,0:fitz],self.npdata[:,fitz])
         elif fitz==7:
