@@ -131,8 +131,6 @@ for count_i in range(len(superappsize)):
         part0.loc[:,'label']=0
         part1=tempdataset.loc[tempdataset['label']==1]
         part1.loc[:,'label']=1
-#                            distriubuteculsterdata=distriubuteculsterdata.append(part0)
-#                            distriubuteculsterdata=distriubuteculsterdata.append(part1)
         """
         计算混合模型中第一簇的概率，目前问题中的模型分为两簇，
         计算一簇模型的概率自然可以得到另一簇的概率
@@ -148,8 +146,6 @@ for count_i in range(len(superappsize)):
         part0.loc[:,'label']=1
         part1=tempdataset.loc[tempdataset['label']==1]
         part1.loc[:,'label']=0
-#                            distriubuteculsterdata=distriubuteculsterdata.append(part0)
-#                            distriubuteculsterdata=distriubuteculsterdata.append(part1)
         probOf1=len(part0)/len(tempdataset)
         probOf0=1-probOf1
         value1=np.mean(part0[part0['label']==1]['value'])
@@ -167,54 +163,12 @@ print(memoryset.probmemoryunit)#这个数据是value均值、分簇概率，标�
 print(priordataset)#原始数据包括state，value
 #len(distriubuteculsterdata[distriubuteculsterdata['label']==0])
 
-"建模GMM模型==================================================================="
+"建模HPP模型==================================================================="
 
 valuegmmgamer.gpbuilder_state(memoryset.probmemoryunit,fitz=6,label=0)#第一簇高斯过程模型
 valuegmmgamer.gpbuilder_state(memoryset.probmemoryunit,fitz=7,label=0)#第一簇概率高斯过程模型
 valuegmmgamer.gpbuilder_state(memoryset.probmemoryunit,fitz=6,label=1)#第二簇高斯过程模型
 valuegmmgamer.gpbuilder_state(memoryset.probmemoryunit,fitz=7,label=1)#第二簇概率高斯过程模型
-
-# =============================================================================
-# 
-# bounds=pd.DataFrame()
-# superappsize = np.random.uniform(0, 64000,size=(200000))
-# superappsize = [ math.ceil(x) for x in superappsize ]
-# superappsize = [ x+1 for x in superappsize ]
-# trafsize = np.random.uniform(0, 64000,size=(200000))
-# trafsize = [ math.ceil(x) for x in trafsize ]
-# trafsize = [ x+1 for x in trafsize ]        
-# superappinterval=np.random.uniform(0, 100,size=(200000))#superapp视频业务，需要的时延抖动小，吞吐量大
-# superappinterval = [ math.ceil(x) for x in superappinterval ]
-# superappinterval = [ x+1 for x in superappinterval ]
-# vbrinterval=np.random.uniform(0, 100,size=(200000))
-# vbrinterval = [ math.ceil(x) for x in vbrinterval ]
-# vbrinterval = [ x+1 for x in vbrinterval ]        #vbr其他义务
-# vbrsize=np.random.uniform(0, 64000,size=(200000))
-# vbrsize = [ math.ceil(x) for x in vbrsize ]
-# vbrsize = [ x+1 for x in vbrsize ]        
-# trafinterval=np.random.uniform(0, 100,size=(200000))#trafficgenerator图像流，需要的丢包率小，吞吐量大
-# trafinterval = [ math.ceil(x) for x in trafinterval ]
-# trafinterval = [ x+1 for x in trafinterval ]
-# 
-# 
-# bounds['superappinterval']=superappinterval
-# bounds['superappsize']=superappsize
-# bounds['vbrinterval']=vbrinterval
-# bounds['vbrsize']=vbrsize
-# bounds['trafinterval']=trafinterval
-# bounds['trafsize']=trafsize
-# 
-# try_data = np.array(bounds)
-# try_data
-# 
-# 
-# prob0=valuegmmgamer.obj['reg_prob_0'].predict(try_data,return_std=False)
-# ys0=valuegmmgamer.UCBmethodhelper_alpha(try_data,valuegmmgamer.obj['reg_value_0'],kappa=5,iternum=25,count=0)
-# prob1=valuegmmgamer.obj['reg_prob_1'].predict(try_data,return_std=False)
-# ys1=valuegmmgamer.UCBmethodhelper_alpha(try_data,valuegmmgamer.obj['reg_value_1'],kappa=5,iternum=25,count=0)
-# UCB=ys0*prob0 + 1*ys1*prob1
-# =============================================================================
-
 
 "AF函数模型===================================================================="
 """
@@ -227,9 +181,6 @@ tu=ttt.tolist()
 listaaa.append(tu)
 with open('QP_HPP_D6.txt','a') as f:#记录每次AF选点的参数
     f.write(str(tu)+',')#写入listaaa，querypoint的序列
-listaaa
-"画图+++++++++++++++++++++++++++++++++++++++++++未完成+++++++++++++++++++++++"
-"要绘制多指标合成的曲面，目前已经有模型参数，obj中提供"
 
 "反馈函数+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 """根据原始数据集的模型和质询点，仿真X次，读取新的数据，加入到Priordataset，绘图，并找到下一个质询点"""
@@ -289,7 +240,7 @@ for i in range(100):
     newgammer.gpbuilder_state(memoryset.probmemoryunit,fitz=7,label=0)#第一簇概率高斯过程模型
     newgammer.gpbuilder_state(memoryset.probmemoryunit,fitz=6,label=1)#第二簇高斯过程模型
     newgammer.gpbuilder_state(memoryset.probmemoryunit,fitz=7,label=1)#第二簇概率高斯过程模型
-    ttt=valuegmmgamer.valueUCBhelper_HPP_state(memoryset.probmemoryunit,kappa=0,iternum=100,count=simucount)
+    ttt=newgammer.valueUCBhelper_HPP_state(memoryset.probmemoryunit,kappa=0,iternum=100,count=simucount)
     tu=ttt.tolist()
     listaaa.append(tu)  
     simucount=simucount+1#计数，修改文件名称
