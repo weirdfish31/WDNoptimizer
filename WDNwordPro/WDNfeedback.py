@@ -54,22 +54,21 @@ class FeedBackWorker:
         self.groundDrop= '0.03'
         self.acquisitioncount=1
         self.querydatasetlist=[]
-    def updatetrainningsetworker_state(self,path,count=60,style='qos'):
+    def updatetrainningsetworker_state(self,state,path,count=60,style='qos'):
         """
         将querypoint得到的仿真数据读取并加入到原始训练集中
         目前是固定4个参数，2个参数可变
         原始数据的value或者qos数据，直接进入对应的数据DataFrame中
         """
         
-        appInterval_i=self.superapinterval
-        appSize_i=self.superappsize
-        vbrInterval_i=self.vbrInterval
-        vbrsize_i=self.vbrsize
-        trafficgeninterval_i=self.trafficgeninterval
-        trafficgensize_i=self.trafficgensize
-        
+        appInterval_i=str(state[0])
+        appSize_i=str(state[1])
+        vbrInterval_i=str(state[2])
+        vbrsize_i=str(state[3])
+        trafficgeninterval_i=str(state[4])
+        trafficgensize_i=str(state[5])
         simname = 'radio'+appInterval_i+"_"+appSize_i+"_"+vbrInterval_i+"_"+vbrsize_i+"_"+trafficgeninterval_i+"_"+trafficgensize_i
-
+        
         self.querydatasetlist.append(simname)#将每次调用此函数时的数据库名字保存至list中
         newdata=WDNoptimizer.MemoryUnit()
         datapath=path
@@ -93,6 +92,7 @@ class FeedBackWorker:
                 eva.calculateMetricEvaValue(trafficgen)
                 state=[appInterval_i,appSize_i,vbrInterval_i,vbrsize_i,trafficgeninterval_i,trafficgensize_i]
                 print(state)
+                print(dataset)
                 qos=eva.qoslist
     #           memoryset.insertmemoryunit(state=state,value=value)
                 newdata.qosinserter(state=state,qos=qos)
@@ -116,6 +116,7 @@ class FeedBackWorker:
                 eva.calculateMetricEvaValue(trafficgen)
                 state=[appInterval_i,appSize_i,vbrInterval_i,vbrsize_i,trafficgeninterval_i,trafficgensize_i]
                 print(state)
+                print(dataset)
                 value=eva.evaluationvalue()
     #           memoryset.insertmemoryunit(state=state,value=value)
                 newdata.valueinserter(state=state,value=value)
@@ -126,6 +127,7 @@ class FeedBackWorker:
         将querypoint得到的仿真数据读取并加入到原始训练集中
         目前是固定4个参数，2个参数可变
         原始数据的value或者qos数据，直接进入对应的数据DataFrame中
+        20190405修改，直接将2位的输入改为了6维的输入
         """
         appSize_i=self.superappsize
         trafficgensize_i=self.trafficgensize
@@ -143,7 +145,7 @@ class FeedBackWorker:
                 reader.appnamereader()#读取业务层的业务名称
                 reader.appfilter()#将业务名称分类至三个list
                 reader.appdatareader()#将每个业物流的输出数据存到实例化的类中的字典里面
-                reader.inputparainsert(20,point[0],30,24000,30,point[1])
+                reader.inputparainsert(point[0],point[1],point[2],point[3],point[4],point[5])
                 "================================================================="
                 eva=WDNoptimizer.EvaluationUnit()
                 superapp=reader.meandata('superapp')
@@ -152,7 +154,7 @@ class FeedBackWorker:
                 eva.calculateMetricEvaValue(vbr)
                 trafficgen=reader.meandata('trafficgen')
                 eva.calculateMetricEvaValue(trafficgen)
-                state=[20,point[0],30,24000,30,point[1]]
+                state=[point[0],point[1],point[2],point[3],point[4],point[5]]
                 print(state)
                 qos=eva.qoslist
     #           memoryset.insertmemoryunit(state=state,value=value)
@@ -166,7 +168,7 @@ class FeedBackWorker:
                 reader.appnamereader()#读取业务层的业务名称
                 reader.appfilter()#将业务名称分类至三个list
                 reader.appdatareader()#将每个业物流的输出数据存到实例化的类中的字典里面
-                reader.inputparainsert(20,point[0],30,24000,30,point[1])
+                reader.inputparainsert(point[0],point[1],point[2],point[3],point[4],point[5])
                 "================================================================="
                 eva=WDNoptimizer.EvaluationUnit()
                 superapp=reader.meandata('superapp')
@@ -175,7 +177,7 @@ class FeedBackWorker:
                 eva.calculateMetricEvaValue(vbr)
                 trafficgen=reader.meandata('trafficgen')
                 eva.calculateMetricEvaValue(trafficgen)
-                state=[20,point[0],30,24000,30,point[1]]
+                state=[point[0],point[1],point[2],point[3],point[4],point[5]]
                 print(state)
                 value=eva.evaluationvalue()
     #           memoryset.insertmemoryunit(state=state,value=value)
