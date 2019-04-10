@@ -198,12 +198,20 @@ class GMMvalueOptimizaitonUnit:
         plt.colorbar(mappable=im,ax=ax)
         plt.savefig(path+'GPR_multi'+str(count)+".jpg")
         plt.show() 
+
+    def UCBmethodhelper(self,x,gp,kappa):
+        """
+        upper confidence bound 方法
+        根据随机过程的方差和均值进行选择，不会陷入局部最优
+        这种做法比较的是置信区间内的最大值，尽管看起来简单，但是实际效果却意外的好
+        """
+        mean,std=gp.predict(x,return_std=True)
+        return mean + kappa*std
         
     def UCBmethodhelper_alpha(self,x,gp,kappa,iternum,count):
         """
-        upper confidence bound 方法
+        weight iteration upper confidence bound 方法
         根据随机过程的方差和均值进行选择，不会陷入局部最优 加入了k的衰减因子使k值随着迭代次数变化
-        这种做法比较的是置信区间内的最大值，尽管看起来简单，但是实际效果却意外的好
         """
         mean,std=gp.predict(x,return_std=True)
         steplength=kappa/iternum
@@ -215,14 +223,7 @@ class GMMvalueOptimizaitonUnit:
     
     def valueUCBhelper_alpha(self,data,kappa,iternum,count,proportion=1,fitx=1,fity=5,fitz=6):
         """
-        将不同聚类得到的预测结果存入dataframe，生成对100000个随机点的预测的reg模型
-        value的UCB值相加(概率加权求和)
-        则根据聚类得到的权重加权得到UCB之和，得到选择的最大UCB值的query point
-        1）在alpha版本中af函数加入了proportion参数，进行两个分粗的重要性的主观评价，更加针对PNTRC系统中的特定QoS性能
-        2）提供了最简单的策略自适应的过程，kappa值随着迭代的进行变化（递减）
-        3）提供了可调整的相应平面选择参数（）
-        在目前的版本中要是出现了抽样的数值为0的情况，仿真会中断
-        而且目前只有两簇的情况，没有进行更多簇的考虑
+        HPP-WIUCB模型
         """
         times  = time.clock() 
         bounds=pd.DataFrame()
@@ -254,210 +255,6 @@ class GMMvalueOptimizaitonUnit:
         rtime = timee - times
         print('the value-AF run time is : %fS' % rtime)
         return try_max 
-        
-    def valueUCBhelper_HPP(self,data,kappa,fitx=1,fity=5,fitz=6):
-        """
-        GMM的GMM-UCB模型,固定的策略
-        """
-        times  = time.clock() 
-        bounds=pd.DataFrame()
-        x_tries = np.random.uniform(0, 64000,size=(200000))
-        y_tries = np.random.uniform(0, 64000,size=(200000))
-        bounds['sapps']=x_tries
-        bounds['trafs']=y_tries
-        try_data = np.array(bounds)
-#        componentmodel={}
-#        UCBdic={}
-        collist=data.columns.values.tolist()
-        value=collist[fitz]
-        "对各簇的模型和进行predict"
-        ys0=self.UCBmethodhelper(try_data,gp=self.obj['reg_'+str(value)+'_'+str(0)],kappa=kappa)
-        prob0=self.obj['reg_prob_0'].predict(try_data,return_std=False)
-        ys1=self.UCBmethodhelper(try_data,gp=self.obj['reg_'+str(value)+'_'+str(1)],kappa=kappa)
-        prob1=self.obj['reg_prob_1'].predict(try_data,return_std=False)
-        "对各簇的概率与预测UCB值进行加权，这里的UCB值和概率都是nparray数据结构"
-        UCB=ys0*prob0+ys1*prob1
-#        aaa=pd.DataFrame(UCBdic)
-#        for i in range(aaa.shape[0]):
-#            for j in range(self.n_clusters):
-#                aaa.iloc[i,j]=aaa.iloc[i,j]*self.componentweight[str(j)]
-#        aaa['total']=aaa.apply(lambda x: x.sum(), axis=1)
-#        ucbarray=np.array(aaa['total'])
-        "对UCB中的最大值进行选择，在try_data中得到相应的querypoint"
-        try_max=try_data[UCB.argmax()]
-        try_max=try_max.astype(int)#为了EXATA配置文件，把询问点改为整数型
-        if try_max[0]==0:
-            try_max[0]=try_max[0]+1
-        if try_max[1]==0:
-            try_max[1]=try_max[1]+1
-        max_acq=UCB.max()
-        print(max_acq)
-        print(try_max)
-        timee = time.clock()
-        rtime = timee - times
-        print('the value-AF run time is : %fS' % rtime)
-        return try_max 
-
-    def valueUCBhelper_GPR_state(self,data,kappa,iternum,count,proportion=1,fitz=6):
-        times  = time.clock() 
-        bounds=pd.DataFrame()
-        superappsize = np.random.uniform(16, 64000,size=(200000))
-        superappsize = [ math.ceil(x) for x in superappsize ]
-        superappsize = [ x+1 for x in superappsize ]
-        trafsize = np.random.uniform(16, 64000,size=(200000))
-        trafsize = [ math.ceil(x) for x in trafsize ]
-        trafsize = [ x+1 for x in trafsize ]        
-        superappinterval=np.random.uniform(0, 100,size=(200000))#superapp视频业务，需要的时延抖动小，吞吐量大
-        superappinterval = [ math.ceil(x) for x in superappinterval ]
-        superappinterval = [ x+1 for x in superappinterval ]
-        vbrinterval=np.random.uniform(0, 100,size=(200000))
-        vbrinterval = [ math.ceil(x) for x in vbrinterval ]
-        vbrinterval = [ x+1 for x in vbrinterval ]        #vbr其他义务
-        vbrsize=np.random.uniform(16, 64000,size=(200000))
-        vbrsize = [ math.ceil(x) for x in vbrsize ]
-        vbrsize = [ x+1 for x in vbrsize ]        
-        trafinterval=np.random.uniform(0, 100,size=(200000))#trafficgenerator图像流，需要的丢包率小，吞吐量大
-        trafinterval = [ math.ceil(x) for x in trafinterval ]
-        trafinterval = [ x+1 for x in trafinterval ]
-            
-        bounds['superappinterval']=superappinterval
-        bounds['superappsize']=superappsize
-        bounds['vbrinterval']=vbrinterval
-        bounds['vbrsize']=vbrsize
-        bounds['trafinterval']=trafinterval
-        bounds['trafsize']=trafsize
-        
-        try_data = np.array(bounds)
-        collist=data.columns.values.tolist()
-        value=collist[fitz]
-        
-        
-        "对各簇的模型和进行predict"
-        ys0=self.UCBmethodhelper_alpha(try_data,gp=self.obj['reg_'+str(value)+'_'+str(0)],kappa=kappa,iternum=iternum,count=count)
-#        ys0=self.UCBmethodhelper(try_data,gp=self.obj['reg_'+str(value)+'_'+str(0)],kappa=kappa)
-        prob0=self.obj['reg_prob_0'].predict(try_data,return_std=False)
-#        ys1=self.UCBmethodhelper(try_data,gp=self.obj['reg_'+str(value)+'_'+str(1)],kappa=kappa)
-#        prob1=self.obj['reg_prob_1'].predict(try_data,return_std=False)
-        "对各簇的概率与预测UCB值进行加权，这里的UCB值和概率都是nparray数据结构"
-        UCB=ys0*prob0
-#        aaa=pd.DataFrame(UCBdic)
-#        for i in range(aaa.shape[0]):
-#            for j in range(self.n_clusters):
-#                aaa.iloc[i,j]=aaa.iloc[i,j]*self.componentweight[str(j)]
-#        aaa['total']=aaa.apply(lambda x: x.sum(), axis=1)
-#        ucbarray=np.array(aaa['total'])
-        "对UCB中的最大值进行选择，在try_data中得到相应的querypoint"
-        try_max=try_data[UCB.argmax()]
-        try_max=try_max.astype(int)#为了EXATA配置文件，把询问点改为整数型
-        if try_max[0]==0:
-            try_max[0]=try_max[0]+1
-        if try_max[1]==0:
-            try_max[1]=try_max[1]+1
-        if try_max[2]==0:
-            try_max[2]=try_max[2]+1
-        if try_max[3]==0:
-            try_max[3]=try_max[3]+1            
-        if try_max[4]==0:
-            try_max[4]=try_max[4]+1            
-        if try_max[5]==0:
-            try_max[5]=try_max[5]+1               
-            
-        max_acq=UCB.max()
-        print(max_acq)
-        print(try_max)
-        timee = time.clock()
-        rtime = timee - times
-        print('the value-AF run time is : %fS' % rtime)
-        return try_max 
-
-        
-        
-    
-    def valueUCBhelper_GPR(self,data,kappa,iternum,count,proportion=1,fitx=1,fity=5,fitz=6):
-        """
-        GPR的GP-UCB模型,修改了AF函数，加入了收敛因子
-        """
-        times  = time.clock() 
-        bounds=pd.DataFrame()
-        x_tries = np.random.uniform(0, 64000,size=(200000))
-        y_tries = np.random.uniform(0, 64000,size=(200000))
-        bounds['sapps']=x_tries
-        bounds['trafs']=y_tries
-        try_data = np.array(bounds)
-#        componentmodel={}
-#        UCBdic={}
-        collist=data.columns.values.tolist()
-        value=collist[fitz]
-        "对各簇的模型和进行predict"
-        ys0=self.UCBmethodhelper_alpha(try_data,gp=self.obj['reg_'+str(value)+'_'+str(0)],kappa=kappa,iternum=iternum,count=count)
-#        ys0=self.UCBmethodhelper(try_data,gp=self.obj['reg_'+str(value)+'_'+str(0)],kappa=kappa)
-        prob0=self.obj['reg_prob_0'].predict(try_data,return_std=False)
-#        ys1=self.UCBmethodhelper(try_data,gp=self.obj['reg_'+str(value)+'_'+str(1)],kappa=kappa)
-#        prob1=self.obj['reg_prob_1'].predict(try_data,return_std=False)
-        "对各簇的概率与预测UCB值进行加权，这里的UCB值和概率都是nparray数据结构"
-        UCB=ys0*prob0
-#        aaa=pd.DataFrame(UCBdic)
-#        for i in range(aaa.shape[0]):
-#            for j in range(self.n_clusters):
-#                aaa.iloc[i,j]=aaa.iloc[i,j]*self.componentweight[str(j)]
-#        aaa['total']=aaa.apply(lambda x: x.sum(), axis=1)
-#        ucbarray=np.array(aaa['total'])
-        "对UCB中的最大值进行选择，在try_data中得到相应的querypoint"
-        try_max=try_data[UCB.argmax()]
-        try_max=try_max.astype(int)#为了EXATA配置文件，把询问点改为整数型
-        if try_max[0]==0:
-            try_max[0]=try_max[0]+1
-        if try_max[1]==0:
-            try_max[1]=try_max[1]+1
-        max_acq=UCB.max()
-        print(max_acq)
-        print(try_max)
-        timee = time.clock()
-        rtime = timee - times
-        print('the value-AF run time is : %fS' % rtime)
-        return try_max  
-    
-    def UCBmethodhelper(self,x,gp,kappa):
-        """
-        upper confidence bound 方法
-        根据随机过程的方差和均值进行选择，不会陷入局部最优
-        这种做法比较的是置信区间内的最大值，尽管看起来简单，但是实际效果却意外的好
-        """
-        mean,std=gp.predict(x,return_std=True)
-        return mean + kappa*std
-        
-    def gpbuilder(self,data,fitx=1,fity=5,fitz=6,label=1):
-        """
-        根据聚类的结果，对用以标签下的数据进行GP回归，得到均值标准差和响应平面。在这里我们用的是3维的过程
-        高斯过程的拟合，将GP的相应平面存入实体的obj字典
-        """
-        collist=data.columns.values.tolist()
-        value=collist[fitz]
-        self.qosname.append(value)
-        testdata=data[data['label']==label]
-        testdata=testdata.reset_index(drop=True)
-        self.npdata=np.array(testdata)
-        self.reg=GaussianProcessRegressor(kernel=self.kernel,n_restarts_optimizer=10,alpha=0.1)
-        self.obj['reg_'+value+'_'+str(label)]=self.reg.fit(self.npdata[:,[fitx,fity]],self.npdata[:,fitz])
-        self.obj['output_'+value+'_'+str(label)],self.obj['err_'+value+'_'+str(label)]=self.obj['reg_'+value+'_'+str(label)].predict(np.c_[self.xset.ravel(),self.yset.ravel()],return_std=True)
-        self.obj['output_'+value+'_'+str(label)],self.obj['err_'+value+'_'+str(label)]=self.obj['output_'+value+'_'+str(label)].reshape(self.xset.shape),self.obj['err_'+value+'_'+str(label)].reshape(self.xset.shape)
-#        self.obj['sigma_'+str(label)]=np.sum(self.reg.predict(self.npdata[:,[1,5]],return_std=True)[1])
-        self.obj['up_'+value+'_'+str(label)],self.obj['down_'+value+'_'+str(label)]=self.obj['output_'+value+'_'+str(label)]*(1+1.96*self.obj['err_'+value+'_'+str(label)]),self.obj['output_'+value+'_'+str(label)]*(1-1.96*self.obj['err_'+value+'_'+str(label)])
-    def gpbuilder_state(self,data,fitz=6,label=1):
-        """
-        多维度高斯过程，拟合
-        """
-        collist=data.columns.values.tolist()
-        value=collist[fitz]
-        self.qosname.append(value)
-        testdata=data[data['label']==label]
-        testdata=testdata.reset_index(drop=True)
-        self.npdata=np.array(testdata)
-        self.reg=GaussianProcessRegressor(kernel=self.kernel,n_restarts_optimizer=10,alpha=0.1)
-        if fitz==6:
-            self.obj['reg_'+value+'_'+str(label)]=self.reg.fit(self.npdata[:,0:fitz],self.npdata[:,fitz])
-        elif fitz==7:
-            self.obj['reg_'+value+'_'+str(label)]=self.reg.fit(self.npdata[:,0:fitz-1],self.npdata[:,fitz])      
 
     def valueUCBhelper_HPP_state(self,data,kappa,iternum,count,proportion=1,fitz=6):
         """
@@ -490,8 +287,7 @@ class GMMvalueOptimizaitonUnit:
         vbrsize = [ x+1 for x in vbrsize ]        
         trafinterval=np.random.uniform(0, 100,size=(200000))#trafficgenerator图像流，需要的丢包率小，吞吐量大
         trafinterval = [ math.ceil(x) for x in trafinterval ]
-        trafinterval = [ x+1 for x in trafinterval ]
-        
+        trafinterval = [ x+1 for x in trafinterval ]     
       
         bounds['superappinterval']=superappinterval
         bounds['superappsize']=superappsize
@@ -533,6 +329,293 @@ class GMMvalueOptimizaitonUnit:
         rtime = timee - times
         print('the value-AF run time is : %fS' % rtime)
         return try_max 
+
+
+    
+    def valueUCBhelper_HPP(self,data,kappa,fitx=1,fity=5,fitz=6):
+        """
+        HPP的HPP-UCB模型,固定的策略
+        """
+        times  = time.clock() 
+        bounds=pd.DataFrame()
+        x_tries = np.random.uniform(0, 64000,size=(200000))
+        y_tries = np.random.uniform(0, 64000,size=(200000))
+        bounds['sapps']=x_tries
+        bounds['trafs']=y_tries
+        try_data = np.array(bounds)
+        collist=data.columns.values.tolist()
+        value=collist[fitz]
+        "对各簇的模型和进行predict"
+        ys0=self.UCBmethodhelper(try_data,gp=self.obj['reg_'+str(value)+'_'+str(0)],kappa=kappa)
+        prob0=self.obj['reg_prob_0'].predict(try_data,return_std=False)
+        ys1=self.UCBmethodhelper(try_data,gp=self.obj['reg_'+str(value)+'_'+str(1)],kappa=kappa)
+        prob1=self.obj['reg_prob_1'].predict(try_data,return_std=False)
+        "对各簇的概率与预测UCB值进行加权，这里的UCB值和概率都是nparray数据结构"
+        UCB=ys0*prob0+ys1*prob1
+        "对UCB中的最大值进行选择，在try_data中得到相应的querypoint"
+        try_max=try_data[UCB.argmax()]
+        try_max=try_max.astype(int)#为了EXATA配置文件，把询问点改为整数型
+        if try_max[0]==0:
+            try_max[0]=try_max[0]+1
+        if try_max[1]==0:
+            try_max[1]=try_max[1]+1
+        max_acq=UCB.max()
+        print(max_acq)
+        print(try_max)
+        timee = time.clock()
+        rtime = timee - times
+        print('the value-AF run time is : %fS' % rtime)
+        return try_max 
+
+    def valueUCBhelper_GPR_state(self,data,kappa,iternum,count,proportion=1,fitz=6):
+        """
+        GP-WIUCB模型 6维
+        """
+        times  = time.clock() 
+        bounds=pd.DataFrame()
+        superappsize = np.random.uniform(16, 64000,size=(200000))
+        superappsize = [ math.ceil(x) for x in superappsize ]
+        superappsize = [ x+1 for x in superappsize ]
+        trafsize = np.random.uniform(16, 64000,size=(200000))
+        trafsize = [ math.ceil(x) for x in trafsize ]
+        trafsize = [ x+1 for x in trafsize ]        
+        superappinterval=np.random.uniform(0, 100,size=(200000))#superapp视频业务，需要的时延抖动小，吞吐量大
+        superappinterval = [ math.ceil(x) for x in superappinterval ]
+        superappinterval = [ x+1 for x in superappinterval ]
+        vbrinterval=np.random.uniform(0, 100,size=(200000))
+        vbrinterval = [ math.ceil(x) for x in vbrinterval ]
+        vbrinterval = [ x+1 for x in vbrinterval ]        #vbr其他义务
+        vbrsize=np.random.uniform(16, 64000,size=(200000))
+        vbrsize = [ math.ceil(x) for x in vbrsize ]
+        vbrsize = [ x+1 for x in vbrsize ]        
+        trafinterval=np.random.uniform(0, 100,size=(200000))#trafficgenerator图像流，需要的丢包率小，吞吐量大
+        trafinterval = [ math.ceil(x) for x in trafinterval ]
+        trafinterval = [ x+1 for x in trafinterval ]
+            
+        bounds['superappinterval']=superappinterval
+        bounds['superappsize']=superappsize
+        bounds['vbrinterval']=vbrinterval
+        bounds['vbrsize']=vbrsize
+        bounds['trafinterval']=trafinterval
+        bounds['trafsize']=trafsize
+        
+        try_data = np.array(bounds)
+        collist=data.columns.values.tolist()
+        value=collist[fitz]
+
+        "对各簇的模型和进行predict"
+        ys0=self.UCBmethodhelper_alpha(try_data,gp=self.obj['reg_'+str(value)+'_'+str(0)],kappa=kappa,iternum=iternum,count=count)
+        prob0=self.obj['reg_prob_0'].predict(try_data,return_std=False)
+        "对各簇的概率与预测UCB值进行加权，这里的UCB值和概率都是nparray数据结构"
+        UCB=ys0*prob0
+        "对UCB中的最大值进行选择，在try_data中得到相应的querypoint"
+        try_max=try_data[UCB.argmax()]
+        try_max=try_max.astype(int)#为了EXATA配置文件，把询问点改为整数型
+        if try_max[0]==0:
+            try_max[0]=try_max[0]+1
+        if try_max[1]==0:
+            try_max[1]=try_max[1]+1
+        if try_max[2]==0:
+            try_max[2]=try_max[2]+1
+        if try_max[3]==0:
+            try_max[3]=try_max[3]+1            
+        if try_max[4]==0:
+            try_max[4]=try_max[4]+1            
+        if try_max[5]==0:
+            try_max[5]=try_max[5]+1               
+            
+        max_acq=UCB.max()
+        print(max_acq)
+        print(try_max)
+        timee = time.clock()
+        rtime = timee - times
+        print('the value-AF run time is : %fS' % rtime)
+        return try_max 
+
+    
+    def valueUCBhelper_GPR(self,data,kappa,iternum,count,proportion=1,fitx=1,fity=5,fitz=6):
+        """
+        GPR的GP-WIUCB模型,修改了AF函数，加入了收敛因子
+        """
+        times  = time.clock() 
+        bounds=pd.DataFrame()
+        x_tries = np.random.uniform(0, 64000,size=(200000))
+        y_tries = np.random.uniform(0, 64000,size=(200000))
+        bounds['sapps']=x_tries
+        bounds['trafs']=y_tries
+        try_data = np.array(bounds)
+#        componentmodel={}
+#        UCBdic={}
+        collist=data.columns.values.tolist()
+        value=collist[fitz]
+        "对各簇的模型和进行predict"
+        ys0=self.UCBmethodhelper_alpha(try_data,gp=self.obj['reg_'+str(value)+'_'+str(0)],kappa=kappa,iternum=iternum,count=count)
+        prob0=self.obj['reg_prob_0'].predict(try_data,return_std=False)
+        "对各簇的概率与预测UCB值进行加权，这里的UCB值和概率都是nparray数据结构"
+        UCB=ys0*prob0
+#        aaa=pd.DataFrame(UCBdic)
+#        for i in range(aaa.shape[0]):
+#            for j in range(self.n_clusters):
+#                aaa.iloc[i,j]=aaa.iloc[i,j]*self.componentweight[str(j)]
+#        aaa['total']=aaa.apply(lambda x: x.sum(), axis=1)
+#        ucbarray=np.array(aaa['total'])
+        "对UCB中的最大值进行选择，在try_data中得到相应的querypoint"
+        try_max=try_data[UCB.argmax()]
+        try_max=try_max.astype(int)#为了EXATA配置文件，把询问点改为整数型
+        if try_max[0]==0:
+            try_max[0]=try_max[0]+1
+        if try_max[1]==0:
+            try_max[1]=try_max[1]+1
+        max_acq=UCB.max()
+        print(max_acq)
+        print(try_max)
+        timee = time.clock()
+        rtime = timee - times
+        print('the value-AF run time is : %fS' % rtime)
+        return try_max  
+
+
+    def valueUCBhelper_RF_state(self,data,kappa,iternum,count,proportion=1,fitz=6):
+        """
+        RF-WIUCB模型 6维
+        """
+        times  = time.clock() 
+        bounds=pd.DataFrame()
+        superappsize = np.random.uniform(16, 64000,size=(200000))
+        superappsize = [ math.ceil(x) for x in superappsize ]
+        superappsize = [ x+1 for x in superappsize ]
+        trafsize = np.random.uniform(16, 64000,size=(200000))
+        trafsize = [ math.ceil(x) for x in trafsize ]
+        trafsize = [ x+1 for x in trafsize ]        
+        superappinterval=np.random.uniform(0, 100,size=(200000))#superapp视频业务，需要的时延抖动小，吞吐量大
+        superappinterval = [ math.ceil(x) for x in superappinterval ]
+        superappinterval = [ x+1 for x in superappinterval ]
+        vbrinterval=np.random.uniform(0, 100,size=(200000))
+        vbrinterval = [ math.ceil(x) for x in vbrinterval ]
+        vbrinterval = [ x+1 for x in vbrinterval ]        #vbr其他义务
+        vbrsize=np.random.uniform(16, 64000,size=(200000))
+        vbrsize = [ math.ceil(x) for x in vbrsize ]
+        vbrsize = [ x+1 for x in vbrsize ]        
+        trafinterval=np.random.uniform(0, 100,size=(200000))#trafficgenerator图像流，需要的丢包率小，吞吐量大
+        trafinterval = [ math.ceil(x) for x in trafinterval ]
+        trafinterval = [ x+1 for x in trafinterval ]
+            
+        bounds['superappinterval']=superappinterval
+        bounds['superappsize']=superappsize
+        bounds['vbrinterval']=vbrinterval
+        bounds['vbrsize']=vbrsize
+        bounds['trafinterval']=trafinterval
+        bounds['trafsize']=trafsize
+        
+        try_data = np.array(bounds)
+        collist=data.columns.values.tolist()
+        value=collist[fitz]
+        
+        
+        "对各簇的模型和进行predict"
+        ys0=self.obj['reg_'+str(value)+'_'+str(0)].predict(try_data)
+        ys1=self.obj['reg_'+str(value)+'_'+str(1)].predict(try_data)
+        steplength=kappa/iternum
+        a=kappa-count*steplength
+        if a<0:
+            a=0.1
+        "对各簇的概率与预测UCB值进行加权，这里的UCB值和概率都是nparray数据结构"
+        UCB=ys0+a*abs(ys0-ys1)
+        "对UCB中的最大值进行选择，在try_data中得到相应的querypoint"
+        try_max=try_data[UCB.argmax()]
+        try_max=try_max.astype(int)#为了EXATA配置文件，把询问点改为整数型
+        if try_max[0]==0:
+            try_max[0]=try_max[0]+1
+        if try_max[1]==0:
+            try_max[1]=try_max[1]+1
+        if try_max[2]==0:
+            try_max[2]=try_max[2]+1
+        if try_max[3]==0:
+            try_max[3]=try_max[3]+1            
+        if try_max[4]==0:
+            try_max[4]=try_max[4]+1            
+        if try_max[5]==0:
+            try_max[5]=try_max[5]+1               
+            
+        max_acq=UCB.max()
+        print(max_acq)
+        print(try_max)
+        timee = time.clock()
+        rtime = timee - times
+        print('the value-AF run time is : %fS' % rtime)
+        return try_max 
+
+
+    def valueUCBhelper_RF(self,data,kappa,fitx=1,fity=5,fitz=6):
+        """
+        RF的RF-UCB模型,固定的策略 2维
+        在RF中没有err项，需要对RF中的预测值进行处理
+        """
+        times  = time.clock() 
+        bounds=pd.DataFrame()
+        x_tries = np.random.uniform(0, 64000,size=(200000))
+        y_tries = np.random.uniform(0, 64000,size=(200000))
+        bounds['sapps']=x_tries
+        bounds['trafs']=y_tries
+        try_data = np.array(bounds)
+#        componentmodel={}
+#        UCBdic={}
+        collist=data.columns.values.tolist()
+        value=collist[fitz]
+        "对各簇的模型和进行predict"
+        ys0=self.obj['reg_'+str(value)+'_'+str(0)].predict(try_data)
+        ys1=self.obj['reg_'+str(value)+'_'+str(1)].predict(try_data)
+        "对各簇的概率与预测UCB值进行加权，这里的UCB值和概率都是nparray数据结构"
+        UCB=ys0+kappa*abs(ys0-ys1)
+        "对UCB中的最大值进行选择，在try_data中得到相应的querypoint"
+        try_max=try_data[UCB.argmax()]
+        try_max=try_max.astype(int)#为了EXATA配置文件，把询问点改为整数型
+        if try_max[0]==0:
+            try_max[0]=try_max[0]+1
+        if try_max[1]==0:
+            try_max[1]=try_max[1]+1
+        max_acq=UCB.max()
+        print(max_acq)
+        print(try_max)
+        timee = time.clock()
+        rtime = timee - times
+        print('the value-AF run time is : %fS' % rtime)
+        return try_max 
+        
+    def gpbuilder(self,data,fitx=1,fity=5,fitz=6,label=1):
+        """
+        根据聚类的结果，对用以标签下的数据进行GP回归，得到均值标准差和响应平面。在这里我们用的是3维的过程
+        高斯过程的拟合，将GP的相应平面存入实体的obj字典
+        """
+        collist=data.columns.values.tolist()
+        value=collist[fitz]
+        self.qosname.append(value)
+        testdata=data[data['label']==label]
+        testdata=testdata.reset_index(drop=True)
+        self.npdata=np.array(testdata)
+        self.reg=GaussianProcessRegressor(kernel=self.kernel,n_restarts_optimizer=10,alpha=0.1)
+        self.obj['reg_'+value+'_'+str(label)]=self.reg.fit(self.npdata[:,[fitx,fity]],self.npdata[:,fitz])
+        self.obj['output_'+value+'_'+str(label)],self.obj['err_'+value+'_'+str(label)]=self.obj['reg_'+value+'_'+str(label)].predict(np.c_[self.xset.ravel(),self.yset.ravel()],return_std=True)
+        self.obj['output_'+value+'_'+str(label)],self.obj['err_'+value+'_'+str(label)]=self.obj['output_'+value+'_'+str(label)].reshape(self.xset.shape),self.obj['err_'+value+'_'+str(label)].reshape(self.xset.shape)
+#        self.obj['sigma_'+str(label)]=np.sum(self.reg.predict(self.npdata[:,[1,5]],return_std=True)[1])
+        self.obj['up_'+value+'_'+str(label)],self.obj['down_'+value+'_'+str(label)]=self.obj['output_'+value+'_'+str(label)]*(1+1.96*self.obj['err_'+value+'_'+str(label)]),self.obj['output_'+value+'_'+str(label)]*(1-1.96*self.obj['err_'+value+'_'+str(label)])
+    def gpbuilder_state(self,data,fitz=6,label=1):
+        """
+        多维度高斯过程，拟合
+        """
+        collist=data.columns.values.tolist()
+        value=collist[fitz]
+        self.qosname.append(value)
+        testdata=data[data['label']==label]
+        testdata=testdata.reset_index(drop=True)
+        self.npdata=np.array(testdata)
+        self.reg=GaussianProcessRegressor(kernel=self.kernel,n_restarts_optimizer=10,alpha=0.1)
+        if fitz==6:
+            self.obj['reg_'+value+'_'+str(label)]=self.reg.fit(self.npdata[:,0:fitz],self.npdata[:,fitz])
+        elif fitz==7:
+            self.obj['reg_'+value+'_'+str(label)]=self.reg.fit(self.npdata[:,0:fitz-1],self.npdata[:,fitz])      
+
+
 
 
 
@@ -651,6 +734,7 @@ class GMMvalueOptimizaitonUnit:
         testdata=data[data.label==i]
         testdata=testdata.reset_index(drop=True)
         return testdata
+    
     def dropNaNworker(self,data):
         """
         去除nan数据
