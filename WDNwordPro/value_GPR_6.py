@@ -125,13 +125,14 @@ for count_i in range(len(superappsize)):
     value1=np.mean(tempdataset['value'])
     print(value1)
     memoryset.probinserter(state=state,value=value1,prob=1,label=0)
+    iternum=iternum+1
 
 "数据预处理===================================================================="
 priordataset=memoryset.memoryunit#将原始的数据保存到内存中
 print(memoryset.probmemoryunit)#这个数据是value均值、分簇概率，标签的综合数据，下面将利用这个数据进行GMM建模
 print(priordataset)#原始数据包括state，value
                         
-"建模GMM模型==================================================================="
+"建模GPR模型==================================================================="
 valuegmmgamer.gpbuilder_state(memoryset.probmemoryunit,fitz=6,label=0)#第一簇高斯过程模型
 valuegmmgamer.gpbuilder_state(memoryset.probmemoryunit,fitz=7,label=0)#第一簇概率高斯过程模型
 #valuegmmgamer.obj['reg_prob_1']#test
@@ -148,8 +149,7 @@ tu=ttt.tolist()
 listaaa.append(tu)
 with open('QP_GPR_D6.txt','a') as f:#记录每次AF选点的参数
     f.write(str(tu)+',')#写入listaaa，querypoint的序列
-"画图+++++++++++++++++++++++++++++++++++++++++++未完成+++++++++++++++++++++++++"
-"要绘制多指标合成的曲面，目前已经有模型参数，obj中提供"
+
 "反馈函数+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 """根据原始数据集的模型和质询点，仿真X次，读取新的数据，加入到Priordataset，绘图，并找到下一个质询点"""
 simucount=1
@@ -176,9 +176,9 @@ for i in range(100):
     memoryset.probinserter(state=state,value=value1,prob=1,label=0)
     newgammer.gpbuilder_state(memoryset.probmemoryunit,fitz=6,label=0)#第一簇高斯过程模型
     newgammer.gpbuilder_state(memoryset.probmemoryunit,fitz=7,label=0)#第一簇概率高斯过程模型 
-    ttt=valuegmmgamer.valueUCBhelper_GPR_state(memoryset.probmemoryunit,kappa=0,iternum=100,count=simucount)
+    ttt=newgammer.valueUCBhelper_GPR_state(memoryset.probmemoryunit,kappa=0,iternum=100,count=simucount)
     tu=ttt.tolist()
-    listaaa.append(tu)
+    listaaa.append(tu)4
     simucount=simucount+1#计数，修改文件名称
         
     with open('QP_GPR_D6.txt','a') as f:#记录每次AF选点的参数
