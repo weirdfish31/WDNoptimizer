@@ -1,3 +1,3 @@
 cd ./OutConfigfile
-exata WDNscenario.config -simulation -np 2
+exata WDNscenario.config -simulation -np 1
 cd ../
