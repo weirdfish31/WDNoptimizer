@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Nov 28 12:39:18 2018
+Created on Mon Apr  8 14:05:51 2019
 
 @author: WDN
-修改了数据的读取方式和模型，修改了AF函数的策略，部分指标的权重
-重新进行命名规则
 """
+
 import WDNexataReader#读取数据
 import WDNoptimizer#建模，画图，AF函数
 import WDNfeedback#反馈
@@ -115,7 +114,6 @@ for count_i in range(len(superappsize)):
         """
         memoryset.valueinserter(state=state,value=value)
         tempmemoryset.valueinserter(state=state,value=value)
-        print(eva.normalizedata)
     """
     "去掉nan数据"
     "聚类"
@@ -131,6 +129,8 @@ for count_i in range(len(superappsize)):
         part0.loc[:,'label']=0
         part1=tempdataset.loc[tempdataset['label']==1]
         part1.loc[:,'label']=1
+#                            distriubuteculsterdata=distriubuteculsterdata.append(part0)
+#                            distriubuteculsterdata=distriubuteculsterdata.append(part1)
         """
         计算混合模型中第一簇的概率，目前问题中的模型分为两簇，
         计算一簇模型的概率自然可以得到另一簇的概率
@@ -146,40 +146,33 @@ for count_i in range(len(superappsize)):
         part0.loc[:,'label']=1
         part1=tempdataset.loc[tempdataset['label']==1]
         part1.loc[:,'label']=0
+#                            distriubuteculsterdata=distriubuteculsterdata.append(part0)
+#                            distriubuteculsterdata=distriubuteculsterdata.append(part1)
         probOf1=len(part0)/len(tempdataset)
         probOf0=1-probOf1
         value1=np.mean(part0[part0['label']==1]['value'])
         value0=np.mean(part1[part1['label']==0]['value'])
         memoryset.probinserter(state=state,value=value1,prob=probOf1,label=1)
-        memoryset.probinserter(state=state,value=value0,prob=probOf0,label=0)                            
+        memoryset.probinserter(state=state,value=value0,prob=probOf0,label=0)    
     iternum=iternum+1
-                        
-                        
-"数据预处理====目前预处理都是在读取数据时完成===================================="
-#import WDNoptimizer
-#distriubuteculsterdata=distriubuteculsterdata.reset_index(drop=True)
+"数据预处理===================================================================="
 priordataset=memoryset.memoryunit#将原始的数据保存到内存中
 print(memoryset.probmemoryunit)#这个数据是value均值、分簇概率，标签的综合数据，下面将利用这个数据进行GMM建模
-print(priordataset)#原始数据包括state，value
-#len(distriubuteculsterdata[distriubuteculsterdata['label']==0])
-
-"建模HPP模型==================================================================="
-
-valuegmmgamer.gpbuilder_state(memoryset.probmemoryunit,fitz=6,label=0)#第一簇高斯过程模型
-valuegmmgamer.gpbuilder_state(memoryset.probmemoryunit,fitz=7,label=0)#第一簇概率高斯过程模型
-valuegmmgamer.gpbuilder_state(memoryset.probmemoryunit,fitz=6,label=1)#第二簇高斯过程模型
-valuegmmgamer.gpbuilder_state(memoryset.probmemoryunit,fitz=7,label=1)#第二簇概率高斯过程模型
+print(priordataset)#原始数据包括state，value                        
+"建模RFR模型==================================================================="
+valuegmmgamer.rfbuilder_state(memoryset.probmemoryunit,fitz=6,label=0)#第一簇RF过程模型
+valuegmmgamer.rfbuilder_state(memoryset.probmemoryunit,fitz=6,label=1)#第二簇RF高斯过程模型
 
 "AF函数模型===================================================================="
 """
 需要对目前的AF函数UCB进行修改
-目前有两簇的output，err，均值较大簇的prob
+目前有两簇的output，err=predict0-predict1
 目前的AF函数为valueUCBhelper
 """
-ttt=valuegmmgamer.valueUCBhelper_HPP_state(memoryset.probmemoryunit,kappa=4,iternum=100,count=0)
-tu=ttt.tolist()
+ttt=valuegmmgamer.valueUCBhelper_RF_state(memoryset.probmemoryunit,kappa=0,iternum=100,count=0)
+tu=ttt.tolist() 
 listaaa.append(tu)
-with open('QP_HPP_D6.txt','a') as f:#记录每次AF选点的参数
+with open('QP_RF_D6.txt','a') as f:#记录每次AF选点的参数
     f.write(str(tu)+',')#写入listaaa，querypoint的序列
 
 "反馈函数+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
@@ -187,7 +180,6 @@ with open('QP_HPP_D6.txt','a') as f:#记录每次AF选点的参数
 simucount=1
 "把querypoint存储到log文件中"
 for i in range(100):
-    "将反馈次数和querypoint写入log文件"
     teaser=WDNfeedback.FeedBackWorker(ttt[0],ttt[1],ttt[2],ttt[3],ttt[4],ttt[5])#实例化反馈类
 #    teaser.updateQuerypointworker(ttt)#更新反馈参数
     "将反馈次数和querypoint写入log文件"
@@ -196,11 +188,11 @@ for i in range(100):
 #     writeStr = "%s : {%s}\n" % (simucount, querypoint)
 #     outlogfile.write(writeStr)
 # =============================================================================
-    teaser.runTest_state(count=20)#仿真
+    teaser.runTest_state(count=10)#仿真
     state=[ttt[0],ttt[1],ttt[2],ttt[3],ttt[4],ttt[5]]
-    newdata=teaser.updatetrainningsetworker_state(state,path=newdatapath,count=20,style='value')    
+    newdata=teaser.updatetrainningsetworker_state(path=newdatapath,state=state,count=10,style='value')
     priordataset=priordataset.append(newdata)#将新数据加入至原始训练集中
-    newgammer=WDNoptimizer.GMMvalueOptimizaitonUnit(cluster=2)#5实例化GMM模型
+    newgammer=WDNoptimizer.GMMvalueOptimizaitonUnit(cluster=1)#5实例化GMM模型
     iternum=iternum+1
     newdataset=newgammer.dropNaNworker(newdata)#去掉nan数据
     newdataset=newgammer.presortworker(newdataset,col1='vbri',col2='value')
@@ -217,7 +209,6 @@ for i in range(100):
         probOf1=len(part1)/len(newdataset)
         probOf0=1-probOf1
         value1=np.mean(part1[part1['label']==1]['value'])
-#        print(np.mean(part1[part1['label']==1]['value']))
         value0=np.mean(part0[part0['label']==0]['value'])
         memoryset.probinserter(state=state,value=value1,prob=probOf1,label=1)
         memoryset.probinserter(state=state,value=value0,prob=probOf0,label=0)     
@@ -234,33 +225,45 @@ for i in range(100):
         value0=np.mean(part1[part1['label']==0]['value'])
         memoryset.probinserter(state=state,value=value1,prob=probOf1,label=1)
         memoryset.probinserter(state=state,value=value0,prob=probOf0,label=0) 
-#    distriubuteculsterdata=distriubuteculsterdata.append(newdataset)
-    "上面的新数据聚类完成，下面进行画图和querypoint的更新"
-    newgammer.gpbuilder_state(memoryset.probmemoryunit,fitz=6,label=0)#第一簇高斯过程模型
-    newgammer.gpbuilder_state(memoryset.probmemoryunit,fitz=7,label=0)#第一簇概率高斯过程模型
-    newgammer.gpbuilder_state(memoryset.probmemoryunit,fitz=6,label=1)#第二簇高斯过程模型
-    newgammer.gpbuilder_state(memoryset.probmemoryunit,fitz=7,label=1)#第二簇概率高斯过程模型
-    ttt=newgammer.valueUCBhelper_HPP_state(memoryset.probmemoryunit,kappa=4,iternum=100,count=simucount)
+    newgammer.rfbuilder_state(memoryset.probmemoryunit,fitz=6,label=0)#第一簇高斯过程模型
+    newgammer.rfbuilder_state(memoryset.probmemoryunit,fitz=6,label=1)#第二簇高斯过程模型 
+    ttt=newgammer.valueUCBhelper_RF_state(memoryset.probmemoryunit,kappa=0,iternum=100,count=simucount)
     tu=ttt.tolist()
-    listaaa.append(tu)  
+    listaaa.append(tu)
     simucount=simucount+1#计数，修改文件名称
-    
-    with open('QP_HPP_D6.txt','a') as f:#记录每次AF选点的参数
+        
+    with open('QP_RF_D6.txt','a') as f:#记录每次AF选点的参数
         f.write('\n')
         f.write(str(tu)+',')#写入listaaa，querypoint的序列
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
