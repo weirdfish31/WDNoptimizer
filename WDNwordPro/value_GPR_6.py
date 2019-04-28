@@ -144,7 +144,7 @@ valuegmmgamer.gpbuilder_state(memoryset.probmemoryunit,fitz=7,label=0)#第一簇
 目前有两簇的output，err，均值较大簇的prob
 目前的AF函数为valueUCBhelper
 """
-ttt=valuegmmgamer.valueUCBhelper_GPR_state(memoryset.probmemoryunit,kappa=0,iternum=100,count=0)
+ttt=valuegmmgamer.valueUCBhelper_GPR_state(memoryset.probmemoryunit,kappa=2,iternum=100,count=0)
 tu=ttt.tolist()
 listaaa.append(tu)
 with open('QP_GPR_D6.txt','a') as f:#记录每次AF选点的参数
@@ -163,9 +163,9 @@ for i in range(100):
 #     writeStr = "%s : {%s}\n" % (simucount, querypoint)
 #     outlogfile.write(writeStr)
 # =============================================================================
-    teaser.runTest(count=10)#仿真
+    teaser.runTest_state(count=10)#仿真
     state=[ttt[0],ttt[1],ttt[2],ttt[3],ttt[4],ttt[5]]
-    newdata=teaser.updatetrainningsetworker(path=newdatapath,point=ttt,count=10,style='value')
+    newdata=teaser.updatetrainningsetworker_state(path=newdatapath,state=state,count=10,style='value')
     priordataset=priordataset.append(newdata)#将新数据加入至原始训练集中
     newgammer=WDNoptimizer.GMMvalueOptimizaitonUnit(cluster=1)#5实例化GMM模型
     iternum=iternum+1
@@ -176,9 +176,9 @@ for i in range(100):
     memoryset.probinserter(state=state,value=value1,prob=1,label=0)
     newgammer.gpbuilder_state(memoryset.probmemoryunit,fitz=6,label=0)#第一簇高斯过程模型
     newgammer.gpbuilder_state(memoryset.probmemoryunit,fitz=7,label=0)#第一簇概率高斯过程模型 
-    ttt=newgammer.valueUCBhelper_GPR_state(memoryset.probmemoryunit,kappa=0,iternum=100,count=simucount)
+    ttt=newgammer.valueUCBhelper_GPR_state(memoryset.probmemoryunit,kappa=2,iternum=100,count=simucount)
     tu=ttt.tolist()
-    listaaa.append(tu)4
+    listaaa.append(tu)
     simucount=simucount+1#计数，修改文件名称
         
     with open('QP_GPR_D6.txt','a') as f:#记录每次AF选点的参数

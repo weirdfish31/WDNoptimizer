@@ -69,6 +69,7 @@ class ExataDBreader:
         """
         业务分类，目前三大类：trafficgenerator，vbr，superapp
         This function is about to difference the type of app into four different list
+        在trafficgenerator下总是有时候会报错
         """
         for app in self.appname:
             if (app.find('VBR') == -1 and app.find('FTP')==-1 and app.find('TrafficGen')==-1):

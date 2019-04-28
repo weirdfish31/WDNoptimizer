@@ -111,16 +111,17 @@ class readhelper:
         self.readnodePosition()
         self.datetimeFormat = '%d %b %Y %H:%M:%S'
         self.allAccess = []
-        self.numapp = 2#具体的发起业务的用户数，实际业务数为numapp*4
+        self.numapp = 2#目前就适用一条流进行实验
         self.appdur = 0
         self.applist = []
         self.appAccess = []
-        self.GtoSatBand = 30000000#星地链路带宽
-        self.SatToSatBand = 100000000#星间链路带宽
+#        self.GtoSatBand = 30000000
+#        self.SatToSatBand = 100000000
         self.GtoSatList = []
         self.GToSatTop = []
         self.IPandFault = []
-        self.simdur = 10000#仿真持续时间
+        self.simdur = 100
+        #读取场景中的各种链路参数，这里我们读取的是linkConfig场景的链路参数
         self.link = json.loads(open('./configfile/linkConfig.json').read())
         self.routing = 'OSPFv2'
         self.modeltype = {'Sat':'WIRELESS LINK', 'RS':'WIRELESS LINK','Ground':'WIRELESS LINK','Aircraft':'WIRELESS LINK'}
@@ -311,7 +312,6 @@ class readhelper:
                 if not x.startswith('Aircraft'):
                     groundStation.append(x)
         numapp = self.numapp
-        print(numapp)
         applist = []
         appset = set(applist)
         for i in range(numapp):
@@ -346,20 +346,17 @@ class readhelper:
                                 + appconfig["REQUEST-NUM"] + appconfig["REQUEST-SIZE"]
                                 + appconfig["REQUEST-INTERVAL"] 
                                 + appconfig["REPLAY"]
-                                +" APPLICATION-NAME " + appName + "\n")
-        
-            appName1 = item[0] + '-' + item[1]+'-VBR'
+                                +" APPLICATION-NAME " + appName + "\n")    
+            appName1 = appName+'-VBR'
             fileappconfig.write('VBR ' + str(srcid) + ' ' + str(destid)
                                 + vbrconfig["ITEM-SIZE"] + vbrconfig["MEAN-INTERVAL"]
                                 + vbrconfig["START-TIME"] + vbrconfig["END-TIME"] 
                                 +" APPLICATION-NAME " + appName1 + "\n")
-            
-            appName2 = item[0] + '-' + item[1]+'-FTP'
+            appName2 = appName+'-FTP'
             fileappconfig.write('FTP ' + str(srcid) + ' ' + str(destid)
                                 + ' ' + str(ftpITS1) + ' ' + str(ftptime) + 'S' 
                                 +" APPLICATION-NAME " + appName2 + "\n")
-            
-            appName3 = item[0] + '-' + item[1]+'-TrafficGen'
+            appName3 = appName+'-TrafficGen'
             fileappconfig.write('TRAFFIC-GEN ' + str(srcid) + ' ' + str(destid)
                                 + ' ' + trafficgenconfig["START-TIME"] + trafficgenconfig["DURATION"] 
                                 +trafficgenconfig["PACKET-SIZE"]+trafficgenconfig["PACKET-INTERVAL"]
