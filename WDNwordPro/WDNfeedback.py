@@ -145,7 +145,7 @@ class FeedBackWorker:
                 reader.appnamereader()#读取业务层的业务名称
                 reader.appfilter()#将业务名称分类至三个list
                 reader.appdatareader()#将每个业物流的输出数据存到实例化的类中的字典里面
-                reader.inputparainsert(point[0],point[1],point[2],point[3],point[4],point[5])
+                reader.inputparainsert(20,point[0],30,24000,30,point[1])
                 "================================================================="
                 eva=WDNoptimizer.EvaluationUnit()
                 superapp=reader.meandata('superapp')
@@ -154,7 +154,7 @@ class FeedBackWorker:
                 eva.calculateMetricEvaValue(vbr)
                 trafficgen=reader.meandata('trafficgen')
                 eva.calculateMetricEvaValue(trafficgen)
-                state=[point[0],point[1],point[2],point[3],point[4],point[5]]
+                state=[20,point[0],30,24000,30,point[1]]
                 print(state)
                 qos=eva.qoslist
     #           memoryset.insertmemoryunit(state=state,value=value)
@@ -168,7 +168,7 @@ class FeedBackWorker:
                 reader.appnamereader()#读取业务层的业务名称
                 reader.appfilter()#将业务名称分类至三个list
                 reader.appdatareader()#将每个业物流的输出数据存到实例化的类中的字典里面
-                reader.inputparainsert(point[0],point[1],point[2],point[3],point[4],point[5])
+                reader.inputparainsert(20,point[0],30,24000,30,point[1])
                 "================================================================="
                 eva=WDNoptimizer.EvaluationUnit()
                 superapp=reader.meandata('superapp')
@@ -177,7 +177,7 @@ class FeedBackWorker:
                 eva.calculateMetricEvaValue(vbr)
                 trafficgen=reader.meandata('trafficgen')
                 eva.calculateMetricEvaValue(trafficgen)
-                state=[point[0],point[1],point[2],point[3],point[4],point[5]]
+                state=[20,point[0],30,24000,30,point[1]]
                 print(state)
                 value=eva.evaluationvalue()
     #           memoryset.insertmemoryunit(state=state,value=value)

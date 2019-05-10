@@ -30,7 +30,7 @@ valuegmmgamer=WDNoptimizer.GMMvalueOptimizaitonUnit(cluster=2)#实例化MPP模�
 
 figpath="./Figure/"#图像的存放位置
 #datapath='G:/testData/2DGMM(16000_8000-36000)/'#先验数据的存放位置
-datapath='E:/WDNoptimizer/LHSprior/'#LHS先验数据的存放位置
+datapath='D:/WDNoptimizer/LHSprior/'#LHS先验数据的存放位置
 iternum=0#迭代的记数，在读取先验数据时记为零
 
 "读取TXT文件中迭代的state数据==================================================="
@@ -175,9 +175,9 @@ valuegmmgamer.gpbuilder(memoryset.probmemoryunit,fitx=1,fity=5,fitz=7,label=1)#�
 """
 需要对目前的AF函数UCB进行修改
 目前有两簇的output，err，均值较大簇的prob
-目前的AF函数为valueUCBhelper_alpha
+目前的AF函数为HPP_WDUCBhelper
 """
-ttt=valuegmmgamer.valueUCBhelper_alpha(memoryset.probmemoryunit,kappa=5,iternum=30,count=0)
+ttt=valuegmmgamer.HPP_WDUCBhelper(memoryset.probmemoryunit,kappa=5,iternum=30,count=0)
 tu=ttt.tolist()
 listaaa.append(tu)
 
@@ -199,7 +199,7 @@ valuegmmgamer.valuegragher_three(data=memoryset.probmemoryunit,qp=ttt,path=figpa
 # =============================================================================
 "====================================================================================================================="
 #newdatapath='E:/WDNoptimizer/MPP_k5_i30_t10_p1/'#新产生的数据的存放位置
-newdatapath='E:/WDNoptimizer/MPP_k5_i60_t10_p1/'#新产生的数据的存放位置
+newdatapath='D:/WDNoptimizer/MPP_k5_i60_t10_p1/'#新产生的数据的存放位置
 listMPP_k5_i30_p1=[[63701, 63986], [63934, 63958], [32, 63966], [93, 63795], [41, 63832], [122, 63901], 
                    [107, 63951], [25, 63986], [47, 63945], [38, 63836], [91, 63858], [28, 63802],  
                    [21, 63785], [123, 63954], [54, 63986], [126, 63765], [90, 63996], [104, 63922], [183, 63991],
