@@ -4,7 +4,7 @@ Created on Mon Nov  5 15:47:07 2018
 
 @author: WDN
 test：进行文件修改测试
-主要是迭代试验的测试，测试文件
+从第三次实验中copy来的
 """
 import WDNexataReader#读取数据
 import WDNoptimizer#建模，画图，AF函数
@@ -30,7 +30,7 @@ valuegmmgamer=WDNoptimizer.GMMvalueOptimizaitonUnit(cluster=2)#实例化GMM模�
 
 figpath="./Figure/"#图像的存放位置
 #datapath='G:/testData/2DGMM(16000_8000-36000)/'#先验数据的存放位置
-datapath='E:/WDNoptimizer/LHSprior/'#LHS先验数据的存放位置
+datapath='G:/testData/LHSprior/'#LHS先验数据的存放位置
 newdatapath='./OutConfigfile/'#新产生的数据的存放位置
 iternum=0#迭代的记数，在读取先验数据时记为零
 
@@ -180,10 +180,9 @@ valuegmmgamer.gpbuilder(memoryset.probmemoryunit,fitx=1,fity=5,fitz=7,label=1)#�
 目前有两簇的output，err，均值较大簇的prob
 目前的AF函数为valueUCBhelper
 """
-ttt=valuegmmgamer.valueUCBhelper_alpha(memoryset.probmemoryunit,kappa=10,iternum=25,count=0)
+ttt=valuegmmgamer.valueUCBhelper(memoryset.probmemoryunit,kappa=1)
 tu=ttt.tolist()
 listaaa.append(tu)
-print(tu)
 
 "画图+++++++++++++++++++++++++++++++++++++++++++未完成+++++++++++++++++++++++"
 "要绘制多指标合成的曲面，目前已经有模型参数，obj中提供"
@@ -245,7 +244,7 @@ for i in range(25):
     newgammer.gpbuilder(memoryset.probmemoryunit,fitx=1,fity=5,fitz=7,label=0)#第一簇概率高斯过程模型
     newgammer.gpbuilder(memoryset.probmemoryunit,fitx=1,fity=5,fitz=6,label=1)#第二簇高斯过程模型
     newgammer.gpbuilder(memoryset.probmemoryunit,fitx=1,fity=5,fitz=7,label=1)#第二簇概率高斯过程模型
-    ttt=valuegmmgamer.valueUCBhelper_alpha(memoryset.probmemoryunit,kappa=10,iternum=25,count=simucount)
+    ttt=newgammer.valueUCBhelper(data=memoryset.probmemoryunit,kappa= 1)#AF函数
     tu=ttt.tolist()
     listaaa.append(tu)
     newgammer.valuegragher(data=memoryset.probmemoryunit,qp=ttt,path=figpath,count=simucount)#多指标合成的画图

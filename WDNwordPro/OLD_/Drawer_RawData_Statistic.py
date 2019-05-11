@@ -18,7 +18,7 @@ memoryset=WDNoptimizer.MemoryUnit()#记忆单元，存储每次的状态
 #radio REQUEST-SIZE EXP 24000 _ 18000 _ RND EXP 22000
 
 figpath="./Figure/"
-datapath='E:/WDNoptimizer/LHSprior/'
+datapath='G:/testData/2DGMM(16000_8000-36000)/'
 #datapath='./OutConfigfile/'
 
 """
@@ -29,7 +29,7 @@ appdata=pd.DataFrame()#所有数据库的某种业务的聚合
 
 
 #dataset='radio REQUEST-SIZE DET '+str(sapps_i)+' _ '+str(vbrs_i)+' _ RND DET '+str(trafs_i)+' _'+str(i)
-dataset="radio REQUEST-SIZE DET 53443.0 _ 24000 _ RND DET 15692.0 _2"
+dataset="radio REQUEST-SIZE DET 16000 _ 24000 _ RND DET 8000 _9"
 readdb=WDNexataReader.ExataDBreader()#实例化
 readdb.opendataset(dataset,datapath)#读取特定路径下的数据库
 readdb.appnamereader()#读取业务层的业务名称
