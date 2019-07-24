@@ -447,6 +447,67 @@ class TaggedDataHandler:
             f.write(str(itermemoryset.probmemoryunit))#写入标记过的数据的DataFrame  
         print("mission complete！！！")
     
+
+    def IterDataTagWriter_state(self,count_i=10,path='E:/WDNoptimizer/GMM_i60_t10/',QPlist=[],savefilename='./LabelData/ITER_GMM24000_i60_t10.txt'):
+        """
+        读取QP列表的点，对迭代数据进行处理
+        """
+        iternum=0#迭代的记数，在读取先验数据时记为零
+        itermemoryset=WDNoptimizer.MemoryUnit()#记忆单元，存储每次的状态
+        newdatapath=path#新产生的数据的存放位置
+        """根据原始数据集的模型和质询点，仿真X次，读取新的数据，加入到Priordataset，绘图，并找到下一个质询点"""
+        for i in QPlist:
+            ttt=np.array(i)
+            teaser=WDNfeedback.FeedBackWorker(superinter=i[0],supersize=i[1],vbrinter=i[2],vbrsize=i[3],trafinter=i[4],trafsize=i[5])#实例化反馈类
+#            teaser.updateQuerypointworker(ttt)#更新反馈参数
+            newdata=teaser.updatetrainningsetworker_state(path=newdatapath,state=ttt,count=count_i,style='value')
+            newgammer=WDNoptimizer.GMMmultiOptimizationUnit(cluster=2)#实例化GMM模型
+            newdataset=newgammer.dropNaNworker(newdata)#去掉nan数据
+            newdataset=newgammer.presortworker(newdataset,col1='vbri',col2='value')
+            newdataset=newgammer.clusterworker(newdataset,col1='vbri',col2='value',count=iternum)#kmeans++聚类
+            state=[i[0],i[1],i[2],i[3],i[4],i[5]]
+            a=np.mean(newdataset[newdataset['label']==0]['value'])
+            b=np.mean(newdataset[newdataset['label']==1]['value']) 
+            if a<b:
+                part0=newdataset.loc[newdataset['label']==0]
+                part0.loc[:,'label']=0
+                part1=newdataset.loc[newdataset['label']==1]
+                part1.loc[:,'label']=1
+                """
+                计算混合模型中第一簇的概率，目前问题中的模型分为两簇，
+                计算一簇模型的概率自然可以得到另一簇的概率
+                """
+                probOf1=len(part1)/len(newdataset)
+                probOf0=1-probOf1
+                value1=np.mean(part1[part1['label']==1]['value'])
+                value0=np.mean(part0[part0['label']==0]['value'])
+                itermemoryset.probinserter(state=state,value=value1,prob=probOf1,label=1)
+                itermemoryset.probinserter(state=state,value=value0,prob=probOf0,label=0)
+            elif a>b:
+                part0=newdataset.loc[newdataset['label']==0]
+                part0.loc[:,'label']=1
+                part1=newdataset.loc[newdataset['label']==1]
+                part1.loc[:,'label']=0
+                probOf1=len(part0)/len(newdataset)
+                probOf0=1-probOf1
+                value1=np.mean(part0[part0['label']==1]['value'])
+                value0=np.mean(part1[part1['label']==0]['value'])
+                itermemoryset.probinserter(state=state,value=value1,prob=probOf1,label=1)
+                itermemoryset.probinserter(state=state,value=value0,prob=probOf0,label=0)
+            iternum=iternum+1
+        print(itermemoryset.probmemoryunit)#这个数据是value均值、分簇概率，标签的综合数据，下面将利用这个数据进行GMM建模
+        with open(savefilename,'w') as f:#记录每次AF选点的参数
+            f.write('\n')
+            f.write(str(itermemoryset.probmemoryunit))#写入标记过的数据的DataFrame  
+        print("mission complete！！！")
+
+
+
+
+
+
+
+
     
     
     
@@ -465,14 +526,8 @@ class TaggedDataHandler:
         iternum=0#迭代的记数，在读取先验数据时记为零
         "选择路径与文件名，读取TXT文件中迭代的state数据=============================================="
         datapath=path
-#        datapath='E:/WDNoptimizer/LHSprior/'#LHS先验数据的存放位置
-#        datapath='E:/WDNoptimizer/LHSMSE50000/'#LHS先验数据的存放位置
-#        datapath='E:/WDNoptimizer/LHSMSE24000/'#LHS先验数据的存放位置
         "-----------------------------------------------------------------------------------------"
         statefilename=filename
-#        statefilename="./history/priorstate_test.txt"#存储的先验数据的state列表txt文件
-#        statefilename="./history/priorstate50000_all.txt"#存储的先验数据的state列表txt文件
-#        statefilename="./history/priorstate24000_all.txt"#存储的先验数据的state列表txt文件 
         with open(statefilename, 'r') as file_to_read:
             while True:
                 lines = file_to_read.readline() # 整行读取数据
@@ -718,7 +773,7 @@ class TaggedDataHandler:
             f.write('\n')
             f.write(str(memoryset.probmemoryunit))#写入标记过的数据的DataFrame
         print('mission completed ! ! !')                        
-    def LabelDataReader(self,filename="./LabelData/LHS24000_test.txt"):
+    def LabelDataReader(self,filename="./LabelData/LHS_6D_train.txt"):
         """
         读取TXT文件中迭代的标签数据特征值
         """
@@ -859,8 +914,8 @@ class TaggedDataHandler:
         """
         进行zoomin的绘图
         """
-        sns.set_style("whitegrid")
-        fig,ax = plt.subplots(figsize=[20, 6])
+#        sns.set_style("whitegrid")
+        fig,ax = plt.subplots(figsize=[30,16])
         x=range(len(gpr))
         if style=='R-Squared':
             ax.scatter(x,mpp,marker='*',c='r')
@@ -868,34 +923,34 @@ class TaggedDataHandler:
             ax.scatter(x,rfr,marker='o',c='blue')
             ax.plot(x,rfr,color='blue', linewidth=2, alpha=0.6,label='RF')
             ax.plot(x,gpr,color='black', linewidth=2, alpha=0.6,label='GP')
-            ax.plot(x,mpp,color='r', linewidth=2, alpha=0.6,label='MSP')
+            ax.plot(x,mpp,color='r', linewidth=2, alpha=0.6,label='HPP')
             ax.legend(fontsize='xx-large')
             plt.ylabel('R-squared',fontsize='xx-large')
-            plt.xlabel('Iteration Times',fontsize='xx-large')
-            plt.title('R-squared',fontsize='xx-large')
+            plt.xlabel('Iterations',fontsize='xx-large')
+#            plt.title('R-squared',fontsize='xx-large')
             
-            axins=zoomed_inset_axes(ax, 5, loc=5)  # zoom = 6
-            axins.plot(x,gpr,color='black', linewidth=2, alpha=0.6)
-            axins.plot(x,rfr,color='blue', linewidth=2, alpha=0.6)
-            axins.plot(x,mpp,color='r', linewidth=2, alpha=0.6)
-            axins.scatter(x,mpp,marker='*',c='r')
-            axins.scatter(x,gpr,marker='.',c='black')
-            axins.scatter(x,rfr,marker='o',c='blue')
+#            axins=zoomed_inset_axes(ax, 5, loc=5)  # zoom = 6
+#            axins.plot(x,gpr,color='black', linewidth=2, alpha=0.6)
+#            axins.plot(x,rfr,color='blue', linewidth=2, alpha=0.6)
+#            axins.plot(x,mpp,color='r', linewidth=2, alpha=0.6)
+#            axins.scatter(x,mpp,marker='*',c='r')
+#            axins.scatter(x,gpr,marker='.',c='black')
+#            axins.scatter(x,rfr,marker='o',c='blue')
             
             # sub region of the original image
-            x1, x2, y1, y2 = 50,55,-0.5,1.5
-            axins.set_xlim(x1, x2)
-            axins.set_ylim(y1, y2)
-            # fix the number of ticks on the inset axes
-            axins.yaxis.get_major_locator().set_params(nbins=5)
-            axins.xaxis.get_major_locator().set_params(nbins=5)
-            
-            plt.xticks(visible=True)
-            plt.yticks(visible=True)
-            plt.legend(fontsize='x-large')
+#            x1, x2, y1, y2 = 85,90,-1.5,0.5
+#            axins.set_xlim(x1, x2)
+#            axins.set_ylim(y1, y2)
+#            # fix the number of ticks on the inset axes
+#            axins.yaxis.get_major_locator().set_params(nbins=5)
+#            axins.xaxis.get_major_locator().set_params(nbins=5)
+#            
+#            plt.xticks(visible=True)
+#            plt.yticks(visible=True)
+#            plt.legend(fontsize='xx-large')
             # draw a bbox of the region of the inset axes in the parent axes and
             # connecting lines between the bbox and the inset axes area
-            mark_inset(ax, axins, loc1=2, loc2=4, fc="none", ec="0.5")
+#            mark_inset(ax, axins, loc1=2, loc2=4, fc="none", ec="0.5")
             
             plt.draw()
             plt.show()
@@ -906,11 +961,11 @@ class TaggedDataHandler:
             ax.scatter(x,rfr,marker='o',c='blue')
             ax.plot(x,rfr,color='blue', linewidth=2, alpha=0.6,label='RF')
             ax.plot(x,gpr,color='black', linewidth=2, alpha=0.6,label='GP')
-            ax.plot(x,mpp,color='r', linewidth=2, alpha=0.6,label='MSP')
+            ax.plot(x,mpp,color='r', linewidth=2, alpha=0.6,label='HPP')
             ax.legend(fontsize='xx-large')
             plt.ylabel('MSE',fontsize='xx-large')
-            plt.xlabel('Iteration Times',fontsize='xx-large')
-            plt.title('MSE',fontsize='xx-large')
+            plt.xlabel('Iterations',fontsize='xx-large')
+#            plt.title('MSE',fontsize='xx-large')
             
             axins=zoomed_inset_axes(ax, 5, loc=5)  # zoom = 6
             axins.plot(x,gpr,color='black', linewidth=2, alpha=0.6)
@@ -921,7 +976,7 @@ class TaggedDataHandler:
             axins.scatter(x,rfr,marker='o',c='blue')
             
             # sub region of the original image
-            x1, x2, y1, y2 = 50,55,0,0.03
+            x1, x2, y1, y2 = 95,100,0.01,0.03
             axins.set_xlim(x1, x2)
             axins.set_ylim(y1, y2)
             # fix the number of ticks on the inset axes
@@ -930,7 +985,7 @@ class TaggedDataHandler:
             
             plt.xticks(visible=True)
             plt.yticks(visible=True)
-            plt.legend(fontsize='x-large')
+            plt.legend(fontsize='xx-large')
             # draw a bbox of the region of the inset axes in the parent axes and
             # connecting lines between the bbox and the inset axes area
             mark_inset(ax, axins, loc1=2, loc2=4, fc="none", ec="0.5")

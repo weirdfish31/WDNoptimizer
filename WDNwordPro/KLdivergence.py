@@ -10,32 +10,36 @@ import scipy.stats
 import WDNTagDataHandler
 import matplotlib.pyplot as plt 
 import seaborn as sns
-import WDNoptimizer
 from sklearn.metrics import mean_squared_error
 import math
-import WDNexataReader#读取数据
 
 teaser=WDNTagDataHandler.TaggedDataHandler()#实例化
 traindatafilename='./LabelData/LHS_6D_train.txt'
-iterdatafilename='./LabelData/LHS_6D_2.txt'
-readtestfilename='./LabelData/LHS_6D_1.txt'
-simulationrawdataname='./LabelData/LHS6D_raw.txt'
+#iterdatafilename='./LabelData/LHS_6D_1.txt'
+iterdatafilename='./LabelData/LHS6D_access_HPP_K0_I100.txt'
+readtestfilename='./LabelData/LHS_6D_2.txt'
+simulationrawdataname='./LabelData/access_RAW/LHS6D_raw2.txt'
 
-testdatapath="D:/WDNoptimizer/access/LHS6D_prior2/"
-teststate="D:/WDNoptimizer/access/LHS6D_prior2/priorLHS6D.txt"
+#testdatapath="D:/WDNoptimizer/access/LHS6D_prior2/"
+#teststate="D:/WDNoptimizer/access/LHS6D_prior2/priorLHS6D.txt"
 
 traindata=teaser.LabelDataReader(filename=traindatafilename)#训练数据读取
-testdata=teaser.LabelDataReader(filename=readtestfilename)#测试数据的读取
 iterdata=teaser.LabelDataReader(filename=iterdatafilename)#迭代数据的读取
 
+testdata=teaser.LabelDataReader(filename=readtestfilename)#测试数据的读取
 rawdata=teaser.RawDataReader(filename=simulationrawdataname)
 
-#traindata=traindata.append(iterdata).reset_index(drop=True)#迭代数据加入先验数据
+traindata=traindata.append(iterdata).reset_index(drop=True)#迭代数据加入先验数据
+KLd1=[]
+KLd2=[]
+KLd3=[]
 
-MPPMSE=[]
-GPRMSE=[]
-RFMSE=[]
-KLd=[]
+n=119
+figpath="./Figure/"#图像的存放位置
+JL1=[]
+JL2=[]
+JL3=[]
+
 "循环迭代的数据，对每次迭代的模型进行MSE的计算"
 "这里的MSE计算根据模型的不同分别进行，MPP模型中的各簇与仿真值对应的各簇进行计算，GPR中直接进行计算"
 for i in range(int(len(traindata)/2)):
@@ -54,63 +58,235 @@ for i in range(int(len(traindata)/2)):
     aaa=20*MPPdata['prob0']
     aaa=[math.ceil(x) for x in aaa]
     ccc=[20-x for x in aaa]
-    kl=0
-    for n in range(120):
-        first=rawdata['value'][n*20:(n+1)*20]
-        second=np.array(first)
-        second[np.isnan(second)]=np.nanmean(second)
-        second=np.sort(second)
-        second=second/np.sum(second)
-        bbb0= np.random.normal(loc=MPPdata['mean0'][n],scale=MPPdata['std0'][n],size=aaa[n])
-        bbb1=np.random.normal(loc=MPPdata['mean1'][n],scale=MPPdata['std1'][n],size=ccc[n])
-        bbb=np.append(bbb1,bbb0)
-        bbb=bbb/np.sum(bbb)
-        kl1=scipy.stats.entropy(bbb, second) 
-#        kl1=np.sum(bbb*np.log(bbb/second))
-        kl=kl+kl1
-    KLd.append(kl)
-    
-
-
-
-gamer=WDNTagDataHandler.ModelCompareHandler()
-'建模'
-gamer.MPPmodelRebuilder_state(traindata)
-gamer.GPRmodelRebuiler_state(traindata)
-gamer.RFmodelRebuilder_state(traindata)
-'预测'
-MPPdata=gamer.MPPpredicter_state(testdata)
-GPRdata=gamer.GPRpredicter_state(testdata)
-RFdata=gamer.RFpredicter_state(testdata)
-
-
-
-aaa=20*MPPdata['prob0']
-aaa=[math.ceil(x) for x in aaa]
-ccc=[20-x for x in aaa]
-kl=0
-for n in range(120):
+    "simulation value"
     first=rawdata['value'][n*20:(n+1)*20]
     second=np.array(first)
-    second[np.isnan(second)]=np.nanmean(second)
+    second[np.isnan(second)]=np.random.normal(loc=MPPdata['mean0'][n],scale=MPPdata['std0'][n],size=1)
+#    second[np.isnan(second)]=np.nanmean(second)
     second=np.sort(second)
     second=second/np.sum(second)
+    "HPP predict value"
     bbb0= np.random.normal(loc=MPPdata['mean0'][n],scale=MPPdata['std0'][n],size=aaa[n])
     bbb1=np.random.normal(loc=MPPdata['mean1'][n],scale=MPPdata['std1'][n],size=ccc[n])
-    bbb=np.append(bbb1,bbb0)
-    bbb=bbb/np.sum(bbb)
-    ddd=bbb/second
-#    ddd=[x+0.0000001 for x in ddd]
-    kl1=scipy.stats.entropy(bbb, second) 
-#    kl1=np.sum(bbb*np.log(ddd))
-    kl=kl+kl1
-KLd.append(kl)
+    hpp=np.append(bbb1,bbb0)
+    hpp=np.sort(hpp)
+    hpp=hpp/np.sum(hpp)
+    "GPR predict value"
+    bbb3=np.random.normal(loc=GPRdata['mean'][n],scale=GPRdata['std'][n],size=20)
+#    bbb3=np.sort(bbb3)
+    gpr=bbb3
+    "RF redict value"
+    bbb4=np.random.normal(loc=(np.abs(RFdata['mean1'][n]+RFdata['mean0'][n])),scale=(2*np.abs(RFdata['mean1'][n]-RFdata['mean0'][n])),size=20)
+#    bbb4=np.array([RFdata['mean1'][n]]*20)
+#    bbb5=np.array([RFdata['mean0'][n]]*10)
+#    rf=np.append(bbb4,bbb5)
+    rf=bbb4
+#    rf=np.sort(rf)
+    "KLdivergence"
+    
+    jl1=0.5*scipy.stats.entropy(hpp, hpp)+0.5*scipy.stats.entropy(second, hpp+second)
+    jl2=0.5*scipy.stats.entropy(gpr, gpr+second)+0.5*scipy.stats.entropy(second, gpr+second)
+    jl3=0.5*scipy.stats.entropy(rf, second)+0.5*scipy.stats.entropy(second, rf)
+    kl1=scipy.stats.entropy(second, hpp+second)
+    kl2=scipy.stats.entropy(second, gpr+second)
+    kl3=scipy.stats.entropy(second, rf)
+#    kl1=scipy.stats.entropy(second, hpp) 
+#    kl2=scipy.stats.entropy(second, gpr) 
+#    kl3=scipy.stats.entropy(second, rf) 
+#    kl1=np.sum(hpp*np.log(hpp/second))
+#    kl2=np.sum(gpr*np.log(gpr/second))
+#    kl3=np.sum(rf*np.log(rf/second))
+#    KLd1.append(np.log(kl1))
+#    KLd2.append(np.log(kl2))
+#    KLd3.append(np.log(kl3))
+    inf = float("inf")
+    if (jl1!=inf and jl2!=inf and jl3!=inf ):
+        JL1.append(np.log(jl1))
+        JL2.append(np.log(jl2))
+        JL3.append(np.log(jl3))
+    if (kl1!=inf and kl2!=inf and kl3!=inf ):
+        KLd1.append(np.log(kl1))
+        KLd2.append(np.log(kl2))
+        KLd3.append(np.log(kl3))
 
 
 
+"JS散度"
+#plt.scatter(x=range(len(MPPMSE_LHS)),y=MPPMSE_LHS,marker='.',c='black')
+#plt.scatter(x=range(len(MPPMSE_RG)),y=MPPMSE_RG,marker='o',c='blue')
+sns.set_style("whitegrid")
+plt.figure('Line fig',figsize=(20,6))
+
+plt.xlabel('Iteration Count',fontsize='xx-large')
+plt.ylabel('log-JSdivergence',fontsize='xx-large')
+plt.title('JSdivergence ',fontsize='xx-large')
+plt.plot(JL1,color='r', linewidth=2, alpha=0.6,label='HPP')
+plt.plot(JL2,color='b', linewidth=2, alpha=0.6,label='GPR')
+plt.plot(JL3,color='y', linewidth=2, alpha=0.6,label='RF')
+#plt.fill_between(range(len(JL1)),JL1, JL2, where=JL2<=JL1, facecolor='red')
+
+#plt.plot(KLd1,color='r', linewidth=2, alpha=0.6,label='HPP')
+#plt.plot(KLd2,color='b', linewidth=2, alpha=0.6,label='GPR')
+#plt.plot(KLd3,color='y', linewidth=2, alpha=0.6,label='RF')
+plt.legend(fontsize='xx-large')
+plt.savefig(figpath+'JL'+str(n)+".jpg")
+
+"KL散度绘图"
+sns.set_style("whitegrid")
+plt.figure('Line fig',figsize=(20,6))
+
+plt.xlabel('Iteration Count',fontsize='xx-large')
+plt.ylabel('log-KLdivergence',fontsize='xx-large')
+plt.title('KLdivergence ',fontsize='xx-large')
+plt.plot(KLd1,color='r', linewidth=2, alpha=0.6,label='HPP')
+plt.plot(KLd2,color='b', linewidth=2, alpha=0.6,label='GPR')
+plt.plot(KLd3,color='y', linewidth=2, alpha=0.6,label='RF')
+
+#plt.plot(KLd1,color='r', linewidth=2, alpha=0.6,label='HPP')
+#plt.plot(KLd2,color='b', linewidth=2, alpha=0.6,label='GPR')
+#plt.plot(KLd3,color='y', linewidth=2, alpha=0.6,label='RF')
+plt.legend(fontsize='xx-large')
+plt.savefig(figpath+'JL'+str(n)+".jpg")
+
+"=++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+KLM1=[]
+KLM2=[]
+KLM3=[]
+KLvar1=[]
+KLvar2=[]
+KLvar3=[]
 
 
+for j in range(len(JL1)):
+    kld1=np.array(JL1[0:(j+1)])
+    kld2=np.array(JL2[0:(j+1)])
+    kld3=np.array(JL3[0:(j+1)])
+    mean1=kld1.sum()/(j+1)
+    var1=(kld1*kld1).sum()/(j+1)-mean1**2
+    mean2=kld2.sum()/(j+1)
+    var2=(kld2*kld2).sum()/(j+1)-mean2**2    
+    mean3=kld3.sum()/(j+1)
+    var3=(kld3*kld3).sum()/(j+1)-mean3**2    
+    KLM1.append(mean1)
+    KLM2.append(mean2)
+    KLM3.append(mean3)
+    KLvar1.append(var1)
+    KLvar2.append(var2)
+    KLvar3.append(var3)
 
+"KL散度均值方差绘图"
+sns.set_style("whitegrid")
+plt.figure('Line fig',figsize=(20,6))
+
+plt.xlabel('Iteration Count',fontsize='xx-large')
+plt.ylabel('log-JSdivergence',fontsize='xx-large')
+plt.title('JSdivergence-mean-var ',fontsize='xx-large')
+plt.plot(KLM1,color='r', linewidth=2.5, alpha=0.6,label='HPP-LOG-JS-mean')
+plt.plot(KLM2,color='b', linewidth=2.5, alpha=0.6,label='GPR-LOG-JS-mean')
+plt.plot(KLM3,color='y', linewidth=2.5, alpha=0.6,label='RF-LOG-JS-mean')
+plt.plot(KLvar1,color='r', linewidth=1, alpha=0.6,label='HPP-LOG-JS-var')
+plt.plot(KLvar2,color='b', linewidth=1, alpha=0.6,label='GPR-LOG-JS-var')
+plt.plot(KLvar3,color='y', linewidth=1, alpha=0.6,label='RF-LOG-JS-var')
+#plt.plot(KLd1,color='r', linewidth=2, alpha=0.6,label='HPP')
+#plt.plot(KLd2,color='b', linewidth=2, alpha=0.6,label='GPR')
+#plt.plot(KLd3,color='y', linewidth=2, alpha=0.6,label='RF')
+plt.legend(fontsize='xx-large')
+plt.savefig(figpath+'JL'+str(n)+".jpg")
+
+
+"=++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+KLM1=[]
+KLM2=[]
+KLM3=[]
+KLvar1=[]
+KLvar2=[]
+KLvar3=[]
+
+
+for j in range(len(KLd1)):
+    kld1=np.array(KLd1[0:(j+1)])
+    kld2=np.array(KLd2[0:(j+1)])
+    kld3=np.array(KLd3[0:(j+1)])
+    mean1=kld1.sum()/(j+1)
+    var1=(kld1*kld1).sum()/(j+1)-mean1**2
+    mean2=kld2.sum()/(j+1)
+    var2=(kld2*kld2).sum()/(j+1)-mean2**2    
+    mean3=kld3.sum()/(j+1)
+    var3=(kld3*kld3).sum()/(j+1)-mean3**2    
+    KLM1.append(mean1)
+    KLM2.append(mean2)
+    KLM3.append(mean3)
+    KLvar1.append(var1)
+    KLvar2.append(var2)
+    KLvar3.append(var3)
+
+"KL散度均值方差绘图"
+sns.set_style("whitegrid")
+plt.figure('Line fig',figsize=(20,6))
+
+plt.xlabel('Iteration Count',fontsize='xx-large')
+plt.ylabel('log-KLdivergence',fontsize='xx-large')
+plt.title('KLdivergence-mean-var ',fontsize='xx-large')
+plt.plot(KLM1,color='r', linewidth=2.5, alpha=0.6,label='HPP-LOG-KL-mean')
+plt.plot(KLM2,color='b', linewidth=2.5, alpha=0.6,label='GPR-LOG-KL-mean')
+plt.plot(KLM3,color='y', linewidth=2.5, alpha=0.6,label='RF-LOG-KL-mean')
+plt.plot(KLvar1,color='r', linewidth=1, alpha=0.6,label='HPP-LOG-KL-var')
+plt.plot(KLvar2,color='b', linewidth=1, alpha=0.6,label='GPR-LOG-KL-var')
+plt.plot(KLvar3,color='y', linewidth=1, alpha=0.6,label='RF-LOG-KL-var')
+#plt.plot(KLd1,color='r', linewidth=2, alpha=0.6,label='HPP')
+#plt.plot(KLd2,color='b', linewidth=2, alpha=0.6,label='GPR')
+#plt.plot(KLd3,color='y', linewidth=2, alpha=0.6,label='RF')
+plt.legend(fontsize='xx-large')
+plt.savefig(figpath+'JL'+str(n)+".jpg")
+
+#gamer=WDNTagDataHandler.ModelCompareHandler()
+#traindata
+#testdata
+#'''
+#根据数据进行随机森林回归
+#'''
+#collist=traindata.columns.values.tolist()
+#value=collist[6]
+#testdata=traindata[traindata['label']==1]
+#testdata=testdata.reset_index(drop=True)
+#npdata=np.array(testdata)
+#from sklearn.ensemble import RandomForestRegressor
+#reg=RandomForestRegressor(n_estimators=10,n_jobs=1)
+#reg.fit(npdata[:,0:6],npdata[:,6])
+#
+#reg.predict(test)
+#    
+#    
+#    
+#gamer.RFmodelRebuilder_state(traindata)
+#
+#RFdata=gamer.RFpredicter_state(testdata)
+#
+#gamer.RFR.obj['reg_value_0'].predict_proba(testdata)
+#
+#aaa=20*MPPdata['prob0']
+#aaa=[math.ceil(x) for x in aaa]
+#aaa
+#ccc=[20-x for x in aaa]
+#kl=0
+#second=np.array(rawdata['value'][n*20:(n+1)*20])
+#second[np.isnan(second)]=np.nanmean(second)
+#second=np.sort(second)/np.sum(second)
+#second
+#bbb0= np.random.normal(loc=MPPdata['mean0'][n],scale=MPPdata['std0'][n],size=aaa[n])
+#bbb1=np.random.normal(loc=MPPdata['mean1'][n],scale=MPPdata['std1'][n],size=ccc[n])
+#bbb=np.append(bbb1,bbb0)
+#for m in range(len(bbb)):
+#    if bbb[m]==0:
+#        bbb[m]=np.mean(bbb)
+#bbb=np.sort(bbb)/np.sum(bbb)
+##    ddd=[x+0.0000001 for x in ddd]
+##    kl1=scipy.stats.entropy(bbb, second) 
+#kl1=np.sum(second*np.log(second/bbb))
+#kl1
+#kl=kl+kl1
+#KLd.append(kl/120)
+#KLd
 
 
 
@@ -119,15 +295,6 @@ KLd.append(kl)
 
 
  
-p=np.asarray([0.65,0.25,0.07,0.03])
-p
-q=np.array([0.6,0.25,0.1,0.05])
-q
-#方法一：根据公式求解
-kl1=np.sum(bbb*np.log(bbb/second))
-kl1
-
-
 # =============================================================================
 # """
 # 读取原始先验数据的STATE文件，得到每个原始数据的value值

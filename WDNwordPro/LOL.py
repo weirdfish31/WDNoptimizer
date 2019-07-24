@@ -1,181 +1,47 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Jan  7 15:13:01 2019
+Created on Sun May  5 10:44:05 2019
 
-@author: WDN
-用来测试WDNTagDataHandler,主要是进行模型（）之间的迭代比较MSE
+@author: weird
+用来测试WDNTagDataHandler,主要是进行模型之间的迭代比较MSE
+比较的指标有MSE,R-Squared,JS,KL
 """
+
 import pandas as pd
 import numpy as np
-import scipy.stats
 import WDNTagDataHandler
 import matplotlib.pyplot as plt 
 import seaborn as sns
-import WDNoptimizer
-from sklearn.metrics import mean_squared_error
+import math
+#import iterationreport
 
 
 
-"选择路径与文件名，读取TXT文件中迭代的state数据=============================================="
-vbr=24000
-#vbr=5000
-"-----------------------------------------------------------------------------------------"
+"选择路径与文件名，读取TXT文件中迭代的state数据=================================="
 datapath='D:/WDNoptimizer/access/LHS6D_prior2/'#LHS先验数据的存放位置
-
 statefilename="D:/WDNoptimizer/access/LHS6D_prior2/priorLHS6D.txt"#存储的先验数据的state列表txt文件
 taggedDatafilename='./LabelData/LHS_6D_2.txt'
-"-----------------------------------------------------------------------------------------"
+"-----------------------------------------------------------------------------"
 traindatafilename='./LabelData/LHSprior_test.txt'
-
 iterdatafilename='./LabelData/GPR24000_k5_i60_t10.txt'
 griddatafilename='./LabelData/2DGMM(16000_8000-36000)_test.txt'
 readtestfilename='./LabelData/LHS24000_test.txt'
-
-'-----------------------------------------------------------------------------------------'
-
-
-newdatapath='D:/WDNoptimizer/access/GPR_S5_K5_I50/'
-
-
-
-savedataname='./LabelData/ITER_GPR24000_k5_i50_t10_S5.txt'
-
-
-listGMM_i60_t10=[[63709 ,63998 ],[63976 ,283   ],[24064 ,63980 ],[3     ,63876 ],[63973 ,35465 ],[34495 ,63986 ],
-                 [45181 ,48150 ],[45054 ,48390 ],[33249 ,63986 ],[53340 ,34500 ],[42206 ,44016 ],[40228 ,45406 ],
-                 [28527 ,63949 ],[63955 ,27404 ],[63706 ,217   ],[35303 ,49160 ],[23476 ,63994 ],[37209 ,46716 ],
-                 [37468 ,46169 ],[32289 ,49794 ],[44269 ,37267 ],[63885 ,97    ],[22327 ,63966 ],[32624 ,63994 ],
-                 [42535 ,39082 ],[32249 ,47910 ],[32600 ,47396 ],[41789 ,37975 ],[33214 ,46769 ],[43986 ,34883 ],
-                 [32157 ,47348 ],[63716 ,83    ],[32437 ,49253 ],[42618 ,36109 ],[32586 ,48885 ],[44583 ,33893 ],
-                 [31098 ,49494 ],[31923 ,46178 ],[31281 ,49419 ],[30590 ,50553 ],[30665 ,50260 ],[19424 ,63995 ],
-                 [29946 ,50780 ],[33361 ,44745 ],[30368 ,50305 ],[50054 ,23937 ],[29988 ,50953 ],[32619 ,45542 ],
-                 [31920 ,46328 ],[29687 ,51218 ],[30208 ,50682 ],[30433 ,50334 ],[34874 ,47880 ],[37153 ,41022 ],
-                 [29175 ,51017 ],[35732 ,47203 ],[35318 ,63967 ],[28391 ,49667 ],[36563 ,43955 ],[28394 ,49467 ]]
-
-listGPR_i60_t3=[[63988 ,63060 ],[63979 ,47    ],[482   ,63975 ],[63986 ,33949 ],[538   ,63993 ],[36558 ,63960 ],
-                [36792 ,63937 ],[48721 ,41062 ],[45332 ,43212 ],[63967 ,32802 ],[39670 ,48671 ],[34465 ,63962 ],
-                [43896 ,42928 ],[63796 ,188   ],[33883 ,63965 ],[47457 ,38319 ],[46853 ,38737 ],[63987 ,34471 ],
-                [39297 ,45425 ],[39465 ,45347 ],[63822 ,63819 ],[38843 ,45217 ],[45795 ,36783 ],[36496 ,47493 ],
-                [46133 ,36282 ],[34219 ,49887 ],[34131 ,50097 ],[34031 ,50030 ],[30725 ,63996 ],[44420 ,38519 ],
-                [42790 ,40597 ],[35925 ,46644 ],[35351 ,46947 ],[35464 ,46955 ],[35196 ,47188 ],[45238 ,36876 ],
-                [34430 ,47700 ],[46008 ,35768 ],[31944 ,49767 ],[31601 ,50071 ],[31486 ,50094 ],[31977 ,49792 ],
-                [31375 ,50182 ],[32198 ,63970 ],[38228 ,45129 ],[38356 ,45030 ],[32659 ,47497 ],[32100 ,47936 ],
-                [40923 ,43976 ],[31637 ,48206 ],[30943 ,48581 ],[30598 ,48622 ],[30105 ,49038 ],[40257 ,44526 ],
-                [28203 ,50370 ],[28449 ,50303 ],[27881 ,50677 ],[28039 ,63981 ],[28307 ,49208 ],[37792 ,44687 ]]
-
-iter0_9=[[63962, 63909], [63972, 218], [9, 63836], [63977, 31048], [30965, 63967], [34415, 63976], [693, 63983], 
-         [44577, 42897], [41411, 44445], [63572, 38], [35239, 46748], [48234, 30737], [32246, 46846], [45938, 31509], 
-         [35230, 63998], [29892, 45772], [44206, 30474], [29049, 46222], [29559, 45840], [46735, 19362], [37667, 40023], 
-         [37182, 40375], [27724, 47216], [39355, 36747], [63969, 30803], [28218, 46361], [27347, 47160], [36095, 38965], 
-         [26589, 63989], [26110, 49825], [28726, 63969], [42705, 63965], [26302, 47293], [34007, 39634], [26203, 47530], 
-         [37809, 32993], [26287, 47444], [24457, 63981], [35220, 36998], [44994, 21664], [46097, 72], [41264, 27707], 
-         [39762, 30598], [39015, 31451], [26089, 49806], [36778, 34568], [38935, 43331], [39546, 29392], [46723, 23216], 
-         [32233, 37749], [32163, 38034], [46526, 22997], [15109, 63974], [24358, 49055], [26154, 63989], [24675, 63981], 
-         [33437, 35404], [63991, 22700], [25901, 45785], [35752, 32587], [25348, 47192], [24440, 48063], [36468, 47040],
-         [24648, 47199], [36471, 31810], [38161, 47560], [45630, 20847], [31449, 36912], [25039, 63983], [24064, 50190], 
-         [40327, 63990], [24189, 49662], [33065, 34653], [46174, 19784], [24514, 49856], [35592, 31800], [24773, 63996], 
-         [25115, 63991], [22047, 63950], [24239, 52173], [26373, 63999], [24102, 51303], [18041, 52605], [33556, 50837], 
-         [39910, 63995], [34084, 63996], [32946, 49818], [32183, 49980], [31568, 49907], [31043, 37833], [63955, 63860], 
-         [26393, 51843], [26577, 51746], [23622, 63992], [38929, 28645], [45900, 18956], [36513, 30961], [31415, 37394], 
-         [38538, 29474], [43695, 21168]]
-
-iter0_0=[[57405, 47321], [35159, 37803], [35849, 35489], [35228, 36138], [35874, 36224], [35253, 37219], [35445, 36353], 
-         [35737, 36082], [43942, 24887], [32747, 37895], [33705, 35596], [33675, 35152], [33708, 36548], [33751, 36086], 
-         [34088, 35220], [33959, 34654], [34160, 35855], [34118, 35518], [34176, 36187], [34119, 35597], [34085, 35137], 
-         [34308, 34868], [34159, 35059], [34304, 34892], [34244, 34807], [34294, 34678], [34163, 34765], [34321, 34523], 
-         [33754, 33483], [34020, 34924], [33604, 33249], [34019, 35101], [33890, 34857], [34097, 34626], [34041, 34616],
-         [33944, 34610], [33443, 32358], [33846, 34929], [33811, 34859], [33614, 34926], [33747, 35073], [32991, 33175], 
-         [32901, 33125], [32864, 33205], [33754, 35517], [33606, 35326], [32953, 32736], [32831, 32819], [32744, 32772], 
-         [33447, 36056], [32834, 37365], [32985, 37292], [33778, 35886], [33856, 35935], [32908, 32710], [33778, 35901], 
-         [33734, 35898], [32834, 32564], [33860, 35683], [33864, 35580], [33027, 31985], [32823, 32248], [33652, 36052], 
-         [33647, 36149], [33223, 37133], [31963, 39743], [30364, 37772], [32902, 38066], [33090, 37736], [29144, 40721], 
-         [30787, 37824], [31387, 40896], [29262, 40447], [32205, 39682], [30949, 37239], [31171, 36847], [32117, 39213], 
-         [32384, 38929], [32592, 38684], [31519, 40910], [31860, 40307], [31170, 36977], [33199, 37867], [30955, 37691], 
-         [33302, 37933], [31649, 36418], [33592, 37682], [33491, 37543], [33462, 37534], [33163, 38402], [33237, 38155], 
-         [33435, 38076], [31882, 36083], [32000, 35972], [32146, 35770], [32150, 35850], [32074, 35794], [33573, 37566], 
-         [32218, 35511], [32277, 35543]]
-
-listGPR_i25_t10=[[22605, 32779], [22635, 32892], [22663, 32814], [22620, 33077], [22630, 33037], [22650, 33078], 
-                 [22698, 33099], [22735, 33144], [22637, 33191], [22702, 33057], [22638, 33215], [22672, 33155],
-                 [22695, 33179], [22694, 33081], [22680, 33141], [22688, 33244], [22653, 33241], [22780, 33173], 
-                 [22595, 33267], [22623, 33306], [22695, 33256], [22734, 33334], [22723, 33364], [22662, 33399], 
-                 [22592, 33415]]
-
-listMPP_k5_i30_t10_p1=[[63701, 63986], [63934, 63958], [32, 63966], [93, 63795], [41, 63832], [122, 63901], 
-                       [107, 63951], [25, 63986], [47, 63945], [38, 63836], [91, 63858], [28, 63802],  
-                       [21, 63785], [123, 63954], [54, 63986], [126, 63765], [90, 63996], [104, 63922], [183, 63991],
-                       [187, 63980], [145, 63951], [51, 63674], [52, 63702], [3, 63652], [3, 59988], [22642, 31954],
-                       [22738, 32552], [22649, 33128], [22850, 33467]]
-
-listMPP_k5_i60_t10_p1=[[62504, 168], [62419, 302], [62429, 187], [62577, 231], [62357, 298], [62486, 92], [62509, 177], 
-                       [62448, 296], [62571, 230], [62382, 156], [62449, 184], [62412, 186], [62360, 204], [62419, 161], 
-                       [62447, 199], [62445, 197], [62434, 209], [62493, 169], [62498, 200], [62485, 227], [62373, 212], 
-                       [62360, 234], [62422, 231], [62513, 251], [62405, 146], [62407, 231], [62509, 270], [62454, 182], 
-                       [62388, 172], [62389, 314], [62485, 237], [62436, 109], [62501, 210], [62461, 182], [62586, 197], 
-                       [62517, 189], [62506, 71], [62470, 147], [62471, 136], [62324, 239], [62399, 309], [62404, 261], 
-                       [62457, 158], [62447, 245], [62477, 266], [62397, 143], [62404, 191], [62569, 231], [62404, 307], 
-                       [62403, 229], [9119, 7702], [9101, 7765], [62498, 278], [19730, 48152], [19693, 48142], [19745, 48171],
-                       [19770, 48191], [19792, 48144], [19777, 48112], [19702, 48160]]
-
-HPP_k5_i60_t10_p1=[[63978, 63978], [63950, 63909], [63976, 63867], [63887, 63920], [63927, 63765], [63942, 63848],
-                   [63807, 63792], [63984, 63524], [63956, 63983], [63831, 63879], [63986, 63543], [63916, 63960],
-                   [63969, 63836], [63961, 63847], [63961, 63953], [63976, 63865], [63983, 63915], [63954, 63960], 
-                   [63859, 63848], [63982, 63904], [63953, 63814], [63980, 63949], [63862, 63976], [63877, 63809], 
-                   [63913, 63831], [63873, 63958], [63897, 63889], [63917, 63874], [63927, 63919], [63991, 63733], 
-                   [63917, 63950], [63974, 63666], [63953, 63814], [63888, 63947], [63954, 63714], [63974, 63943], 
-                   [84, 63916], [70, 63953], [75, 63905], [617, 63978], [174, 63851], [409, 63938], [46, 63868], 
-                   [150, 63960], [152, 63955], [157, 63994], [58, 63907], [97, 63957], [63961, 40113], [37179, 33577], 
-                   [33370, 30402], [31792, 28680], [30867, 27753], [30309, 27407], [29834, 27168], [29431, 27008], [29137, 26881],
-                   [28904, 26864], [28669, 26957], [28476, 26951]]
-
-GPR_k5_i60_t10=[[63886, 63854], [63957, 63852], [63926, 63981], [63983, 63957], [63937, 63621], [63924, 63982], 
-                [63840, 63906], [63995, 63680], [63921, 63821], [63812, 63951], [63983, 63769], [63866, 63859], 
-                [63879, 63901], [63985, 63860], [63981, 63768], [63994, 63843], [63893, 63974],
-                [63864, 63985], [63903, 63942], [63869, 63815], [63984, 63966], [63900, 63692], [63964, 63946], 
-                 [63928, 63881], [63983, 63774], [63988, 63777], [63974, 63737], [63919, 63998], [63968, 63991], 
-                 [121, 63993], [94, 63975], [129, 63839], [180, 63867], [30, 63990], [98, 63993], [13, 63955], 
-                 [79, 63999], [93, 63761], [225, 63994], [23, 63962], [187, 63951], [25, 63847], [186, 63999],
-                 [219, 63959], [78, 63942], [37, 63885], [830, 63974], [4790, 63443], [34725, 35576], [32426, 33090], 
-                 [30909, 31352], [29983, 30206], [29241, 29556], [28810, 29190], [28551, 28755], [28245, 28629], [27922, 28354],
-                 [27745, 28426], [27496, 28234]]
-
-"ACCESS============================================================================================================================="
-HPP_S5_K5_I50=[[124, 63802],[33, 63977],[124, 63980],[134, 63966],[144, 63821],[79, 63946],[40, 63790],[94, 63801],[116, 63969],
-                [75, 63917],[4, 63991],[230, 63832],[22, 63778],[4, 63945],[39, 63977],[70, 63939],[54, 63959],[103, 63970],
-                [193, 63899],[17, 63859],[70, 63738],[24, 63956],[21, 63738],[42, 63942],[82, 63972],[200, 63978],[79, 63867],
-                [70, 63945],[133, 63995],[152, 63984],[24, 63954],[75, 63883],[21, 63770],[1, 63757],[14, 63917],[40, 63975],
-                [58, 63874],[59, 63800],[13, 63498],[6, 57918],[1, 53695],[6, 47240],[15, 42484],[1, 38497],[638, 34848],
-                [5456, 31109],[8147, 28978],[9863, 27553],[11066, 26563],[12121, 25654]]
-GPR_S5_K5_I50=[[80, 63905],[25, 63870],[217, 63947],[220, 63923],[13, 63843],[63, 63873],[12, 63977],[183, 63858],[37, 63982],
-               [27, 63990],[24, 63914],[321, 63965],[2, 63729],[22, 63912],[62, 63999],[117, 63933],[62, 63793],[49, 63996],
-               [85, 63882],[54, 63879],[170, 63798],[16, 63997],[52, 63944],[244, 63928],[26, 63984],[86, 63941],[58, 63909],
-               [49, 63812],[85, 63976],[7, 63766],[49, 63865],[54, 63879],[142, 63872],[89, 63978],[262, 63993],[49, 63967],
-               [11, 63970],[73, 63961],[14, 62913],[4, 58803],[2, 54446],[21, 48744],[21, 43196],[11, 39173],[24, 35616],
-               [4293, 32136],[7383, 29744],[9236, 28134],[10552, 27077],[11647, 26035]]
-
-'LHS6D'
-
-
-
+'-----------------------------------------------------------------------------'
+newdatapath='D:/WDNoptimizer/access/access_RF_I100_K0_new/'
+savedataname='./LabelData/LHS6D_access_RF_K0_I100.txt'
 
 teaser=WDNTagDataHandler.TaggedDataHandler()#实例化
 
-
 '读取原始数据进行分类标签保存（先验数据，迭代数据）'
-teaser.PriorDataTagWriter_state(count=20,path=datapath,filename=statefilename,savefilename=taggedDatafilename)#先验数据的处理
-#teaser.IterDataTagWriter(vbrs=vbr,count_i=10,path=newdatapath,QPlist=GPR_S5_K5_I50,savefilename=savedataname)#迭代数据的处理
+#teaser.PriorDataTagWriter_state(count=20,path=datapath,filename=statefilename,savefilename=taggedDatafilename)#先验数据的处理
+#teaser.IterDataTagWriter_state(count_i=10,path=newdatapath,QPlist=RF_D6_I100_K0,savefilename=savedataname)#迭代数据的处理
 #teaser.GridDataTagWriter()#主观栅格数据的处理
 
-'MSE========================================================================================='
-
+'MSE=========================================================================='
 traindatafilename='./LabelData/LHS_6D_train.txt'
-#iterdatafilename='./LabelData/ITER_MPP24000_k5_i30_t10_p1_test.txt'
-#iterdatafilename='./LabelData/ITER_MPP24000_k5_i60_t10_p1_test.txt'
-#iterdatafilename='./LabelData/HPP24000_k5_i60_t10.txt'
-iterdatafilename='./LabelData/LHS_6D_2.txt'
-#iterdatafilename='./LabelData/ITER_GMM24000_i60_t10_test.txt'
+#iterdatafilename='./LabelData/LHS_6D_2.txt'
+iterdatafilename='./LabelData/LHS6D_access_HPP_K5_I130.txt'
 readtestfilename='./LabelData/LHS_6D_1.txt'
-#readtestfilename='./LabelData/24000testset.txt'
 
 
 traindata=teaser.LabelDataReader(filename=traindatafilename)#训练数据读取
@@ -201,7 +67,6 @@ for i in range(int(len(traindata)/2)):
     MPPdata=gamer.MPPpredicter_state(testdata)
     GPRdata=gamer.GPRpredicter_state(testdata)
     RFdata=gamer.RFpredicter_state(testdata)
-    
     'MSE'
     MPPMSE1=gamer.MPPMSE(testdata,MPPdata)
     GPRMSE1=gamer.GPRMSE(testdata,GPRdata)
@@ -210,11 +75,12 @@ for i in range(int(len(traindata)/2)):
     GPRMSE.append(GPRMSE1)
     RFMSE.append(RFMSE1)
 "绘图"
+
 #teaser.ComparePrinter(MPPMSE,GPRMSE,RFMSE,style='MSE')
 teaser.ZoominPrinter(MPPMSE,GPRMSE,RFMSE,style='MSE')
-print(RFMSE)
-print(MPPMSE)
-print(GPRMSE)
+#print(RFMSE)
+#print(MPPMSE)
+#print(GPRMSE)
 #print(MPPMSE[0],GPRMSE[0])
 #print(MPPMSE[1],GPRMSE[1])
 #print(MPPMSE[2],GPRMSE[2])
@@ -240,13 +106,13 @@ for i in range(int(len(traindata)/2)):
     print(trainset)
     gamer=WDNTagDataHandler.ModelCompareHandler()
     '建模'
-    gamer.MPPmodelRebuilder(trainset)
-    gamer.GPRmodelRebuiler(trainset)
-    gamer.RFmodelRebuilder(trainset)
+    gamer.MPPmodelRebuilder_state(trainset)
+    gamer.GPRmodelRebuiler_state(trainset)
+    gamer.RFmodelRebuilder_state(trainset)
     '预测'
-    MPPdata=gamer.MPPpredicter(testdata)
-    GPRdata=gamer.GPRpredicter(testdata)
-    RFdata=gamer.RFpredicter(testdata)
+    MPPdata=gamer.MPPpredicter_state(testdata)
+    GPRdata=gamer.GPRpredicter_state(testdata)
+    RFdata=gamer.RFpredicter_state(testdata)
     'MSE'
     MPPMSE1=gamer.MPPMSE(testdata,MPPdata)
     GPRMSE1=gamer.GPRMSE(testdata,GPRdata)
@@ -258,23 +124,22 @@ for i in range(int(len(traindata)/2)):
    
 "绘图"
 teaser.ZoominPrinter(r_mpp,r_gpr,r_rfr,style='R-Squared')
-
-print(r_mpp)
-print(r_gpr)
-print(r_rfr)
-
+#print(r_mpp)
+#print(r_gpr)
+#print(r_rfr)
 
 
 
-'仿真值与预测值的对比============================================================='
-traindatafilename='./LabelData/LHSprior_test.txt'
+'一次迭代实验中仿真值与预测值的不同模型的对比=========================================='
+traindatafilename='./LabelData/LHS_6D_train.txt'
 #iterdatafilename='./LabelData/ITER_MPP24000_k5_i30_t10_p1_test.txt'
 #iterdatafilename='./LabelData/ITER_MPP24000_k5_i60_t10_p1_test.txt'
-iterdatafilename='./LabelData/HPP24000_k5_i60_t10.txt'
-#iterdatafilename='./LabelData/GPR24000_k5_i60_t10.txt'
+#iterdatafilename='./LabelData/HPP24000_k5_i60_t10.txt'
+iterdatafilename='./LabelData/LHS6D_access_HPP_K0_I100.txt'
 #iterdatafilename='./LabelData/ITER_GMM24000_i60_t10_test.txt'
-readtestfilename='./LabelData/LHS24000_test.txt'
+readtestfilename='./LabelData/LHS_6D_1.txt'
 #readtestfilename='./LabelData/24000testset.txt'
+
 '读数据'
 traindata=teaser.LabelDataReader(filename=traindatafilename)#训练数据读取
 testdata=teaser.LabelDataReader(filename=readtestfilename)#测试数据的读取
@@ -290,13 +155,13 @@ for i in range(int(len(iterdata)/2)):
     print(trainset)
     gamer=WDNTagDataHandler.ModelCompareHandler()
     '建模'
-    gamer.MPPmodelRebuilder(trainset)
-    gamer.GPRmodelRebuiler(trainset)
-    gamer.RFmodelRebuilder(trainset)
+    gamer.MPPmodelRebuilder_state(trainset)
+    gamer.GPRmodelRebuiler_state(trainset)
+    gamer.RFmodelRebuilder_state(trainset)
     '预测'
-    MPPdata=gamer.MPPpredicter(testdata)
-    GPRdata=gamer.GPRpredicter(testdata)
-    RFdata=gamer.RFpredicter(testdata)
+    MPPdata=gamer.MPPpredicter_state(testdata)
+    GPRdata=gamer.GPRpredicter_state(testdata)
+    RFdata=gamer.RFpredicter_state(testdata)
     '这里的比较有待商榷额，因为是不同模型，目前是这种方式进行value的比较'
     mppoutput=MPPdata['mean0'][i]*MPPdata['prob0'][i]+MPPdata['mean1'][i]*MPPdata['prob1'][i]
     mpppredictlist.append(mppoutput)
@@ -311,6 +176,619 @@ for i in range(int(len(iterdata)/2)):
 
 "绘图"
 teaser.ValueComparePrinter(mpppredictlist,gprpredictlist,rfpredictlist,simulationlist,style='predict-simulated')
+
+
+
+'不同先验数据采样方式得到数据的相同模型的拟合比较结果-----------------------------'
+traindatafilename='./LabelData/2Diteration/LHS24000_new.txt'
+griddatafilename='./LabelData/2Diteration/2DGMM(16000_8000-36000)_test.txt'
+readtestfilename='./LabelData/2Diteration/LHS24000_new.txt'
+#readtestfilename='./LabelData/24000testset.txt'
+"-----------------------------------------------------------------------------"
+testdata=teaser.LabelDataReader(filename=readtestfilename)#测试数据的读取
+traindata=teaser.LabelDataReader(filename=traindatafilename)#训练数据读取
+griddata=teaser.LabelDataReader(filename=griddatafilename)#栅格数据的读取
+MPPMSE_LHS=[]
+MPPMSE_RG=[]
+#traindata=traindata.append(iterdata).reset_index(drop=True)#迭代数据加入先验数据
+"循环迭代的数据，对每次迭代的模型进行MSE的计算"
+"这里的MSE计算根据模型的不同分别进行，MPP模型中的各簇与仿真值对应的各簇进行计算，GPR中直接进行计算"
+for i in range(int(len(traindata)/2)):
+    trainsetLHS=traindata[0:(2*(i+1))]
+    trainsetRG=griddata[0:(2*(i+1))]
+    gamerlhs=WDNTagDataHandler.ModelCompareHandler()
+    gamerrg=WDNTagDataHandler.ModelCompareHandler()
+    '建模'
+    gamerrg.MPPmodelRebuilder(trainsetRG)
+    gamerlhs.MPPmodelRebuilder(trainsetLHS)
+    '预测'
+    MPPdatarg=gamerrg.MPPpredicter(testdata)
+    MPPdatalhs=gamerlhs.MPPpredicter(testdata)
+    'MSE'
+    MPPMSElhs=gamerlhs.MPPMSE(testdata,MPPdatalhs)
+    MPPMSErg=gamerrg.MPPMSE(testdata,MPPdatarg)
+
+    MPPMSE_LHS.append(math.log(MPPMSElhs))
+    MPPMSE_RG.append(math.log(MPPMSErg))
+
+"绘图"
+#sns.set_style("whitegrid")
+plt.figure('Line fig',figsize=(27,8))
+plt.xlabel('Data Counts',fontsize='xx-large')
+plt.ylabel('Log-MSE',fontsize='xx-large')
+#plt.title('value ',fontsize='xx-large')
+
+plt.scatter(x=range(len(MPPMSE_LHS)),y=MPPMSE_LHS,marker='.',c='black')
+plt.scatter(x=range(len(MPPMSE_RG)),y=MPPMSE_RG,marker='o',c='blue')
+
+plt.plot(MPPMSE_LHS,color='r', linewidth=2, alpha=0.6,label='MSP_LHS')
+plt.plot(MPPMSE_RG,color='b', linewidth=2, alpha=0.6,label='MSP_RANDOMGRID')
+plt.legend(fontsize='xx-large')
+
+
+
+
+
+'不同的combination 比较 surrogate Model----------------------------------------'
+traindatafilename='./LabelData/LHS_6D_train.txt'
+
+iterdatafilename0='./LabelData/LHS6D_access_HPP_K0_I100.txt'
+iterdatafilename1='./LabelData/LHS6D_access_HPP_K1_I100.txt'
+iterdatafilename2='./LabelData/LHS6D_access_HPP_K2_I100.txt'
+iterdatafilename4='./LabelData/LHS6D_access_HPP_K4_I100.txt'
+iterdatafilename5='./LabelData/LHS6D_access_HPP_K5_I130.txt'
+
+gprname0='./LabelData/LHS6D_access_GPR_K0_I100.txt'
+gprname2='./LabelData/LHS6D_access_GPR_K2_I100.txt'
+gprname5='./LabelData/LHS6D_access_GPR_K5_I100.txt'
+
+rfname0='./LabelData/LHS6D_access_RF_K0_I100.txt'
+rfname2='./LabelData/LHS6D_access_RF_K2_I100.txt'
+rfname5='./LabelData/LHS6D_access_RF_K5_I100.txt'
+
+#iterdatafilename='./LabelData/ITER_GMM24000_i60_t10_test.txt'
+#readtestfilename='./LabelData/LHS24000_test.txt'
+#readtestfilename='./LabelData/24000testset.txt'
+readtestfilename='./LabelData/LHS_6D_1.txt'
+
+'仿真值与预测值的对比===分簇绘图================================================='
+'读数据'
+traindata=teaser.LabelDataReader(filename=traindatafilename)#训练数据读取
+testdata=teaser.LabelDataReader(filename=readtestfilename)#测试数据的读取
+
+iterdata0=teaser.LabelDataReader(filename=iterdatafilename0)#迭代HPP0数据的读取
+iterdata1=teaser.LabelDataReader(filename=iterdatafilename1)#迭代HPP0数据的读取
+iterdata2=teaser.LabelDataReader(filename=iterdatafilename2)#迭代HPP5数据的读取
+iterdata4=teaser.LabelDataReader(filename=iterdatafilename4)#迭代HPP0数据的读取
+iterdata5=teaser.LabelDataReader(filename=iterdatafilename5)#迭代RFR5数据的读取
+gprdata0=teaser.LabelDataReader(filename=gprname0)
+gprdata2=teaser.LabelDataReader(filename=gprname2)
+gprdata5=teaser.LabelDataReader(filename=gprname5)
+rfdata0=teaser.LabelDataReader(filename=rfname0)
+rfdata2=teaser.LabelDataReader(filename=rfname2)
+rfdata5=teaser.LabelDataReader(filename=rfname5)
+
+HPP0predictlist=[]
+HPP1predictlist=[]
+HPP2predictlist=[]
+HPP4predictlist=[]
+HPP5predictlist=[]
+gprpre0=[]
+gprpre2=[]
+gprpre5=[]
+rfpre0=[]
+rfpre2=[]
+rfpre5=[]
+
+simulationlist0=[]
+simulationlist1=[]
+simulationlist2=[]
+simulationlist4=[]
+simulationlist5=[]
+gprsim0=[]
+gprsim2=[]
+gprsim5=[]
+rfsim0=[]
+rfsim2=[]
+rfsim5=[]
+
+d0=[]
+d1=[]
+d2=[]
+d4=[]
+d5=[]
+gprdiff0=[]
+gprdiff2=[]
+gprdiff5=[]
+rfdiff0=[]
+rfdiff2=[]
+rfdiff5=[]
+
+
+
+'基于迭代数据进行迭代建模，得到下一个点的预测值'
+for i in range(int(len(iterdata0)/2)):
+    trainset0=traindata.append(iterdata0[0:(i*2)]).reset_index(drop=True)
+    trainset1=traindata.append(iterdata1[0:(i*2)]).reset_index(drop=True)
+    trainset2=traindata.append(iterdata2[0:(i*2)]).reset_index(drop=True)
+    trainset4=traindata.append(iterdata4[0:(i*2)]).reset_index(drop=True)
+    trainset5=traindata.append(iterdata5[0:(i*2)]).reset_index(drop=True)
+    
+    gprtrain0=traindata.append(gprdata0[0:(i*2)]).reset_index(drop=True)
+    gprtrain2=traindata.append(gprdata2[0:(i*2)]).reset_index(drop=True)
+    gprtrain5=traindata.append(gprdata5[0:(i*2)]).reset_index(drop=True)
+    rftrain0=traindata.append(rfdata0[0:(i*2)]).reset_index(drop=True)
+    rftrain2=traindata.append(rfdata2[0:(i*2)]).reset_index(drop=True)
+    rftrain5=traindata.append(rfdata5[0:(i*2)]).reset_index(drop=True)
+    
+    gamer0=WDNTagDataHandler.ModelCompareHandler()
+    gamer1=WDNTagDataHandler.ModelCompareHandler()
+    gamer2=WDNTagDataHandler.ModelCompareHandler()
+    gamer4=WDNTagDataHandler.ModelCompareHandler()
+    gamer5=WDNTagDataHandler.ModelCompareHandler()
+    gpr0=WDNTagDataHandler.ModelCompareHandler()
+    gpr2=WDNTagDataHandler.ModelCompareHandler()
+    gpr5=WDNTagDataHandler.ModelCompareHandler()
+    '建模'
+    gamer0.MPPmodelRebuilder_state(trainset0)
+    gamer0.MPPmodelRebuilder_state(trainset1)
+    gamer2.MPPmodelRebuilder_state(trainset2)
+    gamer0.MPPmodelRebuilder_state(trainset4)
+    gamer5.MPPmodelRebuilder_state(trainset5)
+    gpr0.GPRmodelRebuiler_state(gprtrain0)
+    gpr2.GPRmodelRebuiler_state(gprtrain2)
+    gpr5.GPRmodelRebuiler_state(gprtrain5)
+    gamer0.RFmodelRebuilder_state(rftrain0)
+    gamer2.RFmodelRebuilder_state(rftrain2)
+    gamer5.RFmodelRebuilder_state(rftrain5)
+    '预测'
+    HPP0data=gamer0.MPPpredicter_state(trainset0)
+    HPP1data=gamer0.MPPpredicter_state(trainset1)
+    HPP2data=gamer2.MPPpredicter_state(trainset2)
+    HPP4data=gamer0.MPPpredicter_state(trainset4)
+    HPP5data=gamer5.MPPpredicter_state(trainset5)
+    gpr0data=gpr0.GPRpredicter_state(gprtrain0)
+    gpr2data=gpr2.GPRpredicter_state(gprtrain2)
+    gpr5data=gpr5.GPRpredicter_state(gprtrain5)
+    rf0data=gamer0.RFpredicter_state(rftrain0)
+    rf2data=gamer2.RFpredicter_state(rftrain2)
+    rf5data=gamer5.RFpredicter_state(rftrain5)
+#    GPRdata=gamer.GPRpredicter(testdata)
+    '这里的比较有待商榷额，因为是不同模型，目前是这种方式进行value的比较'
+    'HPP-WDUCB'
+    HPP0output=HPP0data['mean0'][i]*HPP0data['prob0'][i]+HPP0data['mean1'][i]*HPP0data['prob1'][i]
+    HPP0predictlist.append(HPP0output)
+    HPP1output=HPP1data['mean0'][i]*HPP1data['prob0'][i]+HPP1data['mean1'][i]*HPP1data['prob1'][i]
+    HPP1predictlist.append(HPP1output)
+    HPP2output=HPP2data['mean0'][i]*HPP2data['prob0'][i]+HPP2data['mean1'][i]*HPP2data['prob1'][i]
+    HPP2predictlist.append(HPP2output)
+    HPP4output=HPP4data['mean0'][i]*HPP4data['prob0'][i]+HPP4data['mean1'][i]*HPP4data['prob1'][i]
+    HPP4predictlist.append(HPP4output)
+    HPP5output=HPP5data['mean0'][i]*HPP5data['prob0'][i]+HPP5data['mean1'][i]*HPP5data['prob1'][i]
+    HPP5predictlist.append(HPP5output)
+    'GPR-WDUCB'
+    gpr0output=gpr0data['mean'][i]
+    gprpre0.append(gpr0output)
+    gpr2output=gpr2data['mean'][i]
+    gprpre2.append(gpr2output)
+    gpr5output=gpr5data['mean'][i]
+    gprpre5.append(gpr5output)
+    'RF-WDUCB'
+    rf0output=(rf0data['mean0'][i]+rf0data['mean1'][i])/2
+    rfpre0.append(rf0output)
+    rf2output=(rf2data['mean0'][i]+rf2data['mean1'][i])/2
+    rfpre2.append(rf2output)
+    rf5output=(rf5data['mean0'][i]+rf5data['mean1'][i])/2
+    rfpre5.append(rf5output)
+
+
+
+#    mpppredictlist0.append(HPPdata['mean0'][i])
+#    mpppredictlist1.append(HPPdata['mean1'][i])
+#    gproutput=GPRdata['mean'][i]
+#    gprpredictlist.append(gproutput)
+    '仿真的数据'
+    'HPP-WDUCB'
+    simuoutput0=iterdata0['value'][2*i]*iterdata0['prob'][2*i]+iterdata0['value'][2*i+1]*iterdata0['prob'][2*i+1]
+    simulationlist0.append(simuoutput0)
+    simuoutput1=iterdata1['value'][2*i]*iterdata1['prob'][2*i]+iterdata1['value'][2*i+1]*iterdata1['prob'][2*i+1]
+    simulationlist1.append(simuoutput1)
+    simulation2=iterdata2['value'][2*i]*iterdata2['prob'][2*i]+iterdata2['value'][2*i+1]*iterdata2['prob'][2*i+1]
+    simulationlist2.append(simulation2)
+    simuoutput4=iterdata4['value'][2*i]*iterdata4['prob'][2*i]+iterdata4['value'][2*i+1]*iterdata4['prob'][2*i+1]
+    simulationlist4.append(simuoutput4)
+    simulation5=iterdata5['value'][2*i]*iterdata5['prob'][2*i]+iterdata5['value'][2*i+1]*iterdata5['prob'][2*i+1]
+    simulationlist5.append(simulation5)
+    'GPR-WDUCB'
+    gprsimoutput0=gprdata0['value'][2*i]*gprdata0['prob'][2*i]+gprdata0['value'][2*i+1]*gprdata0['prob'][2*i+1]
+    gprsim0.append(gprsimoutput0)
+    gprsimoutput2=gprdata2['value'][2*i]*gprdata2['prob'][2*i]+gprdata2['value'][2*i+1]*gprdata2['prob'][2*i+1]
+    gprsim2.append(gprsimoutput2)
+    gprsimoutput5=gprdata5['value'][2*i]*gprdata5['prob'][2*i]+gprdata5['value'][2*i+1]*gprdata5['prob'][2*i+1]
+    gprsim5.append(gprsimoutput5)
+    'RF-WDUCB'
+    rfsimoutput0=rfdata0['value'][2*i]*rfdata0['prob'][2*i]+rfdata0['value'][2*i+1]*rfdata0['prob'][2*i+1]
+    rfsim0.append(rfsimoutput0)
+    rfsimoutput2=rfdata2['value'][2*i]*rfdata2['prob'][2*i]+rfdata2['value'][2*i+1]*rfdata2['prob'][2*i+1]
+    rfsim2.append(rfsimoutput2)
+    rfsimoutput5=rfdata5['value'][2*i]*rfdata5['prob'][2*i]+rfdata5['value'][2*i+1]*rfdata5['prob'][2*i+1]
+    rfsim5.append(rfsimoutput5)    
+    '仿真与预测的差值difference'
+    'HPP-WDUCB'
+    difference_hpp0=abs(HPP0output-simuoutput0)
+    d0.append(difference_hpp0)
+    difference_hpp1=abs(HPP1output-simuoutput1)
+    d1.append(difference_hpp1)
+    difference_hpp2=abs(HPP2output-simulation2)
+    d2.append(difference_hpp2)
+    difference_hpp4=abs(HPP4output-simuoutput4)
+    d4.append(difference_hpp4)
+    difference_hpp5=abs(HPP5output-simulation5)
+    d5.append(difference_hpp5)
+    'GPR-WDUCB'
+    a0=abs(gpr0output-gprsimoutput0)
+    gprdiff0.append(a0)
+    a2=abs(gpr2output-gprsimoutput2)
+    gprdiff2.append(a2)
+    a5=abs(gpr5output-gprsimoutput5)
+    gprdiff5.append(a5)    
+    'RF-WDUCB'
+    b0=abs(rf0output-rfsimoutput0)
+    rfdiff0.append(b0)
+    b2=abs(rf2output-rfsimoutput2)
+    rfdiff2.append(b2)
+    b5=abs(rf5output-rfsimoutput5)
+    rfdiff5.append(b5)   
+
+"绘图"
+
+#sns.set_style("whitegrid")
+plt.figure('Line fig',figsize=(20,3))
+plt.xlabel('Iteration Times',fontsize='xx-large')
+plt.ylabel('prediction-simulation',fontsize='xx-large')
+plt.title('value ',fontsize='xx-large')
+#plt.scatter(x=range(len(HPP0predictlist)),y=HPP0predictlist,marker='.',c='r',label='HPP0')
+plt.scatter(x=range(len(HPP1predictlist)),y=HPP1predictlist,marker='o',c='r',label='pre_HPP')
+#plt.scatter(x=range(len(HPP2predictlist)),y=HPP2predictlist,marker='o',c='r',label='HPP2')
+#plt.scatter(x=range(len(HPP4predictlist)),y=HPP4predictlist,marker='o',c='r',label='HPP4')
+#plt.scatter(x=range(len(HPP5predictlist)),y=HPP5predictlist,marker='*',c='blue',label='HPP5')
+#plt.scatter(x=range(len(gprpre0)),y=gprpre0,marker='o',c='b',label='GPR0')
+plt.scatter(x=range(len(gprpre2)),y=gprpre2,marker='o',c='b',label='pre_GPR')
+#plt.scatter(x=range(len(gprpre5)),y=gprpre5,marker='o',c='black',label='GPR5')
+#plt.scatter(x=range(len(rfpre2)),y=rfpre0,marker='o',c='black',label='RF0')
+plt.scatter(x=range(len(rfpre2)),y=rfpre2,marker='o',c='black',label='pre_RF')
+#plt.scatter(x=range(len(rfpre5)),y=rfpre5,marker='o',c='black',label='RF5')
+
+
+#plt.plot(simulationlist0,color='r', linewidth=1, linestyle=':',alpha=0.6,label='sim_HPP_K0')
+#plt.plot(simulationlist1,color='g', linewidth=1, linestyle=':',alpha=0.6,label='sim_HPP_k1')
+plt.plot(simulationlist2,color='r', linewidth=1, linestyle=':',alpha=0.6,label='sim_HPP_WDUCB')
+#plt.plot(simulationlist4,color='b', linewidth=1, linestyle=':',alpha=0.6,label='sim_HPP_k4')
+#plt.plot(simulationlist5,color='w', linewidth=1, linestyle=':',alpha=0.6,label='sim_HPP_k5')
+#plt.plot(gprsim0,color='b', linewidth=1, linestyle=':',alpha=0.6,label='sim_GPR_k0')
+plt.plot(gprsim2,color='b', linewidth=1, linestyle=':',alpha=0.6,label='sim_GPR_UCB')
+#plt.plot(gprsim5,color='b', linewidth=1, linestyle=':',alpha=0.6,label='sim_GPR_k5')
+#plt.plot(rfsim0,color='g', linewidth=1, linestyle=':',alpha=0.6,label='sim_RF_k0')
+plt.plot(rfsim2,color='black', linewidth=1, linestyle=':',alpha=0.6,label='sim_RF_EI')
+#plt.plot(rfsim5,color='b', linewidth=1, linestyle=':',alpha=0.6,label='sim_RF_k5')
+
+#plt.plot(d0,color='r', linewidth=2, alpha=0.6,label='diff_HPP_k0')
+#plt.plot(d1,color='y', linewidth=2, alpha=0.6,label='diff_HPP_k1')
+plt.plot(d2,color='r', linewidth=2, alpha=0.6,label='diff_HPP')
+#plt.plot(d4,color='gray', linewidth=2, alpha=0.6,label='diff_HPP_k4')
+#plt.plot(d5,color='b', linewidth=2, alpha=0.6,label='diff_HPP_k5')
+#plt.plot(gprdiff0,color='b', linewidth=2, alpha=0.6,label='diff_GPR_k0')
+plt.plot(gprdiff2,color='b', linewidth=2, alpha=0.6,label='diff_GPR')
+#plt.plot(gprdiff5,color='r', linewidth=2, alpha=0.6,label='diff_GPR_k5')
+#plt.plot(rfdiff0,color='r', linewidth=2, alpha=0.6,label='diff_RF_k0')
+plt.plot(rfdiff2,color='black', linewidth=2, alpha=0.6,label='diff_RF')
+#plt.plot(rfdiff5,color='b', linewidth=2, alpha=0.6,label='diff_RF_k5')
+
+plt.legend(fontsize='large')
+
+
+'diiference feature'
+
+KLM0=[]
+KLM1=[]
+KLM2=[]
+KLM4=[]
+KLM5=[]
+KLvar0=[]
+KLvar1=[]
+KLvar2=[]
+KLvar4=[]
+KLvar5=[]
+
+gprm0=[]
+gprm2=[]
+gprm5=[]
+gprvar0=[]
+gprvar2=[]
+gprvar5=[]
+
+rfm0=[]
+rfm2=[]
+rfm5=[]
+rfvar0=[]
+rfvar2=[]
+rfvar5=[]
+
+for j in range(len(d0)):
+#    k=3
+#    kld0=np.array(d0[j*k:(j+1)*k])
+#    kld1=np.array(d1[j*k:(j+1)*k])
+#    kld2=np.array(d2[j*k:(j+1)*k])
+#    kld4=np.array(d1[j*k:(j+1)*k])
+#    kld5=np.array(d5[j*k:(j+1)*k])
+#    a0=np.array(gprdiff0[j*k:(j+1)*k])
+#    a2=np.array(gprdiff2[j*k:(j+1)*k])
+#    a5=np.array(gprdiff5[j*k:(j+1)*k])
+#    b0=np.array(rfdiff0[j*k:(j+1)*k])
+#    b2=np.array(rfdiff2[j*k:(j+1)*k])
+#    b5=np.array(rfdiff5[j*k:(j+1)*k])
+
+    kld0=np.array(d0[0:(j+1)])
+    kld1=np.array(d1[0:(j+1)])
+    kld2=np.array(d2[0:(j+1)])
+    kld4=np.array(d4[0:(j+1)])
+    kld5=np.array(d5[0:(j+1)])
+    a0=np.array(gprdiff0[0:(j+1)])
+    a2=np.array(gprdiff2[0:(j+1)])
+    a5=np.array(gprdiff5[0:(j+1)])
+    b0=np.array(rfdiff0[0:(j+1)])
+    b2=np.array(rfdiff2[0:(j+1)])
+    b5=np.array(rfdiff5[0:(j+1)])
+    
+#    mean0=kld0.sum()/(k)
+#    var0=(kld0*kld0).sum()/(k)-mean0**2
+#    mean1=kld1.sum()/(k)
+#    var1=(kld1*kld1).sum()/(k)-mean1**2 
+#    mean2=kld2.sum()/(k)
+#    var2=(kld2*kld2).sum()/(k)-mean2**2 
+#    mean4=kld4.sum()/(k)
+#    var4=(kld4*kld4).sum()/(k)-mean4**2    
+#    mean5=kld5.sum()/(k)
+#    var5=(kld5*kld5).sum()/(k)-mean5**2    
+#    m0=a0.sum()/(k)
+#    v0=(a0*a0).sum()/(k)-m0**2
+#    m2=a2.sum()/(k)
+#    v2=(a2*a2).sum()/(k)-m2**2
+#    m5=a5.sum()/(k)
+#    v5=(a5*a5).sum()/(k)-m5**2
+#    rm0=b0.sum()/(k)
+#    rv0=(b0*b0).sum()/(k)-m0**2
+#    rm2=b2.sum()/(k)
+#    rv2=(b2*b2).sum()/(k)-m2**2
+#    rm5=b5.sum()/(k)
+#    rv5=(b5*b5).sum()/(k)-m5**2
+
+    mean0=kld0.sum()/(j+1)
+    var0=(kld0*kld0).sum()/(j+1)-mean0**2
+    mean1=kld1.sum()/(j+1)
+    var1=(kld1*kld1).sum()/(j+1)-mean1**2 
+    mean2=kld2.sum()/(j+1)
+    var2=(kld2*kld2).sum()/(j+1)-mean2**2 
+    mean4=kld4.sum()/(j+1)
+    var4=(kld4*kld4).sum()/(j+1)-mean4**2    
+    mean5=kld5.sum()/(j+1)
+    var5=(kld5*kld5).sum()/(j+1)-mean5**2    
+    m0=a0.sum()/(j+1)
+    v0=(a0*a0).sum()/(j+1)-m0**2
+    m2=a2.sum()/(j+1)
+    v2=(a2*a2).sum()/(j+1)-m2**2
+    m5=a5.sum()/(j+1)
+    v5=(a5*a5).sum()/(j+1)-m5**2
+    rm0=b0.sum()/(j+1)
+    rv0=(b0*b0).sum()/(j+1)-m0**2
+    rm2=b2.sum()/(j+1)
+    rv2=(b2*b2).sum()/(j+1)-m2**2
+    rm5=b5.sum()/(j+1)
+    rv5=(b5*b5).sum()/(j+1)-m5**2
+    
+    KLM0.append(mean0)
+    KLM1.append(mean1)
+    KLM2.append(mean2)
+    KLM4.append(mean4)
+    KLM5.append(mean5)
+    KLvar0.append(var0)
+    KLvar1.append(var1)
+    KLvar2.append(var2)
+    KLvar4.append(var4)
+    KLvar5.append(var5)
+    gprm0.append(m0)
+    gprm2.append(m2)
+    gprm5.append(m5)
+    gprvar0.append(v0)
+    gprvar2.append(v2)
+    gprvar5.append(v5)
+    rfm0.append(rm0)
+    rfm2.append(rm2)
+    rfm5.append(rm5)
+    rfvar0.append(rv0)
+    rfvar2.append(rv2)
+    rfvar5.append(rv5)   
+    
+
+
+
+
+
+"绝对差值之间均值方差绘图"
+#sns.set_style("whitegrid")
+plt.figure('Line fig',figsize=(8,6))
+
+plt.xlabel('Iteration Count',fontsize='xx-large')
+plt.ylabel('Difference',fontsize='xx-large')
+plt.title('the difference features of conbinations',fontsize='xx-large')
+#plt.plot(KLM0,color='r', linewidth=3, alpha=0.6,label='diff-HPP-WDUCB-K0-mean')
+#plt.plot(KLM1,color='r', linewidth=2.5, alpha=0.6,label='diff-HPP-WDUCB-K1-mean')
+#plt.plot(KLM2,color='b', linewidth=3, alpha=0.6,label='diff-HPP-WDUCB-K2-mean')
+#plt.plot(KLM4,color='k', linewidth=2.5, alpha=0.6,label='diff-HPP-WDUCB-K4-mean')
+#plt.plot(KLM5,color='orange', linewidth=3, alpha=0.6,label='diff-HPP-WDUCB-K5-mean')
+plt.plot(gprm0,color='m', linewidth=2.5, alpha=0.6,label='diff-GPR-UCB-K0-mean')
+plt.plot(gprm2,color='b', linewidth=2.5, alpha=0.6,label='diff-GPR-UCB-K2-mean')
+plt.plot(gprm5,color='orange', linewidth=2.5, alpha=0.6,label='diff-GPR-UCB-K5-mean')
+#plt.plot(rfm0,color='yellow', linewidth=1, alpha=0.6,label='diff-RF-EI-mean')
+#plt.plot(rfm2,color='g', linewidth=1, alpha=0.6,label='diff-RF-EI-mean')
+#plt.plot(rfm5,color='r', linewidth=1, alpha=0.6,label='diff-RF-PI-mean')
+
+
+#plt.plot(KLvar0,color='r', linewidth=2.5, alpha=0.6,label='diff-HPP0-var')
+#plt.plot(KLvar1,color='y', linewidth=2.5, alpha=0.6,label='diff-HPP1-var')
+#plt.plot(KLvar2,color='g', linewidth=2.5, alpha=0.6,label='diff-HPP2-var')
+#plt.plot(KLvar4,color='b', linewidth=2.5, alpha=0.6,label='diff-HPP4-var')
+#plt.plot(KLvar5,color='gray', linewidth=2.5, alpha=0.6,label='diff-HPP5-var')
+#plt.plot(gprvar0,color='black', linewidth=1, alpha=0.6,label='diff-GPR0-var')
+#plt.plot(gprvar2,color='b', linewidth=1, alpha=0.6,label='diff-GPR2-var')
+#plt.plot(gprvar5,color='black', linewidth=1, alpha=0.6,label='diff-GPR5-var')
+#plt.plot(rfvar0,color='black', linewidth=1, alpha=0.6,label='diff-RF2-var')
+#plt.plot(rfvar2,color='black', linewidth=1, alpha=0.6,label='diff-RF2-var')
+#plt.plot(rfvar5,color='r', linewidth=1, alpha=0.6,label='diff-RF5-var')
+plt.legend(fontsize='xx-large')
+
+
+
+
+'柱状图'
+KLM0[97]
+
+plt.figure('Line fig',figsize=(8,6))
+list_00 = [KLM0[2], KLM0[27], KLM0[50], KLM0[75],KLM0[97]]
+list_01 = [KLM1[2], KLM1[27], KLM1[50], KLM1[75],KLM1[97]]
+list_02 = [KLM2[2], KLM2[27], KLM2[50], KLM2[75],KLM2[97]]
+list_04 = [KLM4[2], KLM4[27], KLM4[50], KLM4[75],KLM4[97]]
+list_05 = [KLM5[2], KLM5[27], KLM5[50], KLM5[75],KLM5[97]]
+
+
+list_00 = [gprm0[2], gprm0[25], gprm0[51], gprm0[75],gprm0[97]]
+#list_01 = [KLM1[2], KLM1[27], KLM1[50], KLM1[75],KLM1[97]]
+list_02 = [gprm2[2], gprm2[25], gprm2[51], gprm2[75],gprm2[97]]
+#list_04 = [KLM4[2], KLM4[27], KLM4[50], KLM4[75],KLM4[97]]
+list_05 = [gprm5[2], gprm5[25], gprm5[51], gprm5[75],gprm5[97]]
+
+
+
+plt.title('the difference of K ',fontsize='xx-large')
+plt.xlabel('Iteration Count',fontsize='xx-large')
+plt.ylabel('difference',fontsize='xx-large')
+name_list = ['2', '25', '50', '75','100']
+x = list(range(len(name_list)))
+total_width, n = 0.8, 3
+width = total_width / n
+plt.bar(x, list_00, width=width, label='k=0', tick_label=name_list, fc='m')
+for i in range(len(x)):
+	x[i] = x[i] + width
+#plt.bar(x, list_01, width=width, label='k=1', fc='r')
+#for i in range(len(x)):
+#	x[i] = x[i] + width
+plt.bar(x, list_02, width=width, label='k=2', fc='b')
+for i in range(len(x)):
+	x[i] = x[i] + width
+#plt.bar(x, list_04, width=width, label='k=4', fc='k')
+#for i in range(len(x)):
+#	x[i] = x[i] + width
+plt.bar(x, list_05, width=width, label='k=5', fc='orange')
+plt.legend(fontsize='large')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'仿真值与预测值的对比===旧数据集================================================='
+'读数据'
+traindatafilename='./LabelData/2Diteration/LHSprior_test.txt'
+iterdatafilename1='./LabelData/2Diteration/HPP24000_k5_i60_t10.txt'
+iterdatafilename2='./LabelData/2Diteration/GPR24000_k5_i60_t10.txt'
+readtestfilename='./LabelData/2Diteration/LHS24000_new.txt'
+
+traindata=teaser.LabelDataReader(filename=traindatafilename)#训练数据读取
+testdata=teaser.LabelDataReader(filename=readtestfilename)#测试数据的读取
+iterdata1=teaser.LabelDataReader(filename=iterdatafilename1)#迭代HPP数据的读取
+iterdata2=teaser.LabelDataReader(filename=iterdatafilename2)#迭代GPR数据的读取
+
+mpppredictlist=[]
+gprpredictlist=[]
+simulationlist1=[]
+simulationlist2=[]
+d1=[]
+d2=[]
+'基于迭代数据进行迭代建模，得到下一个点的预测值'
+for i in range(int(len(iterdata1)/2)):
+    trainset1=traindata.append(iterdata1[0:(i*2)]).reset_index(drop=True)
+    trainset2=traindata.append(iterdata2[0:(i*2)]).reset_index(drop=True)
+    gamer=WDNTagDataHandler.ModelCompareHandler()
+    '建模'
+    gamer.MPPmodelRebuilder(trainset1)
+    gamer.GPRmodelRebuiler(trainset2)
+    '预测'
+    HPPdata=gamer.MPPpredicter(testdata)
+    GPRdata=gamer.GPRpredicter(testdata)
+    '这里的比较有待商榷额，因为是不同模型，目前是这种方式进行value的比较'
+    mppoutput=HPPdata['mean0'][i]*HPPdata['prob0'][i]+HPPdata['mean1'][i]*HPPdata['prob1'][i]
+    mpppredictlist.append(mppoutput)
+#    mpppredictlist0.append(HPPdata['mean0'][i])
+#    mpppredictlist1.append(HPPdata['mean1'][i])
+    gproutput=GPRdata['mean'][i]
+    gprpredictlist.append(gproutput)
+    '仿真的数据'
+    simuoutput1=iterdata1['value'][2*i]*iterdata1['prob'][2*i]+iterdata1['value'][2*i+1]*iterdata1['value'][2*i+1]
+    simulationlist1.append(simuoutput1)
+    simulation2=iterdata2['value'][2*i]*iterdata2['prob'][2*i]+iterdata2['value'][2*i+1]*iterdata2['value'][2*i+1]
+    simulationlist2.append(simulation2)
+    '绝对差值'
+    difference_hpp=abs(mppoutput-simuoutput1)
+    d1.append(difference_hpp)
+    difference_gpr=abs(gproutput-simulation2)
+    d2.append(difference_gpr)
+
+
+"绘图"
+
+
+plt.figure('Line fig',figsize=(27,8))
+plt.xlabel('Iterations',fontsize='xx-large')
+plt.ylabel('Prediction-Simulation',fontsize='xx-large')
+#plt.title('value ',fontsize='xx-large')
+plt.scatter(x=range(len(gprpredictlist)),y=gprpredictlist,marker='.',c='black',label='GPR')
+plt.scatter(x=range(len(mpppredictlist)),y=mpppredictlist,marker='o',c='red',label='HPP')
+
+
+plt.plot(simulationlist1,color='r', linewidth=2, linestyle=':',alpha=0.6,label='sim_HPP')
+plt.plot(simulationlist2,color='black', linewidth=2, linestyle=':',alpha=0.6,label='sim_GP')
+plt.plot(d1,color='r', linewidth=2, alpha=0.6,label='diff_HPP')
+plt.plot(d2,color='black', linewidth=2, alpha=0.6,label='diff_GP')
+plt.legend(fontsize='xx-large')
+
+
 
 
 
@@ -383,151 +861,11 @@ teaser.ValueComparePrinter(mpppredictlist,gprpredictlist,rfpredictlist,simulatio
 
 
 
-'不同先验数据采样方式得到的不同的模型结果'
-traindatafilename='./LabelData/access/LHS24000_news5.txt'
-griddatafilename='./LabelData/2DGMM(16000_8000-36000)_test.txt'
-readtestfilename='./LabelData/access/LHS24000_new.txt'
-#readtestfilename='./LabelData/24000testset.txt'
-"--------------------------------------------------------------------------------------------"
-
-testdata=teaser.LabelDataReader(filename=readtestfilename)#测试数据的读取
-traindata=teaser.LabelDataReader(filename=traindatafilename)#训练数据读取
-griddata=teaser.LabelDataReader(filename=griddatafilename)#栅格数据的读取
-MPPMSE_LHS=[]
-MPPMSE_RG=[]
-
-"循环迭代的数据，对每次迭代的模型进行MSE的计算"
-"这里的MSE计算根据模型的不同分别进行，MPP模型中的各簇与仿真值对应的各簇进行计算，GPR中直接进行计算"
-for i in range(int(len(traindata)/2)):
-    trainsetLHS=traindata[0:(2*(i+1))]
-    trainsetRG=griddata[0:(2*(i+1))]
-    gamerlhs=WDNTagDataHandler.ModelCompareHandler()
-    gamerrg=WDNTagDataHandler.ModelCompareHandler()
-    '建模'
-    gamerrg.MPPmodelRebuilder(trainsetRG)
-    gamerlhs.MPPmodelRebuilder(trainsetLHS)
-
-    '预测'
-    MPPdatarg=gamerrg.MPPpredicter(testdata)
-    MPPdatalhs=gamerlhs.MPPpredicter(testdata)
-    'MSE'
-    MPPMSElhs=gamerlhs.MPPMSE(testdata,MPPdatalhs)
-    MPPMSErg=gamerrg.MPPMSE(testdata,MPPdatarg)
-
-    MPPMSE_LHS.append(MPPMSElhs)
-    MPPMSE_RG.append(MPPMSErg)
-
-"绘图"
-print(MPPMSE_LHS)
-print(MPPMSE_RG)
-
-sns.set_style("whitegrid")
-plt.figure('Line fig',figsize=(20,6))
-plt.xlabel('Data Count',fontsize='xx-large')
-plt.ylabel('MSE',fontsize='xx-large')
-plt.title('value ',fontsize='xx-large')
-
-plt.scatter(x=range(len(MPPMSE_LHS)),y=MPPMSE_LHS,marker='.',c='black')
-plt.scatter(x=range(len(MPPMSE_RG)),y=MPPMSE_RG,marker='o',c='blue')
-
-plt.plot(MPPMSE_LHS,color='r', linewidth=2, alpha=0.6,label='MSP_LHS')
-plt.plot(MPPMSE_RG,color='b', linewidth=2, alpha=0.6,label='MSP_RANDOMGRID')
-plt.legend(fontsize='xx-large')
-
-'----------------------------------------------------------------------------------------------------------'
-traindatafilename='./LabelData/access/LHS24000_news5.txt'
-#iterdatafilename='./LabelData/ITER_MPP24000_k5_i30_t10_p1_test.txt'
-#iterdatafilename='./LabelData/ITER_MPP24000_k5_i60_t10_p1_test.txt'
-iterdatafilename1='./LabelData/access/ITER_HPP24000_k5_i50_t10_S5.txt'
-iterdatafilename2='./LabelData/access/ITER_GPR24000_k5_i50_t10_S5.txt'
-griddatafilename='./LabelData/2DGMM(16000_8000-36000)_test.txt'
-#iterdatafilename='./LabelData/ITER_GMM24000_i60_t10_test.txt'
-readtestfilename='./LabelData/access/LHS24000_new.txt'
-#readtestfilename='./LabelData/24000testset.txt'
-
-
-'仿真值与预测值的对比===分簇绘图======================='
-'读数据'
-traindata=teaser.LabelDataReader(filename=traindatafilename)#训练数据读取
-testdata=teaser.LabelDataReader(filename=readtestfilename)#测试数据的读取
-iterdata1=teaser.LabelDataReader(filename=iterdatafilename1)#迭代HPP数据的读取
-iterdata2=teaser.LabelDataReader(filename=iterdatafilename2)#迭代GPR数据的读取
-mpppredictlist=[]
-gprpredictlist=[]
-
-simulationlist1=[]
-simulationlist2=[]
-d1=[]
-d2=[]
-'基于迭代数据进行迭代建模，得到下一个点的预测值'
-for i in range(int(len(iterdata1)/2)):
-    trainset1=traindata.append(iterdata1[0:(i*2)]).reset_index(drop=True)
-    trainset2=traindata.append(iterdata2[0:(i*2)]).reset_index(drop=True)
-    gamer=WDNTagDataHandler.ModelCompareHandler()
-    '建模'
-    gamer.MPPmodelRebuilder(trainset1)
-    gamer.GPRmodelRebuiler(trainset2)
-    '预测'
-    HPPdata=gamer.MPPpredicter(testdata)
-    GPRdata=gamer.GPRpredicter(testdata)
-    '这里的比较有待商榷额，因为是不同模型，目前是这种方式进行value的比较'
-    mppoutput=HPPdata['mean0'][i]*HPPdata['prob0'][i]+HPPdata['mean1'][i]*HPPdata['prob1'][i]
-    mpppredictlist.append(mppoutput)
-#    mpppredictlist0.append(HPPdata['mean0'][i])
-#    mpppredictlist1.append(HPPdata['mean1'][i])
-    gproutput=GPRdata['mean'][i]
-    gprpredictlist.append(gproutput)
-    '仿真的数据'
-    simuoutput1=iterdata1['value'][2*i]*iterdata1['prob'][2*i]+iterdata1['value'][2*i+1]*iterdata1['value'][2*i+1]
-    simulationlist1.append(simuoutput1)
-    simulation2=iterdata2['value'][2*i]*iterdata2['prob'][2*i]+iterdata2['value'][2*i+1]*iterdata2['value'][2*i+1]
-    simulationlist2.append(simulation2)
-    '绝对差值'
-    difference_hpp=abs(mppoutput-simuoutput1)
-    d1.append(difference_hpp)
-    difference_gpr=abs(gproutput-simulation2)
-    d2.append(difference_gpr)
-
-
-"绘图"
-
-#sns.set_style("whitegrid")
-plt.figure('Line fig',figsize=(20,6))
-plt.xlabel('Iteration Times',fontsize='xx-large')
-plt.ylabel('prediction-simulation',fontsize='xx-large')
-plt.title('value ',fontsize='xx-large')
-plt.scatter(x=range(len(gprpredictlist)),y=gprpredictlist,marker='.',c='black',label='GP')
-plt.scatter(x=range(len(mpppredictlist)),y=mpppredictlist,marker='o',c='blue',label='MSP')
-
-
-#plt.plot(mpppredictlist,color='r', linewidth=2, alpha=0.6,label='HPP')
-#plt.plot(gprpredictlist,color='black', linewidth=2, alpha=0.6,label='GPR')
-plt.plot(simulationlist1,color='r', linewidth=2, linestyle=':',alpha=0.6,label='simulation_MSP')
-plt.plot(simulationlist2,color='black', linewidth=2, linestyle=':',alpha=0.6,label='simulation_GP')
-plt.plot(d1,color='r', linewidth=2, alpha=0.6,label='difference_MSP')
-plt.plot(d2,color='black', linewidth=2, alpha=0.6,label='difference_GP')
-plt.legend(fontsize='xx-large')
 
 
 
 
-"KL散度============================================================================================"
 
-a= np.random.normal(loc=3,scale=0.2,size=100)
-type(a)
-import matplotlib.pyplot as plt
-plt.plot(a, linewidth=2, color='r') 
-plt.show()
-
-
-import numpy as np
-import scipy.stats
- 
-p=np.asarray([0.65,0.25,0.07,0.03])
-q=np.array([0.6,0.25,0.1,0.05])
-
-#方法一：根据公式求解
-kl1=np.sum(p*np.log(p/q))
 
 
 
