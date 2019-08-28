@@ -34,17 +34,16 @@ TIPS： STK 9.2.3，EXATA 5.4 needed
 
 - configfile： EXATA configuration json files
 - Debug： STK's access report and satellites trace generator program
-- nodetxt： 存放给EXATA生成场景配置文件的节点坐标txt文件，实例地面用户节点与遥感卫星节点（WDNwordPro程序生成）
-- outAccess： 存放给EXATA生成link相关配置文件的STK节点之间的csv可见性报表，只有一部分示意（WDNwordPro程序生成）
-- OutConfigfile：存放EXATA中的场景配置文件，包括网络场景的仿真配置基本参数文件，链路拓扑文件，网络各层的基本参数配置文件，业务流配置文件，此文件夹中的文件直接提供给EXATA仿真核心模块进行网络场景的仿真，所有的参数优化都是基于这种可配置的config文件进行操作
-- WDNwordPro：在STK中生成对应卫星场景的主程序，提供相应的网络仿真拓扑
-- Figure：存放输出的图片
-- OutStorefile：存放每一次仿真得到的参数配置信息文件备份
-- history：存放各个数据集的设计参数组合的list文件，先验数据的集合
 - OLD_：Store old experiments or drawing programs
 - LabelData：Store evaluation clustering to complete data eigenvalues so that no re-clustering is needed during iteration. 
 - QP：history Query Point listfile
-
+- nodetxt： 
+- outAccess： 
+- OutConfigfile：
+- WDNwordPro：
+- Figure：
+- OutStorefile：
+- history：
 
 2）TestData：Simulation data folder
 - LHSprior：prior sampling data
@@ -60,7 +59,7 @@ TIPS： STK 9.2.3，EXATA 5.4 needed
 
 Contact：
 - E-Mail：weirdfish31@whu.edu.cn
-- QQ:179177098
+
 
 
 
