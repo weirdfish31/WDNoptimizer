@@ -30,35 +30,9 @@ TIPS： STK 9.2.3，EXATA 5.4 needed
 
 **Composition description：**
 
-1）WDNwordPro： Main folder
-
-- configfile： EXATA configuration json files
-- Debug： STK's access report and satellites trace generator program
-- OLD_：Store old experiments or drawing programs
-- LabelData：Store evaluation clustering to complete data eigenvalues so that no re-clustering is needed during iteration. 
-- QP：history Query Point listfile
-- nodetxt： 
-- outAccess： 
-- OutConfigfile：
-- WDNwordPro：
-- Figure：
-- OutStorefile：
-- history：
-
-2）TestData：Simulation data folder
-- LHSprior：prior sampling data
-- LHSMSE：testdata
-- ITER_Data：iteration data
+#
 
 
-
-
-
-
-
-
-Contact：
-- E-Mail：weirdfish31@whu.edu.cn
 
 
 
